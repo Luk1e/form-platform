@@ -1,13 +1,12 @@
-import userService from "../services/userService.js";
-import jwtService from "../services/jwtService.js";
-import CustomError from "../utils/customError.js";
+import { authService, jwtService } from "../services/index.js";
+import { CustomError } from "../utils/index.js";
 
 const authController = {
   register: async (req, res) => {
     try {
       const { username, email, password } = req.body;
 
-      const user = await userService.createUser(username, email, password);
+      const user = await authService.register(username, email, password);
       const { accessToken, csrfToken } = jwtService.generateToken(user.id);
 
       res.cookie("token", accessToken, {
@@ -34,7 +33,7 @@ const authController = {
     try {
       const { email, password } = req.body;
 
-      const user = await userService.login(email, password);
+      const user = await authService.login(email, password);
       const { accessToken, csrfToken } = jwtService.generateToken(user.id);
 
       res.cookie("token", accessToken, {

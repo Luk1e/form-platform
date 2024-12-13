@@ -1,4 +1,4 @@
-import jwtService from "../services/jwtService.js";
+import { jwtService } from "../services/index.js";
 
 const authMiddleware = (req, res, next) => {
   const token = req.cookies.token;
