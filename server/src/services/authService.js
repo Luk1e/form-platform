@@ -29,7 +29,7 @@ const authService = {
         [username, email, hashedPassword]
       );
 
-      return { id: result.insertId, username, email };
+      return { id: result.insertId, username, email, isAdmin: false };
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
@@ -65,7 +65,12 @@ const authService = {
         throw CustomError.forbidden("User is blocked");
       }
 
-      return { id: user.id, username: user.username, email: user.email };
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.is_admin,
+      };
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
