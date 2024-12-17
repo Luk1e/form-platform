@@ -8,7 +8,7 @@ import {
 import {
   bulkUserOperationSchema,
   userSearchSchema,
-} from "../utils/validationSchemas.js";
+} from "../validations/index.js";
 
 const router = express.Router();
 

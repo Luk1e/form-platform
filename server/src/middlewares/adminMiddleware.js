@@ -6,7 +6,6 @@ const adminMiddleware = async (req, res, next) => {
  
     const isAdmin = await adminService.isAdmin(req.userId);
 
-
     if (!isAdmin) {
       throw CustomError.forbidden("Admin access required");
     }
