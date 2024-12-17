@@ -1,5 +1,5 @@
 import axios from "axios";
-import { logout, refresh } from "../../toolkit/auth/authSlice";
+import { logout } from "../../toolkit/auth/authSlice";
 
 let store;
 export const injectStore = (_store) => {
