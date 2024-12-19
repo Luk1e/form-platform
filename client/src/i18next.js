@@ -14,7 +14,7 @@ i18n
       },
       fallbackLng: "geo",
       load: "languageOnly",
-      supportedLngs: ["eng", "geo", "rus"],
+      supportedLngs: ["eng", "geo"],
       debug: false,
       ns: ["app", "auth", "admin", "components"],
       interpolation: {

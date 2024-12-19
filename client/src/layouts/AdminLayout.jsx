@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import HomePage from "../pages/app/home/HomePage";
 
 function AdminLayout({ user }) {
-  return user.isAdmin ? <Outlet /> : <HomePage />;
+  return user?.isAdmin ? <Outlet /> : <HomePage />;
 }
 
 AdminLayout.propTypes = {

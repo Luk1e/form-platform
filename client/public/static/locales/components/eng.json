@@ -1,1 +1,12 @@
-{}
+{
+  "global": {
+    "adminPanel": "Admin Panel",
+    "templates": "Templates",
+    "login": "Login",
+    "register": "Register",
+    "theme": "theme",
+    "dark": "Dark",
+    "light": "Light",
+    "searchForms":"Search forms..."
+  }
+}
