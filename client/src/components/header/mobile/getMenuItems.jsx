@@ -32,14 +32,14 @@ const getMenuItems = ({
   {
     icon: (
       <div className="flex items-center justify-center">
-        {theme === "light" ? <MoonOutlined /> : <SunOutlined />}
+        {theme === "dark" ? <MoonOutlined /> : <SunOutlined />}
       </div>
     ),
-    label: `${theme === "light" ? t("global.dark") : t("global.light")} ${t(
+    label: `${theme === "dark" ? t("global.dark") : t("global.light")} ${t(
       "global.theme"
     )}`,
     onClick: toggleThemeMethod,
-    className: theme === "light" ? "!bg-purple-5 !text-white" : "",
+    className: theme === "dark" ? "!bg-purple-5 !text-white" : "",
   },
   {
     icon: (
