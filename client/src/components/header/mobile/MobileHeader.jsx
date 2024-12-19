@@ -82,7 +82,7 @@ function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
         <div className="mb-5">
           <SearchInput t={t} />
         </div>
-        <Menu items={menuItems} className="bg-purple-2 dark:!bg-purple-3" />
+        <Menu items={menuItems} className="bg-purple-2 dark:bg-purple-3" />
       </Drawer>
     </div>
   );

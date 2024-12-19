@@ -6,7 +6,7 @@ import {
   SunOutlined,
   MoonOutlined,
 } from "@ant-design/icons";
-
+import Flags from "react-world-flags";
 import { Link } from "react-router-dom";
 
 const getMenuItems = ({
@@ -39,15 +39,18 @@ const getMenuItems = ({
       "global.theme"
     )}`,
     onClick: toggleThemeMethod,
-    className: theme === "light" ? "bg-purple-5 text-white" : "",
+    className: theme === "light" ? "!bg-purple-5 !text-white" : "",
   },
   {
     icon: (
-      <div className="flex items-center justify-center text-lg">
-        {language === "eng" ? "🇬🇪" : "🇬🇧"}
+      <div className="flex items-center justify-center">
+        <Flags
+          code={language === "eng" ? "GB" : "GE"}
+          style={{ width: "24px", height: "16px" }}
+        />
       </div>
     ),
-    label: language === "eng" ? "ქართული" : "English",
+    label: language === "eng" ? "English" : "ქართული",
     onClick: toggleLanguage,
   },
   {

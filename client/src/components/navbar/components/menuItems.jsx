@@ -4,6 +4,7 @@ import {
   SunOutlined,
   MoonOutlined,
 } from "@ant-design/icons";
+import Flags from "react-world-flags";
 
 const getMenuItems = ({
   t,
@@ -27,11 +28,14 @@ const getMenuItems = ({
   },
   {
     icon: (
-      <div className="flex items-center justify-center text-lg">
-        {language === "eng" ? "🇬🇪" : "🇬🇧"}
+      <div className="flex items-center justify-center">
+        <Flags
+          code={language === "eng" ? "GB" : "GE"}
+          style={{ width: "24px", height: "16px" }}
+        />
       </div>
     ),
-    title: language === "eng" ? "ქართული" : "English",
+    title: language === "eng" ? "English" : "ქართული",
     onClick: toggleLanguage,
   },
   {
