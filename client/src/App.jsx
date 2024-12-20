@@ -11,9 +11,8 @@ import { lightTheme, darkTheme } from "./themes";
 
 function App() {
   const dispatch = useDispatch();
-  const authSlice = useSelector((state) => state.authentication);
+  const { user } = useSelector((state) => state.authentication);
   const themeMode = useSelector((state) => state.theme.mode);
-  const { user } = authSlice;
 
   useEffect(() => {
     document.body.classList.add("bg-purple-1", "dark:bg-purple-4");

@@ -48,7 +48,7 @@ const authService = {
       );
 
       if (rows.length === 0) {
-        throw CustomError.notFound("User not found");
+        throw CustomError.notFound("User not found", 0);
       }
 
       const user = rows[0];
@@ -58,11 +58,11 @@ const authService = {
       );
 
       if (!isPasswordValid) {
-        throw CustomError.unauthorized("Invalid credentials");
+        throw CustomError.unauthorized("Invalid credentials", 1);
       }
 
       if (user.is_blocked) {
-        throw CustomError.forbidden("User is blocked");
+        throw CustomError.forbidden("User is blocked", 2);
       }
 
       return {

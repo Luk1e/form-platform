@@ -1,1 +1,28 @@
-{}
+{
+  "global": {
+    "login": "Login",
+    "signInText": "Sign in to your account",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password",
+    "loginButton": "Sign in"
+  },
+  "notifications": {
+    "loginSuccess": "Welcome back!",
+    "welcomeBack": "Successfully signed in to your account"
+  },
+
+  "placeholders": {
+    "passwordPlaceholder": "Enter your password",
+    "emailPlaceholder": "Enter your email address"
+  },
+  "validation": {
+    "invalidEmail": "Invalid email address",
+    "required": "Field is required",
+    "passwordMin": "Password must be at least 8 characters"
+  },
+  "errors": {
+    "0": "User not found",
+    "1": "Invalid credentials",
+    "2": "User is blocked"
+  }
+}

@@ -8,32 +8,38 @@ class CustomError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 
-  static badRequest(message = "Bad Request") {
-    return new CustomError(message, 400, "BAD_REQUEST");
+  static badRequest(message = "Bad Request", errorCode = "BAD_REQUEST") {
+    return new CustomError(message, 400, errorCode);
   }
 
-  static unauthorized(message = "Unauthorized") {
-    return new CustomError(message, 401, "UNAUTHORIZED");
+  static unauthorized(message = "Unauthorized", errorCode = "UNAUTHORIZED") {
+    return new CustomError(message, 401, errorCode);
   }
 
-  static forbidden(message = "Forbidden") {
-    return new CustomError(message, 403, "FORBIDDEN");
+  static forbidden(message = "Forbidden", errorCode = "FORBIDDEN") {
+    return new CustomError(message, 403, errorCode);
   }
 
-  static notFound(message = "Not Found") {
-    return new CustomError(message, 404, "NOT_FOUND");
+  static notFound(message = "Not Found", errorCode = "NOT_FOUND") {
+    return new CustomError(message, 404, errorCode);
   }
 
-  static conflict(message = "Conflict") {
-    return new CustomError(message, 409, "CONFLICT");
+  static conflict(message = "Conflict", errorCode = "CONFLICT") {
+    return new CustomError(message, 409, errorCode);
   }
 
-  static unprocessableEntity(message = "Unprocessable Entity") {
-    return new CustomError(message, 422, "UNPROCESSABLE_ENTITY");
+  static unprocessableEntity(
+    message = "Unprocessable Entity",
+    errorCode = "UNPROCESSABLE_ENTITY"
+  ) {
+    return new CustomError(message, 422, errorCode);
   }
 
-  static internalServerError(message = "Internal Server Error") {
-    return new CustomError(message, 500, "INTERNAL_SERVER_ERROR");
+  static internalServerError(
+    message = "Internal Server Error",
+    errorCode = "INTERNAL_SERVER_ERROR"
+  ) {
+    return new CustomError(message, 500, errorCode);
   }
 
   toJSON() {
