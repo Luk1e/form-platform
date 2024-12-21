@@ -1,6 +1,7 @@
 import Router from "./routes/routes";
 import { Suspense, useEffect, useMemo } from "react";
 import { BrowserRouter } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { useSelector, useDispatch } from "react-redux";
 import { authenticate } from "./toolkit/auth/authSlice";
@@ -37,15 +38,17 @@ function App() {
 
   return (
     <ConfigProvider theme={currentTheme}>
-      <AntApp>
-        <Suspense fallback={null}>
-          <BrowserRouter>
-            <HeaderComponent />
-            <NavbarComponent />
-            <Router user={user} />
-          </BrowserRouter>
-        </Suspense>
-      </AntApp>
+      <GoogleOAuthProvider clientId="530002033942-0dmk751ql0c82dii5sdffpp3np4muejh.apps.googleusercontent.com">
+        <AntApp>
+          <Suspense fallback={null}>
+            <BrowserRouter>
+              <HeaderComponent />
+              <NavbarComponent />
+              <Router user={user} />
+            </BrowserRouter>
+          </Suspense>
+        </AntApp>
+      </GoogleOAuthProvider>
     </ConfigProvider>
   );
 }

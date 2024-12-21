@@ -9,7 +9,8 @@
     "theme": "თემა",
     "dark": "მუქი",
     "light": "ღია",
-    "searchForms": "ფორმის ძიება..."
+    "searchForms": "ფორმის ძიება...",
+    "continueWithGoogle": "გაგრძელება Google-ით"
   },
   "notifications": {
     "logoutSuccess": "Logged out successfully",

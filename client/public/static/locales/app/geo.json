@@ -7,7 +7,8 @@
     "loginButton": "Sign in",
     "register": "Sign up",
     "signUpText": "Create a new account",
-    "registerButton": "Sign up"
+    "registerButton": "Sign up",
+    "orContinueWith": "ან გააგრძელეთ"
   },
   "notifications": {
     "loginSuccess": "Welcome back!",

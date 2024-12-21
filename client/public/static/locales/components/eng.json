@@ -9,7 +9,8 @@
     "theme": "theme",
     "dark": "Dark",
     "light": "Light",
-    "searchForms": "Search forms..."
+    "searchForms": "Search forms...",
+    "continueWithGoogle": "Continue with Google"
   },
   "notifications": {
     "logoutSuccess": "Logged out successfully",

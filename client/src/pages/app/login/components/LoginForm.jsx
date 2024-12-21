@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { reset } from "../../../../toolkit/auth/loginSlice";
 import { initialValues, validationSchema, onSubmit } from "../values";
-
+import GoogleButton from "../../../../components/google/GoogleButton";
 import InputComponents from "./InputComponents";
 import ButtonComponent from "./ButtonComponent";
 
@@ -25,7 +25,7 @@ const LoginForm = () => {
     if (success) {
       notification.success({
         message: t("notifications.loginSuccess"),
-        description: t("notifications.welcomeAbroad"),
+        description: t("notifications.welcomeBack"),
         className: `
         !bg-purple-1 dark:!bg-purple-8 
         [&_.ant-notification-notice-message]:!text-purple-9 
@@ -70,6 +70,18 @@ const LoginForm = () => {
 
       <InputComponents t={t} formik={formik} />
       <ButtonComponent t={t} isLoading={isLoading} />
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-purple-3 dark:border-purple-7"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-white dark:bg-purple-8 text-purple-5">
+            {t("global.orContinueWith")}
+          </span>
+        </div>
+      </div>
+      <GoogleButton t={t} />
     </Form>
   );
 };
