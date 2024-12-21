@@ -1,27 +1,43 @@
 {
   "global": {
-    "login": "Login",
+    "login": "Sign in",
     "signInText": "Sign in to your account",
     "emailPlaceholder": "Email address",
     "passwordPlaceholder": "Password",
-    "loginButton": "Sign in"
+    "loginButton": "Sign in",
+    "register": "Sign up",
+    "signUpText": "Create a new account",
+    "registerButton": "Sign up"
   },
   "notifications": {
     "loginSuccess": "Welcome back!",
-    "welcomeBack": "Successfully signed in to your account"
+    "welcomeBack": "Successfully signed in to your account",
+    "registerSuccess": "Registration completed successfully!",
+    "welcomeAbroad": "Welcome aboard"
   },
   "placeholders": {
     "passwordPlaceholder": "Enter your password",
-    "emailPlaceholder": "Enter your email address"
+    "emailPlaceholder": "Enter your email address",
+    "usernamePlaceholder": "Enter your username",
+    "confirmPasswordPlaceholder": "Confirm password"
   },
   "validation": {
     "invalidEmail": "Invalid email address",
     "required": "Field is required",
-    "passwordMin": "Password must be at least 8 characters"
+    "passwordMin": "Password must be at least 8 characters",
+    "usernameMin": "Username must be at least 3 characters long.",
+    "usernameMax": "Username cannot exceed 50 characters.",
+    "passwordNumber": "Password must contain at least one number.",
+    "passwordUpper": "Password must contain at least one uppercase letter.",
+    "passwordLower": "Password must contain at least one lowercase letter.",
+    "passwordSymbol": "Password must contain at least one special character (e.g., !, @, #, $).",
+    "passwordMatch": "Passwords must match."
   },
   "errors": {
     "0": "User not found",
     "1": "Invalid credentials",
-    "2": "User is blocked"
+    "2": "User is blocked",
+    "3": "Email is already registered",
+    "4": "Username is already taken"
   }
 }

@@ -3,16 +3,15 @@ import { Form, Alert, App } from "antd";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { reset } from "../../../../toolkit/auth/loginSlice";
+import { reset } from "../../../../toolkit/auth/registerSlice";
 import { initialValues, validationSchema, onSubmit } from "../values";
-
 import InputComponents from "./InputComponents";
 import ButtonComponent from "./ButtonComponent";
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const { t } = useTranslation(["app"]);
   const dispatch = useDispatch();
-  const { isLoading, error, success } = useSelector((state) => state.login);
+  const { isLoading, error, success } = useSelector((state) => state.register);
   const { notification } = App.useApp();
 
   const formik = useFormik({
@@ -24,7 +23,7 @@ const LoginForm = () => {
   useEffect(() => {
     if (success) {
       notification.success({
-        message: t("notifications.loginSuccess"),
+        message: t("notifications.registerSuccess"),
         description: t("notifications.welcomeAbroad"),
         className: `
         !bg-purple-1 dark:!bg-purple-8 
@@ -39,7 +38,7 @@ const LoginForm = () => {
         [&_.ant-notification-notice-close]:hover:!text-purple-8
         [&_.ant-notification-notice-close]:dark:hover:!text-purple-1
         !border-purple-3 dark:!border-purple-7
-      `,
+        `,
       });
       formik.resetForm();
     }
@@ -53,11 +52,7 @@ const LoginForm = () => {
       {error && (
         <Alert
           type="error"
-          message={
-            error?.errorCode !== undefined
-              ? t("errors." + error.errorCode)
-              : t("validation.invalidEmail")
-          }
+          message={t(`errors.${error.errorCode}`)}
           className="mb-4 border-purple-3 dark:border-purple-7
             bg-purple-1 dark:bg-purple-8
             text-purple-9 dark:text-purple-2
@@ -67,11 +62,10 @@ const LoginForm = () => {
           showIcon
         />
       )}
-
       <InputComponents t={t} formik={formik} />
       <ButtonComponent t={t} isLoading={isLoading} />
     </Form>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

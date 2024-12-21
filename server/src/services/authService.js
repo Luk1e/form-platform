@@ -11,7 +11,7 @@ const authService = {
       );
 
       if (existingUsers.length > 0) {
-        throw CustomError.conflict("Email is already registered");
+        throw CustomError.conflict("Email is already registered", 3);
       }
 
       const [existingUsernames] = await database.query(
@@ -20,7 +20,7 @@ const authService = {
       );
 
       if (existingUsernames.length > 0) {
-        throw CustomError.conflict("Username is already taken");
+        throw CustomError.conflict("Username is already taken", 4);
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);

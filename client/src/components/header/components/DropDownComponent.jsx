@@ -27,7 +27,7 @@ function DropDownComponent({ isMenuVisible, setIsMenuVisible }) {
         [&_.ant-notification-notice-icon]:!text-purple-6 
         [&_.ant-notification-notice-icon]:dark:!text-purple-3
         [&_.ant-notification-notice-close]:!text-purple-6
-        [&_.ant-notification-notice-close]:!dark:text-purple-3
+        [&_.ant-notification-notice-close]:dark:!text-purple-3
         [&_.ant-notification-notice-close]:hover:!text-purple-8
         [&_.ant-notification-notice-close]:dark:hover:!text-purple-1
         !border-purple-3 dark:!border-purple-7
