@@ -10,7 +10,6 @@
     "loginSuccess": "Welcome back!",
     "welcomeBack": "Successfully signed in to your account"
   },
-
   "placeholders": {
     "passwordPlaceholder": "Enter your password",
     "emailPlaceholder": "Enter your email address"

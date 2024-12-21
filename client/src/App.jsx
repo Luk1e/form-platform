@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { authenticate } from "./toolkit/auth/authSlice";
 
-import { ConfigProvider } from "antd";
+import { ConfigProvider, App as AntApp } from "antd";
 import { HeaderComponent, NavbarComponent } from "./components";
 import { lightTheme, darkTheme } from "./themes";
 
@@ -37,13 +37,15 @@ function App() {
 
   return (
     <ConfigProvider theme={currentTheme}>
-      <Suspense fallback={null}>
-        <BrowserRouter>
-          <HeaderComponent />
-          <NavbarComponent />
-          <Router user={user} />
-        </BrowserRouter>
-      </Suspense>
+      <AntApp>
+        <Suspense fallback={null}>
+          <BrowserRouter>
+            <HeaderComponent />
+            <NavbarComponent />
+            <Router user={user} />
+          </BrowserRouter>
+        </Suspense>
+      </AntApp>
     </ConfigProvider>
   );
 }

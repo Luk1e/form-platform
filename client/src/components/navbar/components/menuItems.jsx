@@ -1,6 +1,6 @@
 import {
-  UserOutlined,
-  LayoutOutlined,
+  HomeOutlined,
+  FileDoneOutlined,
   SunOutlined,
   MoonOutlined,
 } from "@ant-design/icons";
@@ -39,14 +39,9 @@ const getMenuItems = ({
     onClick: toggleLanguage,
   },
   {
-    icon: <LayoutOutlined />,
-    title: t("global.templates"),
-    onClick: () => navigate("/templates"),
-  },
-  {
-    icon: <UserOutlined />,
-    title: t("global.adminPanel"),
-    onClick: () => navigate("/admin"),
+    icon: <FileDoneOutlined />,
+    title: "FormPlatform",
+    onClick: () => navigate("/"),
   },
 ];
 

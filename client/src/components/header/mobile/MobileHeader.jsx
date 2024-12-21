@@ -1,6 +1,6 @@
-import { Drawer, Menu } from "antd";
+import { Drawer, Menu, App } from "antd";
 import { useWindowSize } from "react-use";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,15 +10,20 @@ import getMenuItems from "./getMenuItems";
 import SearchInput from "../components/SearchInput";
 import DropDownComponent from "../components/DropDownComponent";
 import { toggleTheme } from "../../../toolkit/theme/themeSlice";
+import { logout } from "../../../toolkit/auth/authSlice";
 
 function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { width } = useWindowSize();
   const { t, i18n } = useTranslation(["components"]);
-  const themeMode = useSelector((state) => state.theme.mode);
-  const [isMobileDrawerVisible, setIsMobileDrawerVisible] = useState(false);
 
+  const { notification } = App.useApp();
+  const themeMode = useSelector((state) => state.theme.mode);
+  const { user } = useSelector((state) => state.authentication);
+
+  const [isMobileDrawerVisible, setIsMobileDrawerVisible] = useState(false);
+  
   const closeDrawer = () => {
     setIsMobileDrawerVisible(false);
   };
@@ -31,8 +36,34 @@ function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
     i18n.changeLanguage(i18n.language === "eng" ? "geo" : "eng");
   };
 
+  const logoutMethod = useCallback(() => {
+    dispatch(logout());
+    navigate("/");
+    notification.success({
+      message: t("notifications.logoutSuccess"),
+      description: t("notifications.goodBye"),
+      className: `
+          !bg-purple-1 dark:!bg-purple-8 
+          [&_.ant-notification-notice-message]:!text-purple-9 
+          [&_.ant-notification-notice-message]:dark:!text-purple-2
+          [&_.ant-notification-notice-description]:!text-purple-7
+          [&_.ant-notification-notice-description]:dark:!text-purple-3
+          [&_.ant-notification-notice-icon]:!text-purple-6 
+          [&_.ant-notification-notice-icon]:dark:!text-purple-3
+          [&_.ant-notification-notice-close]:!text-purple-6
+          [&_.ant-notification-notice-close]:!dark:text-purple-3
+          [&_.ant-notification-notice-close]:hover:!text-purple-8
+          [&_.ant-notification-notice-close]:dark:hover:!text-purple-1
+          !border-purple-3 dark:!border-purple-7
+        `,
+    });
+    closeDrawer();
+  }, [dispatch, notification, t]);
+
   const menuItems = getMenuItems({
     t,
+    user,
+    logoutMethod,
     closeDrawer,
     toggleLanguage,
     theme: themeMode,
@@ -66,10 +97,14 @@ function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
       </div>
 
       {/* User Dropdown */}
-      <DropDownComponent
-        isMenuVisible={isMenuVisible}
-        setIsMenuVisible={setIsMenuVisible}
-      />
+      {!user ? (
+        <DropDownComponent
+          isMenuVisible={isMenuVisible}
+          setIsMenuVisible={setIsMenuVisible}
+        />
+      ) : (
+        <div></div>
+      )}
 
       {/* Mobile Drawer */}
       <Drawer

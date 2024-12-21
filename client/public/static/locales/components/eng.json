@@ -2,11 +2,17 @@
   "global": {
     "adminPanel": "Admin Panel",
     "templates": "Templates",
+    "createTemplate": "Create template",
     "login": "Login",
+    "logout": "Logout",
     "register": "Register",
     "theme": "theme",
     "dark": "Dark",
     "light": "Light",
-    "searchForms":"Search forms..."
+    "searchForms": "Search forms..."
+  },
+  "notifications": {
+    "logoutSuccess": "Logged out successfully",
+    "goodBye": "See you next time!"
   }
 }

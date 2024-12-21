@@ -5,7 +5,7 @@ export const logout = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await useAuthAxios.post(`/api/v1/auth/logout`);
+      await useAuthAxios.delete(`/api/auth/logout`);
       localStorage.removeItem("user");
       localStorage.removeItem("csrfToken");
     } catch (err) {
@@ -47,4 +47,3 @@ export const authSlice = createSlice({
 
 export const { reset, authenticate } = authSlice.actions;
 export default authSlice.reducer;
-

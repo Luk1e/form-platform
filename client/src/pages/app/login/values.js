@@ -9,7 +9,7 @@ export const initialValues = {
 export const validationSchema = (t) =>
   Yup.object({
     email: Yup.string()
-      .email(t("validation.invalidEmail"))
+      .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, t("validation.invalidEmail"))
       .required(t("validation.required")),
     password: Yup.string()
       .min(8, t("validation.passwordMin"))

@@ -2,11 +2,17 @@
   "global": {
     "adminPanel": "ადმინ პანელი",
     "templates": "შაბლონები",
+    "createTemplate": "შაბლონის შექმნა",
     "login": "ავტორიზაცია",
+    "logout": "გამოსვლა",
     "register": "რეგისტრაცია",
     "theme": "თემა",
     "dark": "მუქი",
     "light": "ღია",
     "searchForms": "ფორმის ძიება..."
+  },
+  "notifications": {
+    "logoutSuccess": "Logged out successfully",
+    "goodBye": "See you next time!"
   }
 }

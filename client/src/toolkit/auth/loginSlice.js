@@ -9,7 +9,7 @@ export const login = createAsyncThunk(
       const { data } = await useAxios.post(`/api/auth/login`, values);
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("csrfToken", data.csrfToken);
-      dispatch(authenticate);
+      dispatch(authenticate());
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
