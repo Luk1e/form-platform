@@ -1,20 +1,15 @@
 import { colors } from "./tailwindTheme";
+import { theme } from "antd";
 
 const lightTheme = {
+  algorithm: theme.defaultAlgorithm,
+  token: {
+    colorPrimary: colors.purple.p5,
+  },
   components: {
     Layout: {
-      headerBg: colors.purple.p1,
-      headerColor: colors.purple.p8,
+      headerBg: "white",
     },
-    Input: {
-      colorBgContainer: colors.purple.p1,
-      activeBg: colors.purple.p2,
-    },
-    Button: {
-    },
-  },
-  token: {
-    controlItemBgHover: colors.purple.p2,
   },
 };
 

@@ -25,20 +25,6 @@ const RegisterForm = () => {
       notification.success({
         message: t("notifications.registerSuccess"),
         description: t("notifications.welcomeAbroad"),
-        className: `
-        !bg-purple-1 dark:!bg-purple-8 
-        [&_.ant-notification-notice-message]:!text-purple-9 
-        [&_.ant-notification-notice-message]:dark:!text-purple-2
-        [&_.ant-notification-notice-description]:!text-purple-7
-        [&_.ant-notification-notice-description]:dark:!text-purple-3
-        [&_.ant-notification-notice-icon]:!text-purple-6 
-        [&_.ant-notification-notice-icon]:dark:!text-purple-3
-        [&_.ant-notification-notice-close]:!text-purple-6
-        [&_.ant-notification-notice-close]:dark:!text-purple-3
-        [&_.ant-notification-notice-close]:hover:!text-purple-8
-        [&_.ant-notification-notice-close]:dark:hover:!text-purple-1
-        !border-purple-3 dark:!border-purple-7
-        `,
       });
       formik.resetForm();
     }
@@ -53,12 +39,7 @@ const RegisterForm = () => {
         <Alert
           type="error"
           message={t(`errors.${error.errorCode}`)}
-          className="mb-4 border-purple-3 dark:border-purple-7
-            bg-purple-1 dark:bg-purple-8
-            text-purple-9 dark:text-purple-2
-            [&_.ant-alert-icon]:text-purple-6 
-            dark:[&_.ant-alert-icon]:text-purple-3
-            shadow-sm rounded-md"
+          className="mb-4hadow-sm rounded-md"
           showIcon
         />
       )}

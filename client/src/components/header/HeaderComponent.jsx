@@ -8,7 +8,7 @@ const HeaderComponent = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   return (
-    <Layout.Header className="max-md:px-3 border-b-2 border-purple-2 dark:border-purple-3">
+    <Layout.Header className="max-md:px-3 border-b-2">
       <div className="hidden md:block">
         <DesktopHeader
           isMenuVisible={isMenuVisible}

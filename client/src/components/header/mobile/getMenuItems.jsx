@@ -27,18 +27,13 @@ const getMenuItems = ({
       key: "theme",
       icon: (
         <div className="flex items-center justify-center">
-          {theme === "dark" ? (
-            <MoonOutlined className="text-purple-6" />
-          ) : (
-            <SunOutlined className="text-purple-6" />
-          )}
+          {theme === "dark" ? <MoonOutlined /> : <SunOutlined />}
         </div>
       ),
       label: `${theme === "dark" ? t("global.dark") : t("global.light")} ${t(
         "global.theme"
       )}`,
       onClick: toggleThemeMethod,
-      className: theme === "dark" ? "!bg-purple-5 !text-white" : "",
     },
     {
       key: "language",
@@ -58,15 +53,8 @@ const getMenuItems = ({
   if (user?.isAdmin) {
     menuItems.push({
       key: "admin",
-      icon: <SettingOutlined className="!text-purple-6" />,
-      label: (
-        <Link
-          to="/admin"
-          className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
-        >
-          {t("global.adminPanel")}
-        </Link>
-      ),
+      icon: <SettingOutlined />,
+      label: <Link to="/admin">{t("global.adminPanel")}</Link>,
       onClick: closeDrawer,
     });
   }
@@ -75,45 +63,24 @@ const getMenuItems = ({
     menuItems.push(
       {
         key: "templates",
-        icon: <LayoutOutlined className="!text-purple-6" />,
-        label: (
-          <Link
-            to="/templates"
-            className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
-          >
-            {t("global.templates")}
-          </Link>
-        ),
+        icon: <LayoutOutlined />,
+        label: <Link to="/templates">{t("global.templates")}</Link>,
         onClick: closeDrawer,
       },
       {
         key: "create-template",
-        icon: <PlusCircleOutlined className="!text-purple-6" />,
-        label: (
-          <Link
-            to="/create-template"
-            className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
-          >
-            {t("global.createTemplate")}
-          </Link>
-        ),
+        icon: <PlusCircleOutlined />,
+        label: <Link to="/create-template">{t("global.createTemplate")}</Link>,
         onClick: closeDrawer,
       },
 
       {
         key: "logout",
-        icon: <LogoutOutlined className="!text-purple-6" />,
-        label: (
-          <Link
-            to="/"
-            className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
-          >
-            {t("global.logout")}
-          </Link>
-        ),
+        icon: <LogoutOutlined />,
+        label: <Link to="/">{t("global.logout")}</Link>,
         onClick: logoutMethod,
         className:
-          "border-t !rounded-tl-none !rounded-tr-none border-purple-3 dark:border-purple-7",
+          "border-t !rounded-tl-none !rounded-tr-none",
       }
     );
   }

@@ -9,12 +9,12 @@ const adminService = {
     );
 
     if (rows.length === 0) {
-      throw CustomError.notFound("User not found");
+      throw CustomError.notFound("User not found", 0);
     }
 
     const user = rows[0];
     if (user.is_blocked) {
-      throw CustomError.forbidden("User is blocked");
+      throw CustomError.forbidden("User is blocked", 2);
     }
 
     return user.is_admin;
@@ -32,7 +32,7 @@ const adminService = {
     );
 
     if (adminToBlock[0].count >= adminCount[0].count) {
-      throw CustomError.forbidden("Cannot block the last admin");
+      throw CustomError.forbidden("Cannot block the last admin", 3);
     }
 
     const [result] = await database.query(
@@ -73,7 +73,7 @@ const adminService = {
     );
 
     if (adminToRemove[0].count >= adminCount[0].count) {
-      throw CustomError.forbidden("Cannot remove all admins");
+      throw CustomError.forbidden("Cannot remove all admins", 4);
     }
 
     const [result] = await database.query(
@@ -96,7 +96,7 @@ const adminService = {
     );
 
     if (adminToDelete[0].count >= adminCount[0].count) {
-      throw CustomError.forbidden("Cannot delete the last admin");
+      throw CustomError.forbidden("Cannot delete the last admin", 5);
     }
 
     const [result] = await database.query("DELETE FROM users WHERE id IN (?)", [

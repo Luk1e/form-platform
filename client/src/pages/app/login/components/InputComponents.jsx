@@ -15,17 +15,11 @@ function InputComponents({ t, formik }) {
         }
       >
         <Input
-          prefix={<UserOutlined className="text-purple-5" />}
+          prefix={<UserOutlined />}
           id="email"
           name="email"
           type="email"
           placeholder={t("placeholders.emailPlaceholder")}
-          className="dark:bg-purple-7 dark:!text-purple-1 dark:border-purple-6
-           [&.ant-input-status-error]:!text-red-600
-           dark:[&.ant-input-status-error]:!text-red-400
-             [&_*:-webkit-autofill]:[-webkit-box-shadow:0_0_0_30px_rgb(var(--purple-1))_inset_!important]
-             dark:[&_*:-webkit-autofill]:[-webkit-box-shadow:0_0_0_30px_rgb(var(--purple-7))_inset_!important]
-             [&_*:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s]"
           value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -43,16 +37,10 @@ function InputComponents({ t, formik }) {
         }
       >
         <Input.Password
-          prefix={<LockOutlined className="text-purple-5" />}
+          prefix={<LockOutlined />}
           id="password"
           name="password"
           placeholder={t("placeholders.passwordPlaceholder")}
-          className="dark:bg-purple-7 dark:text-purple-1 dark:border-purple-6
-          [&.ant-input-status-error]:text-red-600
-          dark:[&.ant-input-status-error]:text-red-400
-            [&_*:-webkit-autofill]:[-webkit-box-shadow:0_0_0_30px_rgb(var(--purple-1))_inset_!important]
-            dark:[&_*:-webkit-autofill]:[-webkit-box-shadow:0_0_0_30px_rgb(var(--purple-7))_inset_!important]
-            [&_*:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s]"
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}

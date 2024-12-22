@@ -23,6 +23,19 @@ export const useAuthAxios = axios.create({
   },
 });
 
+useAuthAxios.interceptors.request.use(
+  (config) => {
+    const csrfToken = localStorage.getItem("csrfToken");
+    if (csrfToken) {
+      config.headers["x-csrf-token"] = csrfToken;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 useAuthAxios.interceptors.response.use(
   (response) => response,
   (error) => {

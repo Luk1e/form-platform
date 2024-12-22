@@ -1,1 +1,45 @@
-{}
+{
+  "notifications": {
+    "blockUsersSuccess": "Selected users have been blocked successfully",
+    "unblockUsersSuccess": "Selected users have been unblocked successfully",
+    "addAdminPrivilegesSuccess": "Admin privileges updated successfully",
+    "removeAdminPrivilegesSuccess": "Admin privileges removed successfully",
+    "deleteUsersSuccess": "Selected users have been deleted successfully"
+  },
+  "errors": {
+    "0": "User not found",
+    "1": "Invalid credentials",
+    "2": "User is blocked",
+    "3": "Cannot block the last admin",
+    "4": "Cannot remove all admins",
+    "5": "Cannot delete the last admin"
+  },
+  "users": {
+    "usersManagement": "User Management",
+    "usersManagementDesc": "Manage user accounts, permissions, and status",
+    "blockConfirm": "Are you sure you want to block the selected users?",
+    "blockUsers": "Block Users",
+    "unblockUsers": "Unblock Users",
+    "makeAdmin": "Make Admin",
+    "removeAdmin": "Remove Admin",
+    "deleteConfirm": "Are you sure you want to delete the selected users? This action cannot be undone.",
+    "deleteUsers": "Delete Users",
+    "totalUsers": "Total Users",
+    "searchPlaceholder": "Search by username or email",
+    "adminFilter": "Filter by role",
+    "statusFilter": "Filter by status",
+    "reset": "Reset Filters",
+    "blockedUsers": "Blocked Users",
+    "activeUsers": "Active Users",
+    "adminUsers": "Administrators",
+    "regularUsers": "Regular Users",
+    "username": "Username",
+    "email": "Email Address",
+    "isAdmin": "Admin Status",
+    "adminBadge": "Admin",
+    "isBlocked": "Account Status",
+    "blockedBadge": "Blocked",
+    "activeBadge": "Active",
+    "createdAt": "Created On"
+  }
+}

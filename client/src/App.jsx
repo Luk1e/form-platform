@@ -16,7 +16,7 @@ function App() {
   const themeMode = useSelector((state) => state.theme.mode);
 
   useEffect(() => {
-    document.body.classList.add("bg-purple-1", "dark:bg-purple-4");
+    document.body.classList.add("bg-white", "dark:bg-black");
   }, []);
 
   useEffect(() => {

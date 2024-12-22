@@ -23,7 +23,7 @@ function DesktopHeader({ isMenuVisible, setIsMenuVisible }) {
       </div>
 
       {/* Vertical Separator */}
-      <div className="h-8 border-r border-purple-8 dark:border-purple-1 mx-4" />
+      <div className="h-8 border-r mx-4" />
 
       {/* Search Bar */}
       <div className="flex-grow max-w-md mr-2">

@@ -14,12 +14,11 @@ const getMenuItems = (t, user, logoutMethod) => {
   if (user?.isAdmin) {
     menuItems.push({
       key: "admin",
-      icon: <SettingOutlined className="text-purple-6" />,
+      icon: <SettingOutlined />,
       label: (
         <Link
           to="/admin"
-          className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
-        >
+          >
           {t("global.adminPanel")}
         </Link>
       ),
@@ -30,24 +29,22 @@ const getMenuItems = (t, user, logoutMethod) => {
     menuItems.push(
       {
         key: "templates",
-        icon: <LayoutOutlined className="text-purple-6" />,
+        icon: <LayoutOutlined />,
         label: (
           <Link
             to="/templates"
-            className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
-          >
+           >
             {t("global.templates")}
           </Link>
         ),
       },
       {
         key: "create-template",
-        icon: <PlusCircleOutlined className="text-purple-6" />,
+        icon: <PlusCircleOutlined  />,
         label: (
           <Link
             to="/create-template"
-            className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
-          >
+           >
             {t("global.createTemplate")}
           </Link>
         ),
@@ -55,29 +52,27 @@ const getMenuItems = (t, user, logoutMethod) => {
 
       {
         key: "logout",
-        icon: <LogoutOutlined className="text-purple-6" />,
+        icon: <LogoutOutlined  />,
         label: (
           <Link
             to="/"
-            className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
-          >
+         >
             {t("global.logout")}
           </Link>
         ),
         onClick: logoutMethod,
         className:
-          "border-t !rounded-tl-none !rounded-tr-none border-purple-3 dark:border-purple-7 mt-2 pt-2",
+          "border-t !rounded-tl-none !rounded-tr-none mt-2 pt-2",
       }
     );
   } else {
     menuItems.push(
       {
         key: "login",
-        icon: <LoginOutlined className="text-purple-6" />,
+        icon: <LoginOutlined  />,
         label: (
           <Link
             to="/login"
-            className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
           >
             {t("global.login")}
           </Link>
@@ -85,11 +80,10 @@ const getMenuItems = (t, user, logoutMethod) => {
       },
       {
         key: "register",
-        icon: <FormOutlined className="text-purple-6" />,
+        icon: <FormOutlined />,
         label: (
           <Link
             to="/register"
-            className="!text-purple-9 dark:!text-purple-6 hover:!text-purple-7 dark:hover:!text-purple-2"
           >
             {t("global.register")}
           </Link>

@@ -6,8 +6,7 @@ function ButtonComponent({ isLoading, t }) {
       type="primary"
       htmlType="submit"
       loading={isLoading}
-      className="w-full bg-purple-6 hover:!bg-purple-7
-             dark:bg-purple-5 dark:hover:!bg-purple-4 dark:text-purple-9"
+      className="w-full"
     >
       {t("global.loginButton")}
     </Button>

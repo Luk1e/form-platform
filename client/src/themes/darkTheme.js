@@ -1,20 +1,15 @@
 import { colors } from "./tailwindTheme";
+import { theme } from "antd";
 
 const darkTheme = {
+  algorithm: theme.darkAlgorithm,
+  token: {
+    colorPrimary: colors.purple.p8,
+  },
   components: {
     Layout: {
-      headerBg: colors.purple.p8,
-      headerColor: colors.purple.p1,
+      headerBg: "black",
     },
-    Input: {
-      colorBgContainer: colors.purple.p2,
-      activeBg: colors.purple.p1,
-    },
-    Menu: {},
-    Button: {},
-  },
-  token: {
-    controlItemBgHover: colors.purple.p4,
   },
 };
 

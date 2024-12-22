@@ -20,10 +20,7 @@ const GoogleButton = () => {
     <Button
       onClick={() => login()}
       icon={<GoogleOutlined />}
-      className="w-full mt-4 bg-white hover:!bg-gray-50
-                dark:bg-purple-7 dark:hover:!bg-purple-6 
-                border-purple-3 dark:border-purple-6
-                text-purple-7 dark:text-purple-2"
+      className="w-full mt-4"
     >
       {t("global.continueWithGoogle")}
     </Button>

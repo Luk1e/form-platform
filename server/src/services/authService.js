@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import database from "../../config/database.js";
 import { CustomError } from "../utils/index.js";
 
@@ -104,7 +105,7 @@ const authService = {
       let userId;
 
       if (existingUser.length === 0) {
-        const hashedPassword = await bcrypt.hash(data.email, 10);
+        const hashedPassword = await bcrypt.hash(crypto.randomBytes(32), 10);
 
         const [result] = await database.query(
           "INSERT INTO users (username, email, password_hash) VALUES (?, ?,?)",

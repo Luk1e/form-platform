@@ -53,12 +53,7 @@ const FloatingActionMenu = () => {
                 icon={item.icon}
                 size="large"
                 onClick={item.onClick}
-                className={`shadow-lg transform transition-all duration-300  
-                          bg-purple-1 dark:bg-purple-6
-                          text-purple-6 dark:text-purple-1 
-                          hover:!bg-purple-5 dark:hover:!bg-purple-1
-                          border-purple-5 dark:hover:!text-purple-5
-                            ${item.className}`}
+                className={"shadow-lg transform transition-all duration-300"}
               />
             </Tooltip>
           ))}

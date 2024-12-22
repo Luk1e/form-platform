@@ -42,20 +42,6 @@ function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
     notification.success({
       message: t("notifications.logoutSuccess"),
       description: t("notifications.goodBye"),
-      className: `
-          !bg-purple-1 dark:!bg-purple-8 
-          [&_.ant-notification-notice-message]:!text-purple-9 
-          [&_.ant-notification-notice-message]:dark:!text-purple-2
-          [&_.ant-notification-notice-description]:!text-purple-7
-          [&_.ant-notification-notice-description]:dark:!text-purple-3
-          [&_.ant-notification-notice-icon]:!text-purple-6 
-          [&_.ant-notification-notice-icon]:dark:!text-purple-3
-          [&_.ant-notification-notice-close]:!text-purple-6
-          [&_.ant-notification-notice-close]:!dark:text-purple-3
-          [&_.ant-notification-notice-close]:hover:!text-purple-8
-          [&_.ant-notification-notice-close]:dark:hover:!text-purple-1
-          !border-purple-3 dark:!border-purple-7
-        `,
     });
     closeDrawer();
   }, [dispatch, notification, t]);
@@ -82,7 +68,7 @@ function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
       {/* Mobile Menu Trigger */}
       <MenuOutlined
         onClick={() => setIsMobileDrawerVisible(true)}
-        className="text-2xl text-purple-8 dark:text-purple-1 hover:text-purple-7 dark:hover:text-purple-5 transition-colors duration-300"
+        className="text-2xl transition-colors duration-300"
       />
 
       {/* Logo and Platform Name */}
@@ -112,12 +98,11 @@ function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
         placement="left"
         onClose={() => setIsMobileDrawerVisible(false)}
         open={isMobileDrawerVisible}
-        className="!bg-purple-2 dark:!bg-purple-3"
       >
         <div className="mb-5">
           <SearchInput t={t} />
         </div>
-        <Menu items={menuItems} className="bg-purple-2 dark:bg-purple-3" />
+        <Menu items={menuItems} />
       </Drawer>
     </div>
   );

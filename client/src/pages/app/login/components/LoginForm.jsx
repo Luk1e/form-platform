@@ -26,20 +26,6 @@ const LoginForm = () => {
       notification.success({
         message: t("notifications.loginSuccess"),
         description: t("notifications.welcomeBack"),
-        className: `
-        !bg-purple-1 dark:!bg-purple-8 
-        [&_.ant-notification-notice-message]:!text-purple-9 
-        [&_.ant-notification-notice-message]:dark:!text-purple-2
-        [&_.ant-notification-notice-description]:!text-purple-7
-        [&_.ant-notification-notice-description]:dark:!text-purple-3
-        [&_.ant-notification-notice-icon]:!text-purple-6 
-        [&_.ant-notification-notice-icon]:dark:!text-purple-3
-        [&_.ant-notification-notice-close]:!text-purple-6
-        [&_.ant-notification-notice-close]:dark:!text-purple-3
-        [&_.ant-notification-notice-close]:hover:!text-purple-8
-        [&_.ant-notification-notice-close]:dark:hover:!text-purple-1
-        !border-purple-3 dark:!border-purple-7
-      `,
       });
       formik.resetForm();
     }
@@ -58,12 +44,7 @@ const LoginForm = () => {
               ? t("errors." + error.errorCode)
               : t("validation.invalidEmail")
           }
-          className="mb-4 border-purple-3 dark:border-purple-7
-            bg-purple-1 dark:bg-purple-8
-            text-purple-9 dark:text-purple-2
-            [&_.ant-alert-icon]:text-purple-6 
-            dark:[&_.ant-alert-icon]:text-purple-3
-            shadow-sm rounded-md"
+          className="mb-4 shadow-sm rounded-md"
           showIcon
         />
       )}
@@ -73,10 +54,10 @@ const LoginForm = () => {
 
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-purple-3 dark:border-purple-7"></div>
+          <div className="w-full border-t"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white dark:bg-purple-8 text-purple-5">
+          <span className="px-2 bg-white dark:bg-[#141414]">
             {t("global.orContinueWith")}
           </span>
         </div>

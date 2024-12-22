@@ -24,7 +24,6 @@ const getMenuItems = ({
       "global.theme"
     )}`,
     onClick: toggleThemeMethod,
-    className: theme === "dark" ? "bg-purple-5 text-white" : "",
   },
   {
     icon: (
