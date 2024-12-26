@@ -1,1 +1,58 @@
-{}
+{
+  "global": {},
+  "createTemplatePage": {
+    "singleLine": "Single Line Text",
+    "multiLine": "Multiple Line Text",
+    "integer": "Integer",
+    "checkbox": "Checkbox",
+    "singleChoice": "Single Choice",
+    "createTemplate": "Create Template",
+    "basicInfo": {
+      "templateTitle": "Template Title",
+      "description": "Description",
+      "selectTopic": "Select Topic",
+      "addTags": "Add Tags",
+      "templateImage": "Template Image",
+      "selectImage": "Select Image",
+      "publicTemplate": "Public Template",
+      "selectUsers": "Select users who can access this template"
+    },
+    "questions": {
+      "title": "Questions",
+      "add": "Add {{type}}",
+      "questionTitle": "Question Title",
+      "questionDescription": "Question Description",
+      "optionText": "Option text",
+      "addOption": "Add Option",
+      "removeOption": "Remove Option",
+      "remove": "Remove",
+      "displayInSummary": "Display in Summary",
+      "required": "Required"
+    }
+  },
+  "validation": {
+    "titleMin": "Title must be at least 3 characters",
+    "titleMax": "Title must not exceed 255 characters",
+    "titleRequired": "Title is required",
+    "descriptionMin": "Description must be at least 3 characters",
+    "descriptionMax": "Description must not exceed 5000 characters",
+    "descriptionRequired": "Description is required",
+    "topicRequired": "Topic is required",
+    "visibilityRequired": "Visibility type is required",
+    "accessUsersMin": "At least one user must be selected for private templates",
+    "accessUsersRequired": "Users are required for private templates",
+    "urlInvalid": "Must be a valid URL",
+    "tagsMin": "At least one tag is required",
+    "questionTypeRequired": "Question type is required",
+    "questionTitleRequired": "Question title is required",
+    "displayRequired": "Display type is required",
+    "optionsMinOne": "At least one option required",
+    "optionsRequired": "Option is required",
+    "questionsMin": "At least one question is required",
+    "questionsMax": "Maximum 10 questions allowed"
+  },
+  "notifications": {
+    "templateCreated": "Template Created",
+    "templateCreatedDesc": "Template has been created successfully"
+  }
+}

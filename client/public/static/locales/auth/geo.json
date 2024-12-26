@@ -1,1 +1,58 @@
-{}
+{
+  "global": {},
+  "createTemplatePage": {
+    "singleLine": "ერთხაზოვანი ტექსტი",
+    "multiLine": "მრავალხაზოვანი ტექსტი",
+    "integer": "მთელი რიცხვი",
+    "checkbox": "მონიშვნის უჯრა",
+    "singleChoice": "ერთი არჩევანი",
+    "createTemplate": "შაბლონის შექმნა",
+    "basicInfo": {
+      "templateTitle": "შაბლონის სათაური",
+      "description": "აღწერა",
+      "selectTopic": "აირჩიეთ თემა",
+      "addTags": "ტეგების დამატება",
+      "templateImage": "შაბლონის სურათი",
+      "selectImage": "აირჩიეთ სურათი",
+      "publicTemplate": "საჯარო შაბლონი",
+      "selectUsers": "აირჩიეთ მომხმარებლები ვისაც ექნებათ წვდომა"
+    },
+    "questions": {
+      "title": "კითხვები",
+      "add": "დაამატეთ {{type}}",
+      "questionTitle": "კითხვის სათაური",
+      "questionDescription": "კითხვის აღწერა",
+      "optionText": "ვარიანტის ტექსტი",
+      "addOption": "ვარიანტის დამატება",
+      "removeOption": "ვარიანტის წაშლა",
+      "remove": "წაშლა",
+      "displayInSummary": "შეჯამებაში ჩვენება",
+      "required": "სავალდებულო"
+    }
+  },
+  "validation": {
+    "titleMin": "სათაური უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს",
+    "titleMax": "სათაური არ უნდა აღემატებოდეს 255 სიმბოლოს",
+    "titleRequired": "სათაური სავალდებულოა",
+    "descriptionMin": "აღწერა უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს",
+    "descriptionMax": "აღწერა არ უნდა აღემატებოდეს 5000 სიმბოლოს",
+    "descriptionRequired": "აღწერა სავალდებულოა",
+    "topicRequired": "თემა სავალდებულოა",
+    "visibilityRequired": "ხილვადობის ტიპი სავალდებულოა",
+    "accessUsersMin": "მინიმუმ ერთი მომხმარებელი უნდა იყოს არჩეული პრივატული შაბლონებისთვის",
+    "accessUsersRequired": "მომხმარებლები სავალდებულოა პრივატული შაბლონებისთვის",
+    "urlInvalid": "URL არასწორია",
+    "tagsMin": "მინიმუმ ერთი ტეგი სავალდებულოა",
+    "questionTypeRequired": "კითხვის ტიპი სავალდებულოა",
+    "questionTitleRequired": "კითხვის სათაური სავალდებულოა",
+    "displayRequired": "ჩვენების ტიპი სავალდებულოა",
+    "optionsMinOne": "მინიმუმ ერთი ვარიანტი სავალდებულოა",
+    "optionsRequired": "კითხვის ვარიანტი სავალდებულოა",
+    "questionsMin": "მინიმუმ ერთი კითხვა სავალდებულოა",
+    "questionsMax": "მაქსიმუმ 10 კითხვაა დაშვებული"
+  },
+  "notifications": {
+    "templateCreated": "შაბლონი შეიქმნა",
+    "templateCreatedDesc": "შაბლონი წარმატებით შეიქმნა"
+  }
+}

@@ -17,7 +17,7 @@ export const createTemplateSchema = Joi.object({
     "any.required": '"Topic ID" is a required field',
   }),
 
-  image_url: Joi.string().uri().optional().allow(""),
+  image_file: Joi.any().optional(),
 
   is_public: Joi.boolean().required().messages({
     "any.required": '"Is Public" is a required field',
@@ -45,20 +45,27 @@ export const createTemplateSchema = Joi.object({
         description: Joi.string().max(1000).optional().allow(""),
         display_in_summary: Joi.boolean().optional(),
         is_required: Joi.boolean().optional(),
-        options: Joi.array()
-          .items(Joi.string().max(255))
-          .when("type_id", {
-            is: 5,
-            then: Joi.array().min(2).required(),
-          }),
+        options: Joi.alternatives().conditional("type_id", {
+          is: Joi.number().valid(4, 5),
+          then: Joi.array()
+            .items(Joi.string().max(255))
+            .min(1)
+            .required()
+            .messages({
+              "array.min":
+                "At least one option is required for this question type",
+              "array.required": "Options are required for this question type",
+              "array.base": "Options must be an array",
+              "string.max": "Each option must not exceed 255 characters",
+            }),
+          otherwise: Joi.array().items(Joi.string().max(255)).optional(),
+        }),
       })
     )
     .min(1)
-    .max(10)
     .required()
     .messages({
       "array.min": "At least one question is required",
-      "array.max": "Maximum of 10 questions allowed",
     }),
 });
 

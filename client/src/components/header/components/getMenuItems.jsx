@@ -15,13 +15,7 @@ const getMenuItems = (t, user, logoutMethod) => {
     menuItems.push({
       key: "admin",
       icon: <SettingOutlined />,
-      label: (
-        <Link
-          to="/admin"
-          >
-          {t("global.adminPanel")}
-        </Link>
-      ),
+      label: <Link to="/admin">{t("global.adminPanel")}</Link>,
     });
   }
 
@@ -30,64 +24,33 @@ const getMenuItems = (t, user, logoutMethod) => {
       {
         key: "templates",
         icon: <LayoutOutlined />,
-        label: (
-          <Link
-            to="/templates"
-           >
-            {t("global.templates")}
-          </Link>
-        ),
+        label: <Link to="/templates">{t("global.templates")}</Link>,
       },
       {
-        key: "create-template",
-        icon: <PlusCircleOutlined  />,
-        label: (
-          <Link
-            to="/create-template"
-           >
-            {t("global.createTemplate")}
-          </Link>
-        ),
+        key: "templates/create",
+        icon: <PlusCircleOutlined />,
+        label: <Link to="/templates/create">{t("global.createTemplate")}</Link>,
       },
 
       {
         key: "logout",
-        icon: <LogoutOutlined  />,
-        label: (
-          <Link
-            to="/"
-         >
-            {t("global.logout")}
-          </Link>
-        ),
+        icon: <LogoutOutlined />,
+        label: <Link to="/">{t("global.logout")}</Link>,
         onClick: logoutMethod,
-        className:
-          "border-t !rounded-tl-none !rounded-tr-none mt-2 pt-2",
+        className: "border-t !rounded-tl-none !rounded-tr-none mt-2 pt-2",
       }
     );
   } else {
     menuItems.push(
       {
         key: "login",
-        icon: <LoginOutlined  />,
-        label: (
-          <Link
-            to="/login"
-          >
-            {t("global.login")}
-          </Link>
-        ),
+        icon: <LoginOutlined />,
+        label: <Link to="/login">{t("global.login")}</Link>,
       },
       {
         key: "register",
         icon: <FormOutlined />,
-        label: (
-          <Link
-            to="/register"
-          >
-            {t("global.register")}
-          </Link>
-        ),
+        label: <Link to="/register">{t("global.register")}</Link>,
       }
     );
   }

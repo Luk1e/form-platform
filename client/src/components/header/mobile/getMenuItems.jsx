@@ -68,9 +68,9 @@ const getMenuItems = ({
         onClick: closeDrawer,
       },
       {
-        key: "create-template",
+        key: "templates/create",
         icon: <PlusCircleOutlined />,
-        label: <Link to="/create-template">{t("global.createTemplate")}</Link>,
+        label: <Link to="/templates/create">{t("global.createTemplate")}</Link>,
         onClick: closeDrawer,
       },
 
@@ -79,8 +79,7 @@ const getMenuItems = ({
         icon: <LogoutOutlined />,
         label: <Link to="/">{t("global.logout")}</Link>,
         onClick: logoutMethod,
-        className:
-          "border-t !rounded-tl-none !rounded-tr-none",
+        className: "border-t !rounded-tl-none !rounded-tr-none",
       }
     );
   }

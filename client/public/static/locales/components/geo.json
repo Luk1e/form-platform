@@ -3,17 +3,17 @@
     "adminPanel": "ადმინ პანელი",
     "templates": "შაბლონები",
     "createTemplate": "შაბლონის შექმნა",
-    "login": "ავტორიზაცია",
-    "logout": "გამოსვლა",
+    "login": "შესვლა",
+    "logout": "გასვლა",
     "register": "რეგისტრაცია",
     "theme": "თემა",
     "dark": "მუქი",
-    "light": "ღია",
-    "searchForms": "ფორმის ძიება...",
-    "continueWithGoogle": "გაგრძელება Google-ით"
+    "light": "ნათელი",
+    "searchForms": "ფორმების ძიება...",
+    "continueWithGoogle": "Google-ით გაგრძელება"
   },
   "notifications": {
-    "logoutSuccess": "Logged out successfully",
-    "goodBye": "See you next time!"
+    "logoutSuccess": "წარმატებით გახვედით სისტემიდან",
+    "goodBye": "შეხვედრამდე!"
   }
 }
