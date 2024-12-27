@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { Card } from "antd";
+import { Card, Spin } from "antd";
 import { useTranslation } from "react-i18next";
 import UsersTable from "./components/UsersTable";
 import UserFilters from "./components/UserFilters";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { fetchUsers } from "../../toolkit/admin/adminSlice";
 
@@ -11,6 +11,7 @@ const UsersPage = () => {
   const { t } = useTranslation(["admin"]);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { loading } = useSelector((state) => state.adminUsers);
 
   useEffect(() => {
     const params = {
@@ -22,6 +23,14 @@ const UsersPage = () => {
     };
     dispatch(fetchUsers(params));
   }, [dispatch, searchParams]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-2 sm:p-4 md:p-6 min-h-screen">

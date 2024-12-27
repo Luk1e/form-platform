@@ -8,7 +8,17 @@
     "register": "Sign up",
     "signUpText": "Create a new account",
     "registerButton": "Sign up",
-    "orContinueWith": "Or continue with"
+    "orContinueWith": "Or continue with",
+    "loadMore": "Load More"
+  },
+  "homePage": {
+    "exploreByTags": "Explore by Tags",
+    "popularTemplates": "Popular Templates",
+    "latestTemplates": "Latest Templates",
+    "filledForms": "Filled Forms",
+    "author": "Author",
+    "templateName": "Template Name",
+    "imageNotAvailable": "No Image Available"
   },
   "notifications": {
     "loginSuccess": "Welcome back!",
@@ -26,13 +36,13 @@
     "invalidEmail": "Invalid email address",
     "required": "Field is required",
     "passwordMin": "Password must be at least 8 characters",
-    "usernameMin": "Username must be at least 3 characters long.",
-    "usernameMax": "Username cannot exceed 50 characters.",
-    "passwordNumber": "Password must contain at least one number.",
-    "passwordUpper": "Password must contain at least one uppercase letter.",
-    "passwordLower": "Password must contain at least one lowercase letter.",
-    "passwordSymbol": "Password must contain at least one special character (e.g., !, @, #, $).",
-    "passwordMatch": "Passwords must match."
+    "usernameMin": "Username must be at least 3 characters long",
+    "usernameMax": "Username cannot exceed 50 character",
+    "passwordNumber": "Password must contain at least one number",
+    "passwordUpper": "Password must contain at least one uppercase letter",
+    "passwordLower": "Password must contain at least one lowercase letter",
+    "passwordSymbol": "Password must contain at least one special character (e.g., !, @, #, $)",
+    "passwordMatch": "Passwords must match"
   },
   "errors": {
     "0": "User not found",

@@ -13,10 +13,29 @@ export const getTags = createAsyncThunk(
   }
 );
 
+export const getTagCloud = createAsyncThunk(
+  "support/getTagCloud",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await useAxios.get("/api/support/tagCloud");
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 const tagSlice = createSlice({
   name: "support/tags",
-  initialState: { tags: [], loading: false, error: null },
-  reducers: {},
+  initialState: { tags: [], tagCloud: [], loading: false, error: null },
+  reducers: {
+    resetTagState: (state) => {
+      state.loading = false;
+      state.error = null;
+      state.tags = [];
+      state.tagCloud = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getTags.pending, (state) => {
@@ -29,8 +48,20 @@ const tagSlice = createSlice({
       .addCase(getTags.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;
+      })
+      .addCase(getTagCloud.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getTagCloud.fulfilled, (state, action) => {
+        state.tagCloud = action.payload;
+        state.loading = false;
+      })
+      .addCase(getTagCloud.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
       });
   },
 });
 
+export const { resetTagState } = tagSlice.actions;
 export default tagSlice.reducer;

@@ -24,7 +24,11 @@ const templateController = {
 
       res.status(201).json({ templateId });
     } catch (error) {
-      next(error);
+      console.error("Error creating template:", error);
+      res.status(500).json({
+        message: "Error creating template",
+        errorCode: "CREATE_TEMPLATE_ERROR",
+      });
     }
   },
 
@@ -48,7 +52,7 @@ const templateController = {
         req.user.id
       );
 
-      // Check if user is admin or template owner
+
       if (!req.user.is_admin && template.user_id !== req.user.id) {
         throw CustomError.forbidden("Not authorized to update this template");
       }
@@ -80,7 +84,7 @@ const templateController = {
 
   searchTemplates: async (req, res, next) => {
     try {
-      const userId = req.user?.id; // Optional for public templates
+      const userId = req.user?.id; 
       const results = await templateService.searchTemplates(req.query, userId);
       res.json(results);
     } catch (error) {
@@ -88,21 +92,32 @@ const templateController = {
     }
   },
 
-  getPopularTemplates: async (req, res, next) => {
+  getPopularTemplates: async (_, res) => {
     try {
       const templates = await templateService.getPopularTemplates();
       res.json(templates);
     } catch (error) {
-      next(error);
+      console.error("Error getting popular templates:", error);
+      res.status(500).json({
+        message: "Error getting popular templates",
+        errorCode: "GET_POPULAR_TEMPLATES_ERROR",
+      });
     }
   },
 
-  getLatestTemplates: async (req, res, next) => {
+  getLatestTemplates: async (req, res) => {
     try {
-      const templates = await templateService.getLatestTemplates();
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+
+      const templates = await templateService.getLatestTemplates(page, limit);
       res.json(templates);
     } catch (error) {
-      next(error);
+      console.error("Error getting latest templates:", error);
+      res.status(500).json({
+        message: "Error getting latest templates",
+        errorCode: "GET_LATEST_TEMPLATES_ERROR",
+      });
     }
   },
 
@@ -142,7 +157,6 @@ const templateController = {
 
   getUserTemplates: async (req, res, next) => {
     try {
-      // Check if user is admin or requesting their own templates
       if (!req.user.is_admin && req.params.userId !== req.user.id) {
         throw CustomError.forbidden("Not authorized to view these templates");
       }

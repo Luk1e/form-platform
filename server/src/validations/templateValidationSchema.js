@@ -96,3 +96,16 @@ export const templateSearchSchema = Joi.object({
       "number.max": '"limit" must not exceed 100',
     }),
 });
+
+export const latestTemplateSearchSchema = Joi.object({
+  page: Joi.number().integer().min(1).optional().default(1).messages({
+    "number.base": '"page" must be a number',
+    "number.integer": '"page" must be an integer',
+    "number.min": '"page" must be at least 1',
+  }),
+  limit: Joi.number().integer().min(1).optional().default(10).messages({
+    "number.base": '"limit" must be a number',
+    "number.integer": '"limit" must be an integer',
+    "number.min": '"limit" must be at least 1',
+  }),
+});

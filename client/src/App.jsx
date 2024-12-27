@@ -6,7 +6,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useSelector, useDispatch } from "react-redux";
 import { authenticate } from "./toolkit/auth/authSlice";
 
-import { ConfigProvider, App as AntApp } from "antd";
+import { ConfigProvider, Spin, App as AntApp } from "antd";
 import { HeaderComponent, NavbarComponent } from "./components";
 import { lightTheme, darkTheme } from "./themes";
 
@@ -40,7 +40,13 @@ function App() {
     <ConfigProvider theme={currentTheme}>
       <GoogleOAuthProvider clientId="530002033942-0dmk751ql0c82dii5sdffpp3np4muejh.apps.googleusercontent.com">
         <AntApp>
-          <Suspense fallback={null}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center min-h-screen">
+                <Spin size="large" />
+              </div>
+            }
+          >
             <BrowserRouter>
               <HeaderComponent />
               <NavbarComponent />

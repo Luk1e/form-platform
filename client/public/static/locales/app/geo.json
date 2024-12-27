@@ -8,7 +8,17 @@
     "register": "რეგისტრაცია",
     "signUpText": "შექმენით ახალი ანგარიში",
     "registerButton": "რეგისტრაცია",
-    "orContinueWith": "ან გააგრძელეთ"
+    "orContinueWith": "ან გააგრძელეთ",
+    "loadMore": "მეტის ჩატვირთვა"
+  },
+  "homePage": {
+    "exploreByTags": "მოძებნეთ ტეგების მიხედვით",
+    "popularTemplates": "პოპულარული შაბლონები",
+    "latestTemplates": "უახლესი შაბლონები",
+    "filledForms": "შევსებული ფორმები",
+    "author": "ავტორი",
+    "templateName": "შაბლონის სახელი",
+    "imageNotAvailable": "სურათი არ არის ხელმისაწვდომი"
   },
   "notifications": {
     "loginSuccess": "კეთილი იყოს თქვენი დაბრუნება!",

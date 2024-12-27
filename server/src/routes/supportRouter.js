@@ -5,6 +5,7 @@ import { authMiddleware } from "../middlewares/index.js";
 const router = express.Router();
 
 router.get("/tags", supportController.getTags);
+router.get("/tagCloud", supportController.getTagCloud);
 router.get("/topics", supportController.getTopics);
 
 router.use(authMiddleware);

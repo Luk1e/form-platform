@@ -39,6 +39,20 @@ const supportService = {
     return rows;
   },
 
+  getTagCloud: async () => {
+    const [rows] = await database.query(`
+      SELECT tt.name, COUNT(DISTINCT ttm.template_id) as template_count
+      FROM template_tags tt
+      JOIN template_tag_mapping ttm ON tt.id = ttm.tag_id
+      JOIN templates t ON ttm.template_id = t.id
+      WHERE t.is_public = TRUE
+      GROUP BY tt.id
+      ORDER BY template_count DESC
+      LIMIT 50
+    `);
+    return rows;
+  },
+
   getTagsByTemplateId: async (templateId) => {
     const [rows] = await database.query(
       `SELECT tt.name

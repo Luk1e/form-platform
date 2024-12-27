@@ -235,12 +235,12 @@ const templateService = {
   getPopularTemplates: async (limit = 5) => {
     const [rows] = await database.query(
       `
-      SELECT t.*, COUNT(DISTINCT f.id) as form_count, u.username as author
+      SELECT t.id, t.title, t.description, COUNT(DISTINCT f.id) as form_count, u.username as author
       FROM templates t
       LEFT JOIN filled_forms f ON t.id = f.template_id
       JOIN users u ON t.user_id = u.id
       WHERE t.is_public = TRUE
-      GROUP BY t.id
+      GROUP BY t.id, t.title, t.description, u.username
       ORDER BY form_count DESC
       LIMIT ?
     `,
@@ -249,19 +249,33 @@ const templateService = {
     return rows;
   },
 
-  getLatestTemplates: async (limit = 10) => {
-    const [rows] = await database.query(
-      `
-      SELECT t.*, u.username as author
-      FROM templates t
-      JOIN users u ON t.user_id = u.id
-      WHERE t.is_public = TRUE
-      ORDER BY t.created_at DESC
-      LIMIT ?
-    `,
-      [limit]
-    );
-    return rows;
+  getLatestTemplates: async (page = 1, limit = 10) => {
+    const offset = (page - 1) * limit;
+
+    const [[rows], [countResult]] = await Promise.all([
+      database.query(
+        `SELECT t.id, t.title, t.description, t.image_url, u.username as author
+         FROM templates t
+         JOIN users u ON t.user_id = u.id
+         WHERE t.is_public = TRUE
+         ORDER BY t.created_at DESC
+         LIMIT ? OFFSET ?`,
+        [limit, offset]
+      ),
+      database.query(
+        `SELECT COUNT(*) as total 
+         FROM templates t
+         WHERE t.is_public = TRUE`
+      ),
+    ]);
+
+    return {
+      latestTemplates: rows,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(countResult[0].total / limit),
+      },
+    };
   },
 
   toggleLike: async (templateId, userId) => {
@@ -334,20 +348,6 @@ const templateService = {
     `,
       [userId]
     );
-    return rows;
-  },
-
-  getTagCloud: async () => {
-    const [rows] = await database.query(`
-      SELECT tt.name, COUNT(DISTINCT ttm.template_id) as template_count
-      FROM template_tags tt
-      JOIN template_tag_mapping ttm ON tt.id = ttm.tag_id
-      JOIN templates t ON ttm.template_id = t.id
-      WHERE t.is_public = TRUE
-      GROUP BY tt.id
-      ORDER BY template_count DESC
-      LIMIT 50
-    `);
     return rows;
   },
 

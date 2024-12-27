@@ -28,6 +28,19 @@ const supportController = {
     }
   },
 
+  getTagCloud: async (_, res) => {
+    try {
+      const tags = await supportService.getTagCloud();
+      res.json(tags);
+    } catch (error) {
+      console.error("Error getting tags:", error);
+      res.status(500).json({
+        message: "Error getting tags",
+        errorCode: "GET_TAGS_ERROR",
+      });
+    }
+  },
+
   getTopics: async (_, res) => {
     try {
       const topics = await supportService.getTopics();

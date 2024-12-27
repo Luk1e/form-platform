@@ -22,7 +22,7 @@
     "unblockUsers": "Unblock Users",
     "makeAdmin": "Make Admin",
     "removeAdmin": "Remove Admin",
-    "deleteConfirm": "Are you sure you want to delete the selected users? This action cannot be undone.",
+    "deleteConfirm": "Are you sure you want to delete the selected users? This action cannot be undone",
     "deleteUsers": "Delete Users",
     "totalUsers": "Total Users",
     "searchPlaceholder": "Search by username or email",
