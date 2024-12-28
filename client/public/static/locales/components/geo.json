@@ -2,7 +2,6 @@
   "global": {
     "adminPanel": "ადმინ პანელი",
     "templates": "შაბლონები",
-    "createTemplate": "შაბლონის შექმნა",
     "login": "შესვლა",
     "logout": "გასვლა",
     "register": "რეგისტრაცია",

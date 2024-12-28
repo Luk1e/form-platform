@@ -51,7 +51,8 @@
     "templateTitle": "Template Title",
     "templateDescription": "Template Description",
     "deleteConfirm": "Are you sure you want to delete this template?",
-    "noData": "No data found"
+    "noData": "No data found",
+    "createTemplate": "Create Template"
   },
   "validation": {
     "titleMin": "Title must be at least 3 characters",

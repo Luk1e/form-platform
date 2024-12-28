@@ -1,12 +1,17 @@
 import React from "react";
 import { Input, Button, Space, Select } from "antd";
-import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  ReloadOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const UserContentFilters = ({ activeView }) => {
   const { t } = useTranslation(["auth"]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const handleReset = () => {
     setSearchParams({
@@ -59,6 +64,15 @@ const UserContentFilters = ({ activeView }) => {
         <Button icon={<ReloadOutlined />} onClick={handleReset}>
           {t("userContentPage.reset")}
         </Button>
+        {activeView === "templates" && (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate("/templates/create")}
+          >
+            {t("userContentPage.createTemplate")}
+          </Button>
+        )}
       </Space>
     </div>
   );
