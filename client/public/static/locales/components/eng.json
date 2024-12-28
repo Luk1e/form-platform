@@ -10,7 +10,8 @@
     "dark": "Dark",
     "light": "Light",
     "searchForms": "Search forms...",
-    "continueWithGoogle": "Continue with Google"
+    "continueWithGoogle": "Continue with Google",
+    "myContent": "My Content"
   },
   "notifications": {
     "logoutSuccess": "Logged out successfully",

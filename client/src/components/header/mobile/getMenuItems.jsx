@@ -62,18 +62,11 @@ const getMenuItems = ({
   if (user) {
     menuItems.push(
       {
-        key: "templates",
+        key: "my-content",
         icon: <LayoutOutlined />,
-        label: <Link to="/templates">{t("global.templates")}</Link>,
+        label: <Link to="/my-content">{t("global.myContent")}</Link>,
         onClick: closeDrawer,
       },
-      {
-        key: "templates/create",
-        icon: <PlusCircleOutlined />,
-        label: <Link to="/templates/create">{t("global.createTemplate")}</Link>,
-        onClick: closeDrawer,
-      },
-
       {
         key: "logout",
         icon: <LogoutOutlined />,
