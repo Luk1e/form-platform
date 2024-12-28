@@ -10,3 +10,8 @@ export {
   templateSearchSchema,
   latestTemplateSearchSchema,
 } from "./templateValidationSchema.js";
+
+export {
+  userFormsSearchSchema,
+  userTemplatesSearchSchema,
+} from "./userValidationSchemas.js";

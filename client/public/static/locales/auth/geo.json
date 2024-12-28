@@ -30,6 +30,29 @@
       "required": "სავალდებულო"
     }
   },
+  "userContentPage": {
+    "management": "ჩემი კონტენტი",
+    "managementDesc": "შაბლონებისა და ფორმების მართვა",
+    "templates": "შაბლონები",
+    "forms": "ფორმები",
+    "searchTemplatesPlaceholder": "შაბლონების ძიება...",
+    "searchFormsPlaceholder": "ძიება შაბლონის სახელით...",
+    "reset": "ფილტრების გასუფთავება",
+    "newest": "ახლიდან ძველისკენ",
+    "oldest": "ძველიდან ახლისკენ",
+    "total": "სულ",
+    "title": "სახელი",
+    "formCount": "ფორმების რაოდენობა",
+    "isPublic": "ხილვადობა",
+    "public": "საჯარო",
+    "private": "პრივატული",
+    "createdAt": "შექმნის თარიღი",
+    "actions": "მოქმედებები",
+    "templateTitle": "შაბლონის სახელი",
+    "templateDescription": "შაბლონის აღწერა",
+    "deleteConfirm": "ნამდვილად გსურთ ამ შაბლონის წაშლა?",
+    "noData": "მონაცემები არ მოიძებნა"
+  },
   "validation": {
     "titleMin": "სათაური უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს",
     "titleMax": "სათაური არ უნდა აღემატებოდეს 255 სიმბოლოს",
@@ -53,6 +76,11 @@
   },
   "notifications": {
     "templateCreated": "შაბლონი შეიქმნა",
-    "templateCreatedDesc": "შაბლონი წარმატებით შეიქმნა"
+    "templateCreatedDesc": "შაბლონი წარმატებით შეიქმნა",
+    "templateDeleteSuccess": "შაბლონი წარმატებით წაიშალა"
+  },
+  "errors": {
+    "11": "შაბლონი ვერ მოიძებნა",
+    "12": "თქვენ არ გაქვთ აღნიშნული შაბლონის წაშლის უფლება"
   }
 }

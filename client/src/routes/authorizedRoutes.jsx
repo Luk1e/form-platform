@@ -5,6 +5,9 @@ const CreateTemplatePage = lazy(() =>
   import("../pages/auth/createTemplate/CreateTemplatePage")
 );
 
+const UserContentPage = lazy(() =>
+  import("../pages/auth/userContent/UserContentPage")
+);
 export default function AuthorizedRoutes({ user }) {
   return {
     path: "/",
@@ -13,6 +16,10 @@ export default function AuthorizedRoutes({ user }) {
       {
         path: "/templates/create",
         element: <CreateTemplatePage />,
+      },
+      {
+        path: "/my-content",
+        element: <UserContentPage />,
       },
     ],
   };

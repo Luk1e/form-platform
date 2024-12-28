@@ -1,8 +1,12 @@
-import { templateService, supportService } from "../services/index.js";
+import {
+  templateService,
+  supportService,
+  adminService,
+} from "../services/index.js";
 import { CustomError } from "../utils/index.js";
 
 const templateController = {
-  createTemplate: async (req, res, next) => {
+  createTemplate: async (req, res) => {
     try {
       let templateData = JSON.parse(req.body.data);
 
@@ -24,6 +28,10 @@ const templateController = {
 
       res.status(201).json({ templateId });
     } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.toJSON());
+      }
+
       console.error("Error creating template:", error);
       res.status(500).json({
         message: "Error creating template",
@@ -52,7 +60,6 @@ const templateController = {
         req.user.id
       );
 
-
       if (!req.user.is_admin && template.user_id !== req.user.id) {
         throw CustomError.forbidden("Not authorized to update this template");
       }
@@ -64,27 +71,41 @@ const templateController = {
     }
   },
 
-  deleteTemplate: async (req, res, next) => {
+  deleteTemplate: async (req, res) => {
     try {
-      const template = await templateService.getTemplateById(
-        req.params.id,
-        req.user.id
-      );
+      const template = await templateService.getTemplateById(req.params.id);
 
-      if (!req.user.is_admin && template.user_id !== req.user.id) {
-        throw CustomError.forbidden("Not authorized to delete this template");
+      if (!template) {
+        throw CustomError.notFound("Template not found", 11);
+      }
+
+      if (
+        !adminService.isAdmin(req.userId) &&
+        template.user_id !== req.userId
+      ) {
+        throw CustomError.forbidden(
+          "Not authorized to delete this template",
+          12
+        );
       }
 
       await templateService.deleteTemplate(req.params.id);
       res.status(200).json({ message: "Template deleted successfully" });
     } catch (error) {
-      next(error);
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.toJSON());
+      }
+
+      console.error("Error deleting template:", error);
+      res.status(500).json({
+        message: "Error deleting template",
+        errorCode: "DELETE_TEMPLATE_ERROR",
+      });
     }
   },
-
   searchTemplates: async (req, res, next) => {
     try {
-      const userId = req.user?.id; 
+      const userId = req.user?.id;
       const results = await templateService.searchTemplates(req.query, userId);
       res.json(results);
     } catch (error) {

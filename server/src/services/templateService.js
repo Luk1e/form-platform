@@ -228,6 +228,14 @@ const templateService = {
     }
   },
 
+  getTemplateById: async (templateId) => {
+    const [rows] = await database.query(
+      "Select * from templates t where t.id = ?",
+      [templateId]
+    );
+    return rows[0];
+  },
+
   deleteTemplate: async (templateId) => {
     await database.query("DELETE FROM templates WHERE id = ?", [templateId]);
   },
@@ -328,25 +336,6 @@ const templateService = {
       ORDER BY c.created_at ASC
     `,
       [templateId]
-    );
-    return rows;
-  },
-
-  getUserTemplates: async (userId) => {
-    const [rows] = await database.query(
-      `
-      SELECT t.*, tt.name as topic_name, 
-             COUNT(DISTINCT f.id) as form_count,
-             COUNT(DISTINCT l.user_id) as like_count
-      FROM templates t
-      LEFT JOIN template_topics tt ON t.topic_id = tt.id
-      LEFT JOIN filled_forms f ON t.id = f.template_id
-      LEFT JOIN likes l ON t.id = l.template_id
-      WHERE t.user_id = ?
-      GROUP BY t.id
-      ORDER BY t.created_at DESC
-    `,
-      [userId]
     );
     return rows;
   },

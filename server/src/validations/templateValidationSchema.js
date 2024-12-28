@@ -109,3 +109,4 @@ export const latestTemplateSearchSchema = Joi.object({
     "number.min": '"limit" must be at least 1',
   }),
 });
+
