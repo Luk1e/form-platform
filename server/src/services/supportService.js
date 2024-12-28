@@ -1,6 +1,10 @@
-import database from "../../config/database.js";
+import models from "../models/index.js";
 import { v2 as cloudinary } from "cloudinary";
+import { CustomError } from "../utils/index.js";
 import dotenv from "dotenv";
+import { Op } from "sequelize";
+const { User, Template, TemplateTopic, TemplateTag } = models;
+
 dotenv.config();
 
 cloudinary.config({
@@ -23,60 +27,94 @@ const supportService = {
       };
     } catch (error) {
       console.error("Error uploading image:", error);
-      res.status(500).json({
-        message: "Error uploading image",
-        errorCode: "UPLOAD_IMAGE_ERROR",
-      });
+      throw CustomError.internalServerError(
+        "Error uploading image",
+        "UPLOAD_IMAGE_ERROR"
+      );
     }
   },
 
   getTags: async () => {
-    const [rows] = await database.query(
-      `SELECT DISTINCT name 
-         FROM template_tags 
-         ORDER BY name`
-    );
-    return rows;
+    const tags = await TemplateTag.findAll({
+      attributes: ["name"],
+      group: ["name"],
+      order: [["name", "ASC"]],
+    });
+    return tags;
   },
 
   getTagCloud: async () => {
-    const [rows] = await database.query(`
-      SELECT tt.name, COUNT(DISTINCT ttm.template_id) as template_count
-      FROM template_tags tt
-      JOIN template_tag_mapping ttm ON tt.id = ttm.tag_id
-      JOIN templates t ON ttm.template_id = t.id
-      WHERE t.is_public = TRUE
-      GROUP BY tt.id
-      ORDER BY template_count DESC
-      LIMIT 50
-    `);
-    return rows;
+    const tagCloud = await models.TemplateTag.findAll({
+      attributes: [
+        "id",
+        "name",
+        [
+          models.sequelize.fn("COUNT", models.sequelize.col("Templates.id")),
+          "count",
+        ],
+      ],
+      include: [
+        {
+          model: models.Template,
+          attributes: [],
+          through: { attributes: [] },
+        },
+      ],
+      group: ["TemplateTag.id", "TemplateTag.name"],
+      having: models.sequelize.where(
+        models.sequelize.fn("COUNT", models.sequelize.col("Templates.id")),
+        Op.gt,
+        0
+      ),
+      order: [
+        [
+          models.sequelize.fn("COUNT", models.sequelize.col("Templates.id")),
+          "DESC",
+        ],
+      ],
+      limit: 50,
+      subQuery: false,
+    });
+    return tagCloud;
   },
 
   getTagsByTemplateId: async (templateId) => {
-    const [rows] = await database.query(
-      `SELECT tt.name
-         FROM template_tags tt
-         JOIN template_tag_mapping ttm ON tt.id = ttm.tag_id
-         WHERE ttm.template_id = ?`,
-      [templateId]
-    );
-    return rows.map((row) => row.name);
+    const template = await Template.findByPk(templateId, {
+      include: [
+        {
+          model: TemplateTag,
+          attributes: ["name"],
+          through: { attributes: [] },
+        },
+      ],
+    });
+
+    if (!template) {
+      throw CustomError.notFound("Template not found");
+    }
+
+    return template;
   },
 
   getTopics: async () => {
-    const [rows] = await database.query(
-      "SELECT * FROM template_topics ORDER BY name"
-    );
-    return rows;
+    const topics = await TemplateTopic.findAll({
+      order: [["name", "ASC"]],
+    });
+
+    return topics;
   },
 
   getUsers: async (userId) => {
-    const [rows] = await database.query(
-      "SELECT  id, username, email  FROM users WHERE id != ?",
-      [userId]
-    );
-    return rows;
+    const users = await User.findAll({
+      where: {
+        id: {
+          [Op.ne]: userId,
+        },
+      },
+      attributes: ["id", "username", "email"],
+    });
+
+    return users;
   },
 };
 

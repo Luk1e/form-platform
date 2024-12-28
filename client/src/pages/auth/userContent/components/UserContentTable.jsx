@@ -15,7 +15,7 @@ const UserContentTable = ({ activeView }) => {
   const dispatch = useDispatch();
   const { notification } = App.useApp();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { templates, forms, pagination } = useSelector(
+  const { templates, loading, forms, pagination } = useSelector(
     (state) => state.userContent
   );
 
@@ -36,15 +36,10 @@ const UserContentTable = ({ activeView }) => {
         page: searchParams.get("page") || "1",
         limit: searchParams.get("limit") || "10",
         order: searchParams.get("order") || "desc",
+        title: searchParams.get("title") || "",
       };
 
-      if (activeView === "templates") {
-        params.title = searchParams.get("title") || "";
-        dispatch(fetchUserTemplates(params));
-      } else {
-        params.template_title = searchParams.get("template_title") || "";
-        dispatch(fetchUserForms(params));
-      }
+      dispatch(fetchUserTemplates(params));
     } catch (error) {
       notification.error({
         message: t(`errors.${error.errorCode}`),
@@ -62,6 +57,7 @@ const UserContentTable = ({ activeView }) => {
     <Table
       columns={columns}
       dataSource={data}
+      loading={loading}
       rowKey="id"
       pagination={{
         current: parseInt(searchParams.get("page") || "1"),

@@ -29,11 +29,11 @@ const TemplateForm = () => {
 
   useEffect(() => {
     if (createdTemplateId) {
-      navigate(`/templates/${createdTemplateId}`);
       notification.success({
         message: t("notifications.templateCreated"),
         description: t("notifications.templateCreatedDesc"),
       });
+      navigate(`/templates/${createdTemplateId}`);
     }
     return () => {
       dispatch(resetCreateTemplateState());

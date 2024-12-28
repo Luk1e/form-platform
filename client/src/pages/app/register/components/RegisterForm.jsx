@@ -38,7 +38,13 @@ const RegisterForm = () => {
       {error && (
         <Alert
           type="error"
-          message={t(`errors.${error.errorCode}`)}
+          message={
+            error?.errorCode !== undefined
+              ? t(`errors.${error.errorCode}`)
+              : error.errors
+              ? error.errors[0]?.message
+              : error.message
+          }
           className="mb-4hadow-sm rounded-md"
           showIcon
         />

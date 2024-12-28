@@ -11,7 +11,6 @@ const UsersPage = () => {
   const { t } = useTranslation(["admin"]);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading } = useSelector((state) => state.adminUsers);
 
   useEffect(() => {
     const params = {
@@ -23,14 +22,6 @@ const UsersPage = () => {
     };
     dispatch(fetchUsers(params));
   }, [dispatch, searchParams]);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Spin size="large" />
-      </div>
-    );
-  }
 
   return (
     <div className="p-2 sm:p-4 md:p-6 min-h-screen">

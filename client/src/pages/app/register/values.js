@@ -30,6 +30,7 @@ export const validationSchema = (t) =>
   });
 
 export const onSubmit = ({ values, dispatch }) => {
-  delete values.confirmPassword;
-  dispatch(register(values));
+  const data = { ...values };
+  delete data.confirmPassword;
+  dispatch(register(data));
 };

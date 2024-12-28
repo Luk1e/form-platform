@@ -67,6 +67,7 @@ const UsersTable = () => {
   };
 
   const columns = getColumns(t);
+
   return (
     <div className="overflow-hidden">
       <div className="overflow-x-auto">

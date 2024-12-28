@@ -1,5 +1,6 @@
 import { Button, Popconfirm, Tag } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 export const getFormColumns = (t) => [
   {
@@ -26,6 +27,9 @@ export const getTemplateColumns = (t, handleDelete) => [
     title: t("userContentPage.title"),
     dataIndex: "title",
     key: "title",
+    render: (text, record) => (
+      <Link to={`/templates/${record.id}`}>{text}</Link>
+    ),
   },
   {
     title: t("userContentPage.formCount"),

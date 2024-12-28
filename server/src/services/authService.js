@@ -1,36 +1,36 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import database from "../../config/database.js";
 import { CustomError } from "../utils/index.js";
+import models from "../models/index.js";
+
+const { User } = models;
 
 const authService = {
   register: async (username, email, password) => {
     try {
-      const [existingUsers] = await database.query(
-        "SELECT id FROM users WHERE email = ?",
-        [email]
-      );
-
-      if (existingUsers.length > 0) {
+      const existingEmail = await User.findOne({ where: { email } });
+      if (existingEmail) {
         throw CustomError.conflict("Email is already registered", 3);
       }
 
-      const [existingUsernames] = await database.query(
-        "SELECT id FROM users WHERE username = ?",
-        [username]
-      );
-
-      if (existingUsernames.length > 0) {
+      const existingUsername = await User.findOne({ where: { username } });
+      if (existingUsername) {
         throw CustomError.conflict("Username is already taken", 4);
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const [result] = await database.query(
-        "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
-        [username, email, hashedPassword]
-      );
+      const user = await User.create({
+        username,
+        email,
+        password_hash: hashedPassword,
+      });
 
-      return { id: result.insertId, username, email, isAdmin: false };
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.is_admin,
+      };
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
@@ -43,16 +43,12 @@ const authService = {
 
   login: async (email, password) => {
     try {
-      const [rows] = await database.query(
-        "SELECT * FROM users WHERE email = ?",
-        [email]
-      );
+      const user = await User.findOne({ where: { email } });
 
-      if (rows.length === 0) {
+      if (!user) {
         throw CustomError.notFound("User not found", 0);
       }
 
-      const user = rows[0];
       const isPasswordValid = await bcrypt.compare(
         password,
         user.password_hash
@@ -78,7 +74,6 @@ const authService = {
       }
 
       console.error("Login error:", error);
-
       throw CustomError.internalServerError("Login failed");
     }
   },
@@ -97,31 +92,19 @@ const authService = {
 
       const data = await response.json();
 
-      const [existingUser] = await database.query(
-        "SELECT * FROM users WHERE email = ?",
-        [data.email]
-      );
+      let user = await User.findOne({ where: { email: data.email } });
 
-      let userId;
-
-      if (existingUser.length === 0) {
-        const hashedPassword = await bcrypt.hash(crypto.randomBytes(32), 10);
-
-        const [result] = await database.query(
-          "INSERT INTO users (username, email, password_hash) VALUES (?, ?,?)",
-          [data.name, data.email, hashedPassword]
+      if (!user) {
+        const hashedPassword = await bcrypt.hash(
+          crypto.randomBytes(32).toString("hex"),
+          10
         );
-        userId = result.insertId;
-      } else {
-        userId = existingUser[0].id;
+        user = await User.create({
+          username: data.name,
+          email: data.email,
+          password_hash: hashedPassword,
+        });
       }
-
-      const [rows] = await database.query(
-        "SELECT id, username, email, is_admin FROM users WHERE id = ?",
-        [userId]
-      );
-
-      const user = rows[0];
 
       if (user.is_blocked) {
         throw CustomError.forbidden("User is blocked", 2);

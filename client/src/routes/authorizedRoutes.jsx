@@ -8,18 +8,18 @@ const CreateTemplatePage = lazy(() =>
 const UserContentPage = lazy(() =>
   import("../pages/auth/userContent/UserContentPage")
 );
-export default function AuthorizedRoutes({ user }) {
+export default function AuthorizedRoutes({ user, loading }) {
   return {
     path: "/",
     element: <AuthorizedLayout user={user} />,
     children: [
       {
         path: "/templates/create",
-        element: <CreateTemplatePage />,
+        element: <CreateTemplatePage loading={loading} />,
       },
       {
         path: "/my-content",
-        element: <UserContentPage />,
+        element: <UserContentPage loading={loading} />,
       },
     ],
   };

@@ -1,33 +1,66 @@
-import React from "react";
 import { Input, Select, Space, Button } from "antd";
 import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { fetchUsers } from "../../../toolkit/admin/adminSlice";
 import { setSelectedUserIds } from "../../../toolkit/admin/adminSlice";
+import { useState, useRef, useEffect } from "react";
+import debounce from "lodash/debounce";
 
 const UserFilters = () => {
   const { t } = useTranslation(["admin"]);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchValue, setSearchValue] = useState(
+    searchParams.get("search") || ""
+  );
+
+  const debouncedRef = useRef();
+
+  useEffect(() => {
+    debouncedRef.current = debounce((value) => {
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev);
+        if (value) {
+          newParams.set("search", value);
+        } else {
+          newParams.delete("search");
+        }
+        newParams.set("page", "1");
+        return newParams;
+      });
+    }, 300);
+
+    return () => {
+      debouncedRef.current?.cancel();
+    };
+  }, [setSearchParams]);
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    dispatch(setSelectedUserIds([]));
+
+    debouncedRef.current(value);
+  };
 
   const handleReset = () => {
-    const params = {
-      page: "1",
-      limit: "10",
-      search: "",
-      is_admin: "",
-      is_blocked: "",
-    };
-    setSearchParams(params);
-    dispatch(fetchUsers(params));
+    setSearchValue("");
+    setSearchParams({});
+    dispatch(setSelectedUserIds([]));
   };
 
   const handleFilterChange = (key, value) => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set(key, value || "");
-    setSearchParams(newParams);
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      if (value) {
+        newParams.set(key, value);
+      } else {
+        newParams.delete(key);
+      }
+      newParams.set("page", "1");
+      return newParams;
+    });
     dispatch(setSelectedUserIds([]));
   };
 
@@ -36,11 +69,12 @@ const UserFilters = () => {
       <Space wrap className="mb-4 gap-2">
         <Input
           placeholder={t("users.searchPlaceholder")}
-          value={searchParams.get("search") || ""}
-          onChange={(e) => handleFilterChange("search", e.target.value)}
+          value={searchValue}
+          onChange={handleSearch}
           prefix={<SearchOutlined />}
           className="w-40"
         />
+
         <Select
           placeholder={t("users.adminFilter")}
           value={searchParams.get("is_admin") || undefined}
@@ -52,6 +86,7 @@ const UserFilters = () => {
             { value: "false", label: t("users.regularUsers") },
           ]}
         />
+
         <Select
           placeholder={t("users.statusFilter")}
           value={searchParams.get("is_blocked") || undefined}
@@ -64,10 +99,7 @@ const UserFilters = () => {
           ]}
         />
 
-        <Button
-          icon={<ReloadOutlined />}
-          onClick={handleReset}
-        >
+        <Button icon={<ReloadOutlined />} onClick={handleReset}>
           {t("users.reset")}
         </Button>
       </Space>

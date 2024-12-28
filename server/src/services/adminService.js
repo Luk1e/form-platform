@@ -1,18 +1,19 @@
-import database from "../../config/database.js";
+import { Op } from "sequelize";
 import { CustomError } from "../utils/index.js";
+import models from "../models/index.js";
+
+const { User } = models;
 
 const adminService = {
   isAdmin: async (userId) => {
-    const [rows] = await database.query(
-      "SELECT is_admin, is_blocked FROM users WHERE id = ?",
-      [userId]
-    );
+    const user = await User.findByPk(userId, {
+      attributes: ["is_admin", "is_blocked"],
+    });
 
-    if (rows.length === 0) {
+    if (!user) {
       throw CustomError.notFound("User not found", 0);
     }
 
-    const user = rows[0];
     if (user.is_blocked) {
       throw CustomError.forbidden("User is blocked", 2);
     }
@@ -21,89 +22,100 @@ const adminService = {
   },
 
   bulkBlockUsers: async (userIds) => {
-    const [adminCount] = await database.query(
-      "SELECT COUNT(*) as count FROM users WHERE is_admin = TRUE"
-    );
+    const adminCount = await User.count({
+      where: { is_admin: true },
+    });
 
-    const [adminToBlock] = await database.query(
-      `SELECT COUNT(*) as count FROM users 
-         WHERE id IN (?) AND is_admin = TRUE`,
-      [userIds]
-    );
+    const adminToBlock = await User.count({
+      where: {
+        id: { [Op.in]: userIds },
+        is_admin: true,
+      },
+    });
 
-    if (adminToBlock[0].count >= adminCount[0].count) {
+    if (adminToBlock >= adminCount) {
       throw CustomError.forbidden("Cannot block the last admin", 3);
     }
 
-    const [result] = await database.query(
-      "UPDATE users SET is_blocked = TRUE WHERE id IN (?)",
-      [userIds]
+    const [numberOfAffectedRows] = await User.update(
+      { is_blocked: true },
+      {
+        where: { id: { [Op.in]: userIds } },
+      }
     );
 
-    return result.affectedRows;
+    return numberOfAffectedRows;
   },
 
   bulkUnblockUsers: async (userIds) => {
-    const [result] = await database.query(
-      "UPDATE users SET is_blocked = FALSE WHERE id IN (?)",
-      [userIds]
+    const [numberOfAffectedRows] = await User.update(
+      { is_blocked: false },
+      {
+        where: { id: { [Op.in]: userIds } },
+      }
     );
 
-    return result.affectedRows;
+    return numberOfAffectedRows;
   },
 
   bulkAddAdminPrivileges: async (userIds) => {
-    const [result] = await database.query(
-      "UPDATE users SET is_admin = TRUE WHERE id IN (?)",
-      [userIds]
+    const [numberOfAffectedRows] = await User.update(
+      { is_admin: true },
+      {
+        where: { id: { [Op.in]: userIds } },
+      }
     );
 
-    return result.affectedRows;
+    return numberOfAffectedRows;
   },
 
   bulkRemoveAdminPrivileges: async (userIds) => {
-    const [adminCount] = await database.query(
-      "SELECT COUNT(*) as count FROM users WHERE is_admin = TRUE"
-    );
+    const adminCount = await User.count({
+      where: { is_admin: true },
+    });
 
-    const [adminToRemove] = await database.query(
-      `SELECT COUNT(*) as count FROM users 
-         WHERE is_admin = TRUE AND id IN (?)`,
-      [userIds]
-    );
+    const adminToRemove = await User.count({
+      where: {
+        id: { [Op.in]: userIds },
+        is_admin: true,
+      },
+    });
 
-    if (adminToRemove[0].count >= adminCount[0].count) {
+    if (adminToRemove >= adminCount) {
       throw CustomError.forbidden("Cannot remove all admins", 4);
     }
 
-    const [result] = await database.query(
-      "UPDATE users SET is_admin = FALSE WHERE id IN (?)",
-      [userIds]
+    const [numberOfAffectedRows] = await User.update(
+      { is_admin: false },
+      {
+        where: { id: { [Op.in]: userIds } },
+      }
     );
 
-    return result.affectedRows;
+    return numberOfAffectedRows;
   },
 
   bulkDeleteUsers: async (userIds) => {
-    const [adminCount] = await database.query(
-      "SELECT COUNT(*) as count FROM users WHERE is_admin = TRUE"
-    );
+    const adminCount = await User.count({
+      where: { is_admin: true },
+    });
 
-    const [adminToDelete] = await database.query(
-      `SELECT COUNT(*) as count FROM users 
-         WHERE id IN (?) AND is_admin = TRUE`,
-      [userIds]
-    );
+    const adminToDelete = await User.count({
+      where: {
+        id: { [Op.in]: userIds },
+        is_admin: true,
+      },
+    });
 
-    if (adminToDelete[0].count >= adminCount[0].count) {
+    if (adminToDelete >= adminCount) {
       throw CustomError.forbidden("Cannot delete the last admin", 5);
     }
 
-    const [result] = await database.query("DELETE FROM users WHERE id IN (?)", [
-      userIds,
-    ]);
+    const numberOfAffectedRows = await User.destroy({
+      where: { id: { [Op.in]: userIds } },
+    });
 
-    return result.affectedRows;
+    return numberOfAffectedRows;
   },
 
   searchUsers: async (searchParams) => {
@@ -115,64 +127,43 @@ const adminService = {
       limit = 10,
     } = searchParams;
 
-    const offset = (page - 1) * limit;
+    const searchConditions = {
+      ...(search && {
+        [Op.or]: [
+          { username: { [Op.like]: `%${search}%` } },
+          { email: { [Op.like]: `%${search}%` } },
+        ],
+      }),
+      ...(is_admin !== undefined && { is_admin: is_admin === "true" }),
+      ...(is_blocked !== undefined && { is_blocked: is_blocked === "true" }),
+    };
 
-    const conditions = [];
-    const params = [];
+    const queryOptions = {
+      where: searchConditions,
+      attributes: [
+        "id",
+        "username",
+        "email",
+        "is_admin",
+        "is_blocked",
+        "created_at",
+      ],
+      limit: Number(limit),
+      offset: (page - 1) * limit,
+      order: [["created_at", "DESC"]],
+    };
 
-    if (search) {
-      conditions.push("(username LIKE ? OR email LIKE ?)");
-      params.push(`%${search}%`, `%${search}%`);
-    }
-
-    if (is_admin !== undefined) {
-      conditions.push("is_admin = ?");
-      params.push(is_admin === "true");
-    }
-
-    if (is_blocked !== undefined) {
-      conditions.push("is_blocked = ?");
-      params.push(is_blocked === "true");
-    }
-
-    const whereClause =
-      conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-
-    const [countRows] = await database.query(
-      `
-        SELECT COUNT(*) as total 
-        FROM users 
-        ${whereClause}
-    `,
-      params
+    const { count: totalUsers, rows: users } = await User.findAndCountAll(
+      queryOptions
     );
-
-    const [rows] = await database.query(
-      `
-        SELECT 
-            id, 
-            username, 
-            email, 
-            is_admin, 
-            is_blocked, 
-            created_at 
-        FROM users 
-        ${whereClause}
-        LIMIT ? OFFSET ?
-    `,
-      [...params, Number(limit), offset]
-    );
-
-    const totalUsers = countRows[0].total;
-    const totalPages = Math.ceil(totalUsers / limit);
 
     return {
-      users: rows,
+      users,
       pagination: {
         currentPage: page,
         pageSize: limit,
         totalUsers,
-        totalPages,
+        totalPages: Math.ceil(totalUsers / limit),
       },
     };
   },

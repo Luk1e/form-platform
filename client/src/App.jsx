@@ -12,7 +12,7 @@ import { lightTheme, darkTheme } from "./themes";
 
 function App() {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.authentication);
+  const { user, loading } = useSelector((state) => state.authentication);
   const themeMode = useSelector((state) => state.theme.mode);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ function App() {
             <BrowserRouter>
               <HeaderComponent />
               <NavbarComponent />
-              <Router user={user} />
+              <Router user={user} loading={loading} />
             </BrowserRouter>
           </Suspense>
         </AntApp>

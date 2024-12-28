@@ -1,12 +1,21 @@
 import database from "../../config/database.js";
 import { CustomError } from "../utils/index.js";
+import models from "../models/index.js";
+const {
+  User,
+  Template,
+  TemplateTag,
+  FilledForm,
+  QuestionOption,
+  TemplateQuestion,
+} = models;
 
 const templateService = {
   createTemplate: async (userId, templateData) => {
     const {
       title,
       description,
-      topic_id,
+      template_topic_id: topicId,
       image_url,
       is_public,
       tags,
@@ -14,96 +23,85 @@ const templateService = {
       access_users,
     } = templateData;
 
-    const connection = await database.getConnection();
+    const transaction = await models.sequelize.transaction();
 
     try {
-      await connection.beginTransaction();
-
       // Create template
-      const [templateResult] = await connection.query(
-        `INSERT INTO templates 
-        (user_id, title, description, topic_id, image_url, is_public) 
-        VALUES (?, ?, ?, ?, ?, ?)`,
-        [userId, title, description, topic_id, image_url, is_public]
+      const template = await Template.create(
+        {
+          user_id: userId,
+          title,
+          description,
+          template_topic_id: topicId,
+          image_url,
+          is_public,
+        },
+        { transaction }
       );
-      const templateId = templateResult.insertId;
 
       // Handle tags
-      if (tags && tags.length > 0) {
-        const tagIds = await Promise.all(
+      if (tags?.length > 0) {
+        const createdTags = await Promise.all(
           tags.map(async (tagName) => {
-            const [existingTag] = await connection.query(
-              "INSERT INTO template_tags (name) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)",
-              [tagName.toLowerCase().trim()]
-            );
-            return existingTag.insertId;
+            const [tag] = await TemplateTag.findOrCreate({
+              where: { name: tagName.toLowerCase().trim() },
+              transaction,
+            });
+            return tag;
           })
         );
-
-        await connection.query(
-          "INSERT INTO template_tag_mapping (template_id, tag_id) VALUES ?",
-          [tagIds.map((tagId) => [templateId, tagId])]
-        );
+        await template.setTemplateTags(createdTags, { transaction });
       }
 
       // Handle access control for private templates
-      if (!is_public && access_users && access_users.length > 0) {
-        await connection.query(
-          "INSERT INTO template_access_control (template_id, user_id) VALUES ?",
-          [access_users.map((accessUserId) => [templateId, accessUserId])]
-        );
+      if (!is_public && access_users?.length > 0) {
+        const users = await User.findAll({
+          where: { id: access_users },
+          transaction,
+        });
+        await template.setAccessUsers(users, { transaction });
       }
 
       // Handle questions
-      if (questions && questions.length > 0) {
-        const questionInserts = questions.map((question, index) => [
-          templateId,
-          question.type_id,
-          question.title,
-          question.description,
-          question.display_in_summary || false,
-          index + 1,
-          question.is_required || false,
-        ]);
+      if (questions?.length > 0) {
+        const createdQuestions = await Promise.all(
+          questions.map(async (question, index) => {
+            const createdQuestion = await TemplateQuestion.create(
+              {
+                template_id: template.id,
+                question_type_id: question.type_id,
+                title: question.title,
+                description: question.description,
+                display_in_summary: question.display_in_summary || false,
+                position: index + 1,
+                is_required: question.is_required || false,
+              },
+              { transaction }
+            );
 
-        const [questionsResult] = await connection.query(
-          `INSERT INTO template_questions 
-          (template_id, type_id, title, description, display_in_summary, position, is_required) 
-          VALUES ?`,
-          [questionInserts]
+            // Handle question options for single choice and checkbox questions
+            if (
+              (question.type_id === 4 || question.type_id === 5) &&
+              question.options?.length > 0
+            ) {
+              const optionData = question.options.map((option) => ({
+                template_question_id: createdQuestion.id,
+                value: option,
+              }));
+
+              await QuestionOption.bulkCreate(optionData, { transaction });
+            }
+
+            return createdQuestion;
+          })
         );
-
-        const questionOptionInserts = [];
-        questions.forEach((question, index) => {
-          if (
-            (question.type_id === 4 || question.type_id === 5) &&
-            question.options &&
-            question.options.length > 0
-          ) {
-            question.options.forEach((option) => {
-              questionOptionInserts.push([
-                questionsResult.insertId + index,
-                option,
-              ]);
-            });
-          }
-        });
-
-        if (questionOptionInserts.length > 0) {
-          await connection.query(
-            "INSERT INTO question_options (question_id, value) VALUES ?",
-            [questionOptionInserts]
-          );
-        }
       }
 
-      await connection.commit();
-      return templateId;
+      await transaction.commit();
+      return template.id;
     } catch (error) {
-      await connection.rollback();
+      await transaction.rollback();
       throw error;
-    } finally {
-      connection.release();
     }
   },
 
@@ -229,59 +227,78 @@ const templateService = {
   },
 
   getTemplateById: async (templateId) => {
-    const [rows] = await database.query(
-      "Select * from templates t where t.id = ?",
-      [templateId]
-    );
-    return rows[0];
+    return await Template.findByPk(templateId);
   },
 
   deleteTemplate: async (templateId) => {
-    await database.query("DELETE FROM templates WHERE id = ?", [templateId]);
+    await Template.destroy({
+      where: {
+        id: templateId,
+      },
+    });
   },
 
   getPopularTemplates: async (limit = 5) => {
-    const [rows] = await database.query(
-      `
-      SELECT t.id, t.title, t.description, COUNT(DISTINCT f.id) as form_count, u.username as author
-      FROM templates t
-      LEFT JOIN filled_forms f ON t.id = f.template_id
-      JOIN users u ON t.user_id = u.id
-      WHERE t.is_public = TRUE
-      GROUP BY t.id, t.title, t.description, u.username
-      ORDER BY form_count DESC
-      LIMIT ?
-    `,
-      [limit]
-    );
-    return rows;
+    return await Template.findAll({
+      attributes: [
+        "id",
+        "title",
+        "description",
+        [
+          models.sequelize.literal("COUNT(DISTINCT FilledForms.id)"),
+          "form_count",
+        ],
+        [models.sequelize.col("User.username"), "author"],
+      ],
+      include: [
+        {
+          model: FilledForm,
+          attributes: [],
+        },
+        {
+          model: User,
+          attributes: [],
+          as: "User",
+        },
+      ],
+      group: ["Template.id", "User.id"],
+      order: [[models.sequelize.literal("form_count"), "DESC"]],
+      limit,
+      subQuery: false,
+      raw: true,
+      nest: false,
+    });
   },
 
   getLatestTemplates: async (page = 1, limit = 10) => {
     const offset = (page - 1) * limit;
-
-    const [[rows], [countResult]] = await Promise.all([
-      database.query(
-        `SELECT t.id, t.title, t.description, t.image_url, u.username as author
-         FROM templates t
-         JOIN users u ON t.user_id = u.id
-         WHERE t.is_public = TRUE
-         ORDER BY t.created_at DESC
-         LIMIT ? OFFSET ?`,
-        [limit, offset]
-      ),
-      database.query(
-        `SELECT COUNT(*) as total 
-         FROM templates t
-         WHERE t.is_public = TRUE`
-      ),
-    ]);
+    const { count, rows } = await Template.findAndCountAll({
+      attributes: [
+        "id",
+        "title",
+        "description",
+        "image_url",
+        [models.sequelize.col("User.username"), "author"],
+      ],
+      include: [
+        {
+          model: User,
+          attributes: [],
+          as: "User",
+        },
+      ],
+      order: [["created_at", "DESC"]],
+      limit,
+      offset,
+      raw: true,
+      nest: false,
+    });
 
     return {
       latestTemplates: rows,
       pagination: {
         currentPage: page,
-        totalPages: Math.ceil(countResult[0].total / limit),
+        totalPages: Math.ceil(count / limit),
       },
     };
   },

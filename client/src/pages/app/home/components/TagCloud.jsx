@@ -3,7 +3,7 @@ import { Tag } from "antd";
 import { TagOutlined } from "@ant-design/icons";
 
 const TagCloud = ({ tags, onTagClick }) => {
-  const maxCount = Math.max(...tags.map((tag) => tag.template_count));
+  const maxCount = Math.max(...tags.map((tag) => tag.count));
 
   const getTagColor = (count) => {
     const ratio = count / maxCount;
@@ -28,7 +28,7 @@ const TagCloud = ({ tags, onTagClick }) => {
           onClick={() => onTagClick(tag.name)}
           style={tagStyle}
           className="inline-flex items-center rounded-full m-0.5 text-xs sm:text-sm"
-          color={getTagColor(tag.template_count)}
+          color={getTagColor(tag.count)}
           onMouseEnter={(e) => {
             e.currentTarget.style.opacity = "0.8";
           }}
@@ -39,7 +39,7 @@ const TagCloud = ({ tags, onTagClick }) => {
           <TagOutlined className="mr-1 text-xs" />
           <span className="font-medium">{tag.name}</span>
           <span className="ml-1 text-xs bg-white/20 px-1 py-0.5 rounded-full">
-            {tag.template_count}
+            {tag.count}
           </span>
         </Tag>
       ))}

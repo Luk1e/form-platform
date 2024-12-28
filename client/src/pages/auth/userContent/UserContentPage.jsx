@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Card, Spin, Radio } from "antd";
+import { Card, Radio } from "antd";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import {
   fetchUserTemplates,
@@ -14,7 +14,6 @@ const UserContentPage = () => {
   const { t } = useTranslation(["auth"]);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading } = useSelector((state) => state.userContent);
   const [activeView, setActiveView] = useState("templates");
 
   useEffect(() => {
@@ -67,13 +66,7 @@ const UserContentPage = () => {
         <UserContentFilters activeView={activeView} />
 
         {/* Table */}
-        {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <Spin size="large" />
-          </div>
-        ) : (
-          <UserContentTable activeView={activeView} />
-        )}
+        <UserContentTable activeView={activeView} />
       </Card>
     </div>
   );

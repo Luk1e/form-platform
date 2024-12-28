@@ -1,5 +1,8 @@
-import database from "../../config/database.js";
+import { Op } from "sequelize";
+import models from "../models/index.js";
 import { CustomError } from "../utils/index.js";
+
+const { User, Template, FilledForm } = models;
 
 const userService = {
   getUserTemplatesWithFilters: async (userId, filters) => {
@@ -8,46 +11,62 @@ const userService = {
     const parsedLimit = parseInt(limit) || 10;
     const offset = (parsedPage - 1) * parsedLimit;
 
-    let query = `
-      SELECT t.*, tt.name as topic_name,
-             COUNT(DISTINCT f.id) as form_count,
-             COUNT(DISTINCT l.user_id) as like_count
-      FROM templates t
-      LEFT JOIN template_topics tt ON t.topic_id = tt.id
-      LEFT JOIN filled_forms f ON t.id = f.template_id
-      LEFT JOIN likes l ON t.id = l.template_id
-      WHERE t.user_id = ?
-    `;
+    const templates = await Template.findAll({
+      attributes: [
+        "id",
+        "title",
+        "is_public",
+        "created_at",
+        [
+          models.sequelize.fn(
+            "COUNT",
+            models.sequelize.fn(
+              "DISTINCT",
+              models.sequelize.col("FilledForms.id")
+            )
+          ),
+          "form_count",
+        ],
+      ],
+      include: [
+        {
+          model: FilledForm,
+          attributes: [],
+          required: false,
+        },
+      ],
+      where: {
+        user_id: userId,
+        ...(title && {
+          title: {
+            [Op.like]: `%${title}%`,
+          },
+        }),
+      },
+      group: ["Template.id"],
+      order: [["created_at", order.toUpperCase()]],
+      limit: parsedLimit,
+      offset: offset,
+      subQuery: false,
+    });
 
-    const params = [userId];
-
-    if (title) {
-      query += ` AND t.title LIKE ?`;
-      params.push(`%${title}%`);
-    }
-
-    query += ` GROUP BY t.id
-              ORDER BY t.created_at ${order}
-              LIMIT ? OFFSET ?`;
-    params.push(parsedLimit, offset);
-
-    const [[rows], [countResult]] = await Promise.all([
-      database.query(query, params),
-      database.query(
-        `SELECT COUNT(DISTINCT t.id) as total 
-         FROM templates t 
-         WHERE t.user_id = ?
-         ${title ? "AND t.title LIKE ?" : ""}`,
-        params.slice(0, -2)
-      ),
-    ]);
+    const totalCount = await Template.count({
+      where: {
+        user_id: userId,
+        ...(title && {
+          title: {
+            [Op.like]: `%${title}%`,
+          },
+        }),
+      },
+    });
 
     return {
-      templates: rows,
+      templates,
       pagination: {
         currentPage: parsedPage,
-        totalPages: Math.ceil(countResult[0].total / parsedLimit),
-        total: countResult[0].total,
+        totalPages: Math.ceil(totalCount / parsedLimit),
+        total: totalCount,
       },
     };
   },
@@ -56,78 +75,95 @@ const userService = {
     const { template_title, order = "desc", page, limit } = filters;
     const parsedPage = parseInt(page) || 1;
     const parsedLimit = parseInt(limit) || 10;
-
     const offset = (parsedPage - 1) * parsedLimit;
 
-    let query = `
-        SELECT f.*, t.title as template_title
-        FROM filled_forms f
-        JOIN templates t ON f.template_id = t.id
-        WHERE f.user_id = ?
-      `;
+    const forms = await FilledForm.findAll({
+      attributes: [
+        "id",
+        "created_at",
+        [models.sequelize.col("Template.title"), "template_title"],
+      ],
+      include: [
+        {
+          model: Template,
+          attributes: [],
+          required: true,
+          where: template_title
+            ? {
+                title: {
+                  [models.sequelize.Op.like]: `%${template_title}%`,
+                },
+              }
+            : {},
+        },
+      ],
+      where: {
+        user_id: userId,
+      },
+      order: [["created_at", order.toUpperCase()]],
+      limit: parsedLimit,
+      offset: offset,
+    });
 
-    const params = [userId];
-
-    if (template_title) {
-      query += ` AND t.title LIKE ?`;
-      params.push(`%${template_title}%`);
-    }
-
-    query += ` ORDER BY f.created_at ${order}
-                 LIMIT ? OFFSET ?`;
-    params.push(parsedLimit, offset);
-
-    const [[rows], [countResult]] = await Promise.all([
-      database.query(query, params),
-      database.query(
-        `SELECT COUNT(DISTINCT f.id) as total 
-           FROM filled_forms f 
-           JOIN templates t ON f.template_id = t.id
-           WHERE f.user_id = ?
-           ${template_title ? "AND t.title LIKE ?" : ""}`,
-        params.slice(0, -2)
-      ),
-    ]);
+    const total = await FilledForm.count({
+      include: [
+        {
+          model: Template,
+          where: template_title
+            ? {
+                title: {
+                  [Op.like]: `%${template_title}%`,
+                },
+              }
+            : {},
+        },
+      ],
+      where: {
+        user_id: userId,
+      },
+      distinct: true,
+    });
 
     return {
-      forms: rows,
+      forms,
       pagination: {
         currentPage: parsedPage,
-        totalPages: Math.ceil(countResult[0].total / parsedLimit),
-        total: countResult[0].total,
+        totalPages: Math.ceil(total / parsedLimit),
+        total,
       },
     };
   },
 
   getAllUsers: async () => {
-    const [rows] = await database.query("SELECT * FROM users");
-    return rows;
+    const users = await User.findAll();
+    return users;
   },
 
   getUserById: async (id) => {
-    const [rows] = await database.query("SELECT * FROM users WHERE id = ?", [
-      id,
-    ]);
-    if (rows.length === 0) {
-      throw new Error("User not found");
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw CustomError.notFound("User not found");
     }
-    return rows[0];
+    return user;
   },
 
   updateUser: async (id, username, email) => {
-    await database.query(
-      "UPDATE users SET username = ?, email = ? WHERE id = ?",
-      [username, email, id]
-    );
-    return { id, username, email };
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw CustomError.notFound("User not found");
+    }
+
+    await user.update({ username, email });
+    return user;
   },
 
   deleteUser: async (id) => {
-    const [result] = await database.query("DELETE FROM users WHERE id = ?", [
-      id,
-    ]);
-    if (result.affectedRows === 0) {
-      throw new Error("User not found");
+    const result = await User.destroy({
+      where: { id },
+    });
+
+    if (result === 0) {
+      throw CustomError.notFound("User not found");
     }
   },
 };

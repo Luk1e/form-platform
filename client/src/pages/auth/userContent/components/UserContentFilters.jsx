@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input, Button, Space, Select } from "antd";
 import {
   SearchOutlined,
@@ -7,13 +7,47 @@ import {
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import debounce from "lodash/debounce";
 
 const UserContentFilters = ({ activeView }) => {
+  const navigate = useNavigate();
   const { t } = useTranslation(["auth"]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState(
+    searchParams.get(activeView === "templates" ? "title" : "template_title") ||
+      ""
+  );
+
+  const debouncedRef = useRef();
+
+  useEffect(() => {
+    setSearchValue("");
+  }, [activeView]);
+
+  useEffect(() => {
+    debouncedRef.current = debounce((value) => {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set(
+        activeView === "templates" ? "title" : "template_title",
+        value || ""
+      );
+      newParams.set("page", "1");
+      setSearchParams(newParams);
+    }, 300);
+
+    return () => {
+      debouncedRef.current?.cancel();
+    };
+  }, [setSearchParams, searchParams, activeView]);
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    debouncedRef.current(value);
+  };
 
   const handleReset = () => {
+    setSearchValue("");
     setSearchParams({
       page: "1",
       limit: "10",
@@ -38,17 +72,8 @@ const UserContentFilters = ({ activeView }) => {
               activeView.slice(1).toLowerCase()
             }Placeholder`
           )}
-          value={
-            searchParams.get(
-              activeView === "templates" ? "title" : "template_title"
-            ) || ""
-          }
-          onChange={(e) =>
-            handleFilterChange(
-              activeView === "templates" ? "title" : "template_title",
-              e.target.value
-            )
-          }
+          value={searchValue}
+          onChange={handleSearch}
           prefix={<SearchOutlined />}
           className="w-40"
         />
