@@ -11,6 +11,7 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       });
 
       res.status(201).json({
@@ -38,6 +39,7 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       });
 
       res.json({
@@ -64,6 +66,7 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       });
 
       res.json({
