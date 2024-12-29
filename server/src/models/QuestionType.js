@@ -18,6 +18,7 @@ const QuestionType = sequelize.define(
         "single_choice"
       ),
       allowNull: false,
+      unique: true,
     },
   },
   {

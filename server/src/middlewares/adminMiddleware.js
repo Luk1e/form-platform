@@ -3,7 +3,6 @@ import { CustomError } from "../utils/index.js";
 
 const adminMiddleware = async (req, res, next) => {
   try {
- 
     const isAdmin = await adminService.isAdmin(req.userId);
 
     if (!isAdmin) {
