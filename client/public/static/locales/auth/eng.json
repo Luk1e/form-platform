@@ -14,6 +14,7 @@
       "addTags": "Add Tags",
       "templateImage": "Template Image",
       "selectImage": "Select Image",
+      "changeImage": "Change Image",
       "publicTemplate": "Public Template",
       "selectUsers": "Select users who can access this template"
     },
@@ -29,6 +30,11 @@
       "displayInSummary": "Display in Summary",
       "required": "Required"
     }
+  },
+  "updateTemplatePage": {
+    "updateTemplate": "Update Template",
+    "viewForms": "View Forms",
+    "deleteTemplate": "Delete Template"
   },
   "userContentPage": {
     "management": "My Content",
@@ -78,7 +84,9 @@
   "notifications": {
     "templateCreated": "Template Created",
     "templateCreatedDesc": "Template has been created successfully",
-    "templateDeleteSuccess": "Template deleted successfully"
+    "templateDeleteSuccess": "Template deleted successfully",
+    "templateUpdated": "Template Updated",
+    "templateUpdatedDesc": "Template has been updated successfully"
   },
   "errors": {
     "11": "Template not found",

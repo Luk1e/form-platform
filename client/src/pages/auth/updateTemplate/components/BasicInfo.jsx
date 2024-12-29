@@ -10,7 +10,24 @@ const BasicInfo = ({ formikProps, topics, tags, users }) => {
 
   const handleFileSelect = (file) => {
     setFieldValue("image_file", file);
+    setFieldValue("image_url", null);
     return false;
+  };
+
+  const initialFileList = values.image_url
+    ? [
+        {
+          uid: "-1",
+          name: "Current Image",
+          status: "done",
+          url: values.image_url,
+        },
+      ]
+    : [];
+
+  const handleRemove = () => {
+    setFieldValue("image_file", null);
+    setFieldValue("image_url", null);
   };
 
   return (
@@ -90,11 +107,15 @@ const BasicInfo = ({ formikProps, topics, tags, users }) => {
           showUploadList={true}
           beforeUpload={handleFileSelect}
           maxCount={1}
+          defaultFileList={initialFileList}
+          onRemove={handleRemove}
         >
           <button type="button" className="ant-btn ant-btn-default">
             <UploadOutlined />
             <span className="ml-2">
-              {t("createTemplatePage.basicInfo.selectImage")}
+              {values.image_url
+                ? t("createTemplatePage.basicInfo.changeImage")
+                : t("createTemplatePage.basicInfo.selectImage")}
             </span>
           </button>
         </Upload>

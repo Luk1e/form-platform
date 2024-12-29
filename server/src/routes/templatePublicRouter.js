@@ -20,7 +20,8 @@ router.get(
   validate(latestTemplateSearchSchema, true),
   templateController.getLatestTemplates
 );
-router.get("/tags", templateController.getTagCloud);
 router.get("/:id", templateController.getTemplateById);
+
+router.get("/tags", templateController.getTagCloud);
 
 export default router;

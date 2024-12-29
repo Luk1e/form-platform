@@ -5,11 +5,26 @@ export const updateTemplate = createAsyncThunk(
   "updateTemplate/update",
   async ({ id, templateData }, { rejectWithValue }) => {
     try {
+      const formData = new FormData();
+
+      if (templateData.image_file) {
+        formData.append("image", templateData.image_file);
+      }
+
+      const { image_file, image_url, ...restData } = templateData;
+      formData.append("data", JSON.stringify(restData));
+
       const { data } = await useAuthAxios.put(
         `/api/templates/${id}`,
-        templateData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
-      return data;
+
+      return data?.templateId;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -22,14 +37,14 @@ const updateTemplateSlice = createSlice({
     loading: false,
     error: null,
     success: false,
-    updatedTemplate: null,
+    updatedTemplateId: null,
   },
   reducers: {
     resetUpdateTemplateState: (state) => {
       state.loading = false;
       state.error = null;
       state.success = false;
-      state.updatedTemplate = null;
+      state.updatedTemplateId = null;
     },
   },
   extraReducers: (builder) => {
@@ -42,7 +57,7 @@ const updateTemplateSlice = createSlice({
       .addCase(updateTemplate.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.updatedTemplate = action.payload;
+        state.updatedTemplateId = action.payload;
       })
       .addCase(updateTemplate.rejected, (state, action) => {
         state.loading = false;

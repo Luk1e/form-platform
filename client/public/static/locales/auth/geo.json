@@ -14,6 +14,7 @@
       "addTags": "ტეგების დამატება",
       "templateImage": "შაბლონის სურათი",
       "selectImage": "აირჩიეთ სურათი",
+      "changeImage": "შეცვალეთ სურათი",
       "publicTemplate": "საჯარო შაბლონი",
       "selectUsers": "აირჩიეთ მომხმარებლები ვისაც ექნებათ წვდომა"
     },
@@ -29,6 +30,11 @@
       "displayInSummary": "შეჯამებაში ჩვენება",
       "required": "სავალდებულო"
     }
+  },
+  "updateTemplatePage": {
+    "updateTemplate": "შაბლონის რედაქტირება",
+    "viewForms": "ფორმების ნახვა",
+    "deleteTemplate": "შაბლონის წაშლა"
   },
   "userContentPage": {
     "management": "ჩემი კონტენტი",
@@ -78,7 +84,9 @@
   "notifications": {
     "templateCreated": "შაბლონი შეიქმნა",
     "templateCreatedDesc": "შაბლონი წარმატებით შეიქმნა",
-    "templateDeleteSuccess": "შაბლონი წარმატებით წაიშალა"
+    "templateDeleteSuccess": "შაბლონი წარმატებით წაიშალა",
+    "templateUpdated": "შაბლონია დარედაქტირდა",
+    "templateUpdatedDesc": "შაბლონი წარმატებით დარედაქტირდა"
   },
   "errors": {
     "11": "შაბლონი ვერ მოიძებნა",

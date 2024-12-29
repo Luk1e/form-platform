@@ -4,6 +4,7 @@ import updateTemplateSlice from "./updateTemplateSlice";
 import deleteTemplateSlice from "./deleteTemplateSlice";
 import popularTemplateSlice from "./popularTemplateSlice";
 import latestTemplateSlice from "./latestTemplateSlice";
+import getTemplateSlice from "./getTemplateSlice";
 
 const reducer = {
   templates: templateSlice,
@@ -12,6 +13,7 @@ const reducer = {
   popularTemplates: popularTemplateSlice,
   updateTemplate: updateTemplateSlice,
   deleteTemplate: deleteTemplateSlice,
+  template: getTemplateSlice,
 };
 
 export default reducer;

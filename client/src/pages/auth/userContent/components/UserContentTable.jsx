@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import {
-  fetchUserForms,
   fetchUserTemplates,
   deleteTemplate,
 } from "../../../../toolkit/user/userContentSlice";

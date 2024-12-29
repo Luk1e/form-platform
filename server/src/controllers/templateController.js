@@ -40,40 +40,78 @@ const templateController = {
     }
   },
 
-  getTemplateById: async (req, res, next) => {
+  getTemplateById: async (req, res) => {
     try {
-      const userId = req.user?.id; // Optional for public templates
-      const template = await templateService.getTemplateById(
-        req.params.id,
-        userId
-      );
+      const template = await templateService.getTemplateById(req.params.id);
       res.json(template);
     } catch (error) {
-      next(error);
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.toJSON());
+      }
+
+      console.error("Error getting template by id:", error);
+      res.status(500).json({
+        message: "Error get template by id",
+        errorCode: "GET_TEMPLATE_BY_ID_ERROR",
+      });
     }
   },
 
-  updateTemplate: async (req, res, next) => {
+  updateTemplate: async (req, res) => {
     try {
-      const template = await templateService.getTemplateById(
-        req.params.id,
-        req.user.id
-      );
+      const template = await templateService.getTemplateByPk(req.params.id);
 
-      if (!req.user.is_admin && template.user_id !== req.user.id) {
-        throw CustomError.forbidden("Not authorized to update this template");
+      if (!template) {
+        throw CustomError.notFound("Template not found", 11);
       }
 
-      await templateService.updateTemplate(req.params.id, req.body);
-      res.status(200).json({ message: "Template updated successfully" });
+      if (
+        !adminService.isAdmin(req.userId) &&
+        template.user_id !== req.userId
+      ) {
+        throw CustomError.forbidden(
+          "Not authorized to update this template",
+          12
+        );
+      }
+
+      let templateData = JSON.parse(req.body.data);
+
+      if (req.files && req.files.image) {
+        try {
+          const uploadResult = await supportService.uploadImage(
+            req.files.image
+          );
+          templateData.image_url = uploadResult.secure_url;
+        } catch (error) {
+          throw new CustomError("Image upload failed", 400);
+        }
+      } else {
+        templateData.image_url = "";
+      }
+
+      const templateId = await templateService.updateTemplate(
+        req.params.id,
+        templateData
+      );
+
+      res.status(200).json({ templateId });
     } catch (error) {
-      next(error);
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.toJSON());
+      }
+
+      console.error("Error updating template:", error);
+      res.status(500).json({
+        message: "Error updating template",
+        errorCode: "UPDATE_TEMPLATE_ERROR",
+      });
     }
   },
 
   deleteTemplate: async (req, res) => {
     try {
-      const template = await templateService.getTemplateById(req.params.id);
+      const template = await templateService.getTemplateByPk(req.params.id);
 
       if (!template) {
         throw CustomError.notFound("Template not found", 11);
@@ -103,6 +141,7 @@ const templateController = {
       });
     }
   },
+
   searchTemplates: async (req, res, next) => {
     try {
       const userId = req.user?.id;

@@ -4,6 +4,7 @@ import templatePublicRouter from "./templatePublicRouter.js";
 import templateProtectedRouter from "./templateProtectedRouter.js";
 import supportRouter from "./supportRouter.js";
 import userRouter from "./userRouter.js";
+
 const setupRoutes = (app) => {
   app.use("/api/auth", authRouter);
   app.use("/api/users", userRouter);

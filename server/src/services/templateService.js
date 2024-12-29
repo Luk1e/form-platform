@@ -15,7 +15,7 @@ const templateService = {
     const {
       title,
       description,
-      template_topic_id: topicId,
+      topic_id,
       image_url,
       is_public,
       tags,
@@ -26,13 +26,12 @@ const templateService = {
     const transaction = await models.sequelize.transaction();
 
     try {
-      // Create template
       const template = await Template.create(
         {
           user_id: userId,
           title,
           description,
-          template_topic_id: topicId,
+          template_topic_id: topic_id,
           image_url,
           is_public,
         },
@@ -106,128 +105,206 @@ const templateService = {
   },
 
   updateTemplate: async (templateId, templateData) => {
-    const connection = await database.getConnection();
+    const {
+      title,
+      description,
+      topic_id,
+      image_url,
+      is_public,
+      tags,
+      questions,
+      access_users,
+    } = templateData;
+
+    const transaction = await models.sequelize.transaction();
 
     try {
-      await connection.beginTransaction();
+      const template = await Template.findByPk(templateId, { transaction });
 
-      // Update template basic info
-      await connection.query(
-        `UPDATE templates 
-         SET title = ?, description = ?, topic_id = ?, image_url = ?, is_public = ?
-         WHERE id = ?`,
-        [
-          templateData.title,
-          templateData.description,
-          templateData.topic_id,
-          templateData.image_url,
-          templateData.is_public,
-          templateId,
-        ]
+      // Update basic template info
+      await template.update(
+        {
+          title,
+          description,
+          template_topic_id: topic_id,
+          image_url,
+          is_public,
+        },
+        { transaction }
       );
 
-      // Update tags
-      await connection.query(
-        "DELETE FROM template_tag_mapping WHERE template_id = ?",
-        [templateId]
-      );
+      // Handle tags
+      if (tags !== undefined) {
+        const uniqueTags = Array.isArray(tags)
+          ? [...new Set(tags.map((tag) => tag.toLowerCase().trim()))]
+          : [];
 
-      if (templateData.tags && templateData.tags.length > 0) {
-        const tagIds = await Promise.all(
-          templateData.tags.map(async (tagName) => {
-            const [existingTag] = await connection.query(
-              "INSERT INTO template_tags (name) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)",
-              [tagName.toLowerCase().trim()]
-            );
-            return existingTag.insertId;
+        const createdTags = await Promise.all(
+          uniqueTags.map(async (tagName) => {
+            const [tag] = await TemplateTag.findOrCreate({
+              where: { name: tagName },
+              transaction,
+            });
+            return tag;
           })
         );
 
-        await connection.query(
-          "INSERT INTO template_tag_mapping (template_id, tag_id) VALUES ?",
-          [tagIds.map((tagId) => [templateId, tagId])]
-        );
+        await template.setTemplateTags(createdTags, { transaction });
       }
 
-      // Update access control
-      await connection.query(
-        "DELETE FROM template_access_control WHERE template_id = ?",
-        [templateId]
-      );
-
-      if (
-        !templateData.is_public &&
-        templateData.access_users &&
-        templateData.access_users.length > 0
-      ) {
-        await connection.query(
-          "INSERT INTO template_access_control (template_id, user_id) VALUES ?",
-          [templateData.access_users.map((userId) => [templateId, userId])]
-        );
+      // Handle access control
+      if (is_public) {
+        await template.setAccessUsers([], { transaction });
+      } else if (Array.isArray(access_users)) {
+        const users = await User.findAll({
+          where: {
+            id: [...new Set(access_users)],
+            is_blocked: false,
+          },
+          transaction,
+        });
+        await template.setAccessUsers(users, { transaction });
       }
 
-      // Update questions
-      await connection.query(
-        "DELETE FROM template_questions WHERE template_id = ?",
-        [templateId]
-      );
-
-      if (templateData.questions && templateData.questions.length > 0) {
-        const questionInserts = templateData.questions.map(
-          (question, index) => [
-            templateId,
-            question.type_id,
-            question.title,
-            question.description,
-            question.display_in_summary || false,
-            index + 1,
-            question.is_required || false,
-          ]
-        );
-
-        const [questionsResult] = await connection.query(
-          `INSERT INTO template_questions 
-          (template_id, type_id, title, description, display_in_summary, position, is_required) 
-          VALUES ?`,
-          [questionInserts]
-        );
-
-        // Handle question options
-        const questionOptionInserts = [];
-        templateData.questions.forEach((question, index) => {
-          if (
-            question.type_id === 5 &&
-            question.options &&
-            question.options.length > 0
-          ) {
-            question.options.forEach((option) => {
-              questionOptionInserts.push([
-                questionsResult.insertId + index,
-                option,
-              ]);
-            });
-          }
+      // Handle questions
+      if (Array.isArray(questions)) {
+        // Delete all existing questions and their options
+        await TemplateQuestion.destroy({
+          where: { template_id: template.id },
+          transaction,
         });
 
-        if (questionOptionInserts.length > 0) {
-          await connection.query(
-            "INSERT INTO question_options (question_id, value) VALUES ?",
-            [questionOptionInserts]
-          );
-        }
+        // Create new questions
+        await Promise.all(
+          questions.map(async (question, index) => {
+            const createdQuestion = await TemplateQuestion.create(
+              {
+                template_id: template.id,
+                question_type_id: question.type_id,
+                title: question.title,
+                description: question.description,
+                display_in_summary: Boolean(question.display_in_summary),
+                position: index + 1,
+                is_required: Boolean(question.is_required),
+              },
+              { transaction }
+            );
+
+            // Handle options for single choice (4) and checkbox (5) questions
+            if (
+              (question.type_id === 4 || question.type_id === 5) &&
+              Array.isArray(question.options)
+            ) {
+              const uniqueOptions = [...new Set(question.options)]
+                .map((opt) => opt.trim())
+                .filter(Boolean);
+
+              await QuestionOption.bulkCreate(
+                uniqueOptions.map((option) => ({
+                  template_question_id: createdQuestion.id,
+                  value: option,
+                })),
+                { transaction }
+              );
+            }
+
+            return createdQuestion;
+          })
+        );
       }
 
-      await connection.commit();
+      await transaction.commit();
+      return template.id;
     } catch (error) {
-      await connection.rollback();
+      await transaction.rollback();
       throw error;
-    } finally {
-      connection.release();
     }
   },
 
+  getTemplateByPk: async (templateId) => {
+    const template = await models.Template.findByPk(templateId);
+    return template;
+  },
+
   getTemplateById: async (templateId) => {
-    return await Template.findByPk(templateId);
+    const template = await models.Template.findByPk(templateId, {
+      include: [
+        {
+          model: models.TemplateTag,
+          through: { attributes: [] },
+          attributes: [
+            ["id", "id"],
+            ["name", "name"],
+          ],
+        },
+        {
+          model: models.TemplateTopic,
+          attributes: [
+            ["id", "id"],
+            ["name", "name"],
+          ],
+        },
+        {
+          model: models.User,
+          attributes: [
+            ["id", "id"],
+            ["username", "username"],
+            ["email", "email"],
+          ],
+        },
+        {
+          model: models.User,
+          as: "AccessUsers",
+          attributes: [
+            ["id", "id"],
+            ["username", "username"],
+            ["email", "email"],
+          ],
+          through: { attributes: [] },
+        },
+        {
+          model: models.TemplateQuestion,
+          attributes: [
+            ["id", "id"],
+            ["title", "title"],
+            ["description", "description"],
+            ["display_in_summary", "display_in_summary"],
+            ["position", "position"],
+            ["is_required", "is_required"],
+          ],
+          include: [
+            {
+              model: models.QuestionType,
+              attributes: [
+                ["id", "id"],
+                ["name", "name"],
+              ],
+            },
+            {
+              model: models.QuestionOption,
+              attributes: [
+                ["id", "id"],
+                ["value", "value"],
+              ],
+            },
+          ],
+          order: [["position", "ASC"]],
+        },
+      ],
+      nest: true,
+    });
+
+    if (!template) {
+      throw CustomError.notFound("Template not found", 11);
+    }
+
+    const plainTemplate = template.get({ plain: true });
+
+    if (plainTemplate.is_public) {
+      delete plainTemplate.AccessUsers;
+    }
+
+    return plainTemplate;
   },
 
   deleteTemplate: async (templateId) => {
