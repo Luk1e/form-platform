@@ -9,6 +9,16 @@
     "signUpText": "Create a new account",
     "registerButton": "Sign up",
     "orContinueWith": "Or continue with",
+    "loadMore": "Load More",
+    "backHome": "Back Home",
+    "goBack": "Go Back",
+    "pageNotFound": "Sorry, the page you visited does not exist."
+  },
+  "search": {
+    "templates": "Templates",
+    "totalResults": "{{count}} templates found",
+    "noResults": "No templates found",
+    "error": "An error occurred while searching",
     "loadMore": "Load More"
   },
   "homePage": {

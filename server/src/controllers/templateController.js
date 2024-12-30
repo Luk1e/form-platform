@@ -142,13 +142,26 @@ const templateController = {
     }
   },
 
-  searchTemplates: async (req, res, next) => {
+  searchTemplates: async (req, res) => {
     try {
-      const userId = req.user?.id;
-      const results = await templateService.searchTemplates(req.query, userId);
-      res.json(results);
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const query = req.query.query || "";
+      const tagId = req.query.tag;
+
+      const templates = await templateService.searchTemplates(
+        query,
+        page,
+        limit,
+        tagId
+      );
+      res.json(templates);
     } catch (error) {
-      next(error);
+      console.error("Error searching templates:", error);
+      res.status(500).json({
+        message: "Error searching templates",
+        errorCode: "SEARCH_TEMPLATES_ERROR",
+      });
     }
   },
 
@@ -210,30 +223,6 @@ const templateController = {
     try {
       const comments = await templateService.getComments(req.params.id);
       res.json(comments);
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  getUserTemplates: async (req, res, next) => {
-    try {
-      if (!req.user.is_admin && req.params.userId !== req.user.id) {
-        throw CustomError.forbidden("Not authorized to view these templates");
-      }
-
-      const templates = await templateService.getUserTemplates(
-        req.params.userId
-      );
-      res.json(templates);
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  getTagCloud: async (req, res, next) => {
-    try {
-      const tags = await templateService.getTagCloud();
-      res.json(tags);
     } catch (error) {
       next(error);
     }

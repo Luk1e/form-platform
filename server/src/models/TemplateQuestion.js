@@ -32,6 +32,13 @@ const TemplateQuestion = sequelize.define(
   {
     tableName: "template_questions",
     timestamps: false,
+    indexes: [
+      {
+        type: "FULLTEXT",
+        name: "template_questions_search_idx",
+        fields: ["title", "description"],
+      },
+    ],
   }
 );
 

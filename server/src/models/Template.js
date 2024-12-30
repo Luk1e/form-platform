@@ -29,6 +29,13 @@ const Template = sequelize.define(
     timestamps: true,
     createdAt: "created_at",
     updatedAt: false,
+    indexes: [
+      {
+        type: "FULLTEXT",
+        name: "templates_search_idx",
+        fields: ["title", "description"],
+      },
+    ],
   }
 );
 

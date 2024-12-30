@@ -40,8 +40,8 @@ const HomePage = () => {
     };
   }, [dispatch]);
 
-  const handleTagClick = (tagName) => {
-    navigate(`/search?tag=${encodeURIComponent(tagName)}`);
+  const handleTagClick = (tagId) => {
+    navigate(`/search?tag=${tagId}`);
   };
 
   const handleLoadMore = () => {

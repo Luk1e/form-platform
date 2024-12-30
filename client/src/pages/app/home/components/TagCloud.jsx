@@ -25,7 +25,7 @@ const TagCloud = ({ tags, onTagClick }) => {
       {tags.map((tag) => (
         <Tag
           key={tag.name}
-          onClick={() => onTagClick(tag.name)}
+          onClick={() => onTagClick(tag.id)}
           style={tagStyle}
           className="inline-flex items-center rounded-full m-0.5 text-xs sm:text-sm"
           color={getTagColor(tag.count)}

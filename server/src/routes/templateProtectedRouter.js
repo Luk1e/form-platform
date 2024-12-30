@@ -26,6 +26,5 @@ router.put(
 router.post("/:id/like", templateController.toggleLike);
 router.post("/:id/comment", templateController.addComment);
 router.get("/:id/comments", templateController.getComments);
-router.get("/user/:userId", templateController.getUserTemplates);
 
 export default router;

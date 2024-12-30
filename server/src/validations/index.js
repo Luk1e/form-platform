@@ -7,7 +7,6 @@ export { loginSchema, registerSchema } from "./authValidationSchemas.js";
 
 export {
   createTemplateSchema,
-  templateSearchSchema,
   updateTemplateSchema,
   latestTemplateSearchSchema,
 } from "./templateValidationSchema.js";

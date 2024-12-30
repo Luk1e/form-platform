@@ -1,6 +1,7 @@
 import database from "../../config/database.js";
 import { CustomError } from "../utils/index.js";
 import models from "../models/index.js";
+import { Op } from "sequelize";
 const {
   User,
   Template,
@@ -8,6 +9,9 @@ const {
   FilledForm,
   QuestionOption,
   TemplateQuestion,
+  Comment,
+  QuestionType,
+  sequelize,
 } = models;
 
 const templateService = {
@@ -434,40 +438,73 @@ const templateService = {
     return rows;
   },
 
-  searchTemplatesByTag: async (tag, page = 1, limit = 10) => {
+  searchTemplates: async (query, page, limit, tagId) => {
     const offset = (page - 1) * limit;
 
-    const [rows] = await database.query(
-      `
-      SELECT DISTINCT t.*, u.username as author
-      FROM templates t
-      JOIN template_tag_mapping ttm ON t.id = ttm.template_id
-      JOIN template_tags tt ON ttm.tag_id = tt.id
-      JOIN users u ON t.user_id = u.id
-      WHERE tt.name = ? AND t.is_public = TRUE
-      LIMIT ? OFFSET ?
-    `,
-      [tag, limit, offset]
-    );
+    // Base query parameters
+    const queryOptions = {
+      attributes: ["id", "title", "description", "image_url"],
+      include: [
+        {
+          model: User,
+          attributes: ["username"],
+        },
+      ],
+      distinct: true,
+      order: [["created_at", "DESC"]],
+      limit,
+      offset,
+      subQuery: false,
+    };
 
-    const [countResult] = await database.query(
-      `
-      SELECT COUNT(DISTINCT t.id) as total
-      FROM templates t
-      JOIN template_tag_mapping ttm ON t.id = ttm.template_id
-      JOIN template_tags tt ON ttm.tag_id = tt.id
-      WHERE tt.name = ? AND t.is_public = TRUE
-    `,
-      [tag]
-    );
+    // If tagId is provided, add tag filtering
+    if (tagId) {
+      queryOptions.include.push({
+        model: TemplateTag,
+        attributes: [],
+        through: { attributes: [] },
+        where: { id: tagId },
+      });
+    }
+
+    // Add fulltext search if query is provided
+    if (query && query.trim()) {
+      const searchQuery = `*${query.trim()}*`;
+      queryOptions.where = {
+        [Op.or]: [
+          sequelize.literal(
+            `MATCH(Template.title, Template.description) AGAINST(:searchQuery IN BOOLEAN MODE)`
+          ),
+          sequelize.literal(`EXISTS (
+              SELECT 1 FROM comments
+              WHERE comments.template_id = Template.id
+              AND MATCH(comments.content) AGAINST(:searchQuery IN BOOLEAN MODE)
+            )`),
+          sequelize.literal(`EXISTS (
+              SELECT 1 FROM template_questions
+              WHERE template_questions.template_id = Template.id
+              AND MATCH(template_questions.title, template_questions.description) AGAINST(:searchQuery IN BOOLEAN MODE)
+            )`),
+        ],
+      };
+      queryOptions.replacements = { searchQuery };
+    }
+
+    const searchResults = await Template.findAndCountAll(queryOptions);
 
     return {
-      templates: rows,
+      templates: searchResults.rows.map((template) => ({
+        id: template.id,
+        title: template.title,
+        description: template.description,
+        image_url: template.image_url,
+        author: template.User.username,
+      })),
       pagination: {
         currentPage: page,
         pageSize: limit,
-        totalTemplates: countResult[0].total,
-        totalPages: Math.ceil(countResult[0].total / limit),
+        totalTemplates: searchResults.count,
+        totalPages: Math.ceil(searchResults.count / limit),
       },
     };
   },

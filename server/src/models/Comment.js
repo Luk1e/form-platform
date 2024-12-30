@@ -19,6 +19,13 @@ const Comment = sequelize.define(
     timestamps: true,
     createdAt: "created_at",
     updatedAt: false,
+    indexes: [
+      {
+        type: "FULLTEXT",
+        name: "comments_search_idx",
+        fields: ["content"],
+      },
+    ],
   }
 );
 
