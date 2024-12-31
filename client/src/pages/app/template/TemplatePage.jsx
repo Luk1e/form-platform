@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Card } from "antd";
@@ -11,7 +11,7 @@ import {
 import {
   QuestionList,
   TemplateHeader,
-  TemplateFooter,
+  TemplateEngagement,
   TemplateInfo,
 } from "./components";
 
@@ -64,12 +64,7 @@ const TemplatePage = () => {
             />
             <TemplateInfo template={template} />
             <QuestionList questions={template.TemplateQuestions} />
-            <TemplateFooter
-              likeCount={template.like_count}
-              commentCount={template.comment_count}
-              hasLiked={template.has_liked}
-              username={template.User.username}
-            />
+            <TemplateEngagement username={template.User.username} />
           </div>
         </Card>
       )}

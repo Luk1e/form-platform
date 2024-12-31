@@ -3,7 +3,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { CustomError } from "../utils/index.js";
 import dotenv from "dotenv";
 import { Op } from "sequelize";
-const { User, Template, TemplateTopic, TemplateTag } = models;
+const { User, Template, TemplateTopic, TemplateTag, sequelize } = models;
 
 dotenv.config();
 
@@ -115,6 +115,55 @@ const supportService = {
     });
 
     return users;
+  },
+
+  getTemplateEngagement: async (templateId, userId) => {
+    const parsedUserid = parseInt(userId) ? parseInt(userId) : null;
+    const engagement = await models.Template.findOne({
+      where: { id: templateId },
+      attributes: [
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM comments WHERE comments.template_id = Template.id)"
+          ),
+          "comment_count",
+        ],
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM likes WHERE likes.template_id = Template.id)"
+          ),
+          "like_count",
+        ],
+        [
+          sequelize.literal(
+            `CASE
+                WHEN ${parsedUserid} IS NULL THEN FALSE
+                ELSE (SELECT COUNT(*) > 0 FROM likes WHERE likes.template_id = Template.id AND likes.user_id = ${parsedUserid})
+               END`
+          ),
+          "has_liked",
+        ],
+      ],
+      include: [
+        {
+          model: models.Comment,
+          attributes: ["id", "content", "created_at"],
+          include: [
+            {
+              model: models.User,
+              attributes: ["id", "username"],
+            },
+          ],
+          order: [["created_at", "DESC"]],
+        },
+      ],
+    });
+
+    if (!engagement) {
+      throw CustomError.notFound("Template not found", 11);
+    }
+
+    return engagement.get({ plain: true });
   },
 };
 

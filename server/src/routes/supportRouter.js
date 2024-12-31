@@ -7,6 +7,7 @@ const router = express.Router();
 router.get("/tags", supportController.getTags);
 router.get("/tagCloud", supportController.getTagCloud);
 router.get("/topics", supportController.getTopics);
+router.get("/engagements/:id", supportController.getTemplateEngagement);
 
 router.use(authMiddleware);
 router.get("/users", supportController.getUsers);

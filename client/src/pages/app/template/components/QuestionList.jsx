@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Tag } from "antd";
+import { Card } from "antd";
 import {
   FormOutlined,
   AlignLeftOutlined,
@@ -8,6 +8,7 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import RenderQuestionOptions from "./RenderQuestionOptions";
+import { useTranslation } from "react-i18next";
 
 const questionTypeConfig = {
   single_line: {
@@ -40,9 +41,12 @@ const questionTypeConfig = {
 };
 
 const QuestionList = ({ questions }) => {
+  const { t } = useTranslation(["app"]);
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium dark:text-gray-200">Questions</h3>
+      <h3 className="text-lg font-medium dark:text-gray-200">
+        {t("templatePage.questions")}
+      </h3>
       {questions.map((question, index) => {
         const typeConfig = questionTypeConfig[question.QuestionType.name];
 
@@ -63,14 +67,6 @@ const QuestionList = ({ questions }) => {
                     <span className="text-red-500 dark:text-red-400 text-sm">
                       *
                     </span>
-                  )}
-                  {question.display_in_summary && (
-                    <Tag
-                      color="blue"
-                      className="text-xs dark:bg-blue-900/60 dark:text-blue-300"
-                    >
-                      Display in Summary
-                    </Tag>
                   )}
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 mt-1">

@@ -42,10 +42,7 @@ const templateController = {
 
   getTemplateById: async (req, res) => {
     try {
-      const template = await templateService.getTemplateById(
-        req.params.id,
-        req.query.userId
-      );
+      const template = await templateService.getTemplateById(req.params.id);
       res.json(template);
     } catch (error) {
       if (error instanceof CustomError) {
@@ -191,18 +188,6 @@ const templateController = {
         message: "Error getting latest templates",
         errorCode: "GET_LATEST_TEMPLATES_ERROR",
       });
-    }
-  },
-
-  toggleLike: async (req, res, next) => {
-    try {
-      const result = await templateService.toggleLike(
-        req.params.id,
-        req.user.id
-      );
-      res.json(result);
-    } catch (error) {
-      next(error);
     }
   },
 

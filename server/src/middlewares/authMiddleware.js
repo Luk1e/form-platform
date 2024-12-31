@@ -15,6 +15,7 @@ const authMiddleware = (req, res, next) => {
   try {
     const userId = jwtService.verifyToken(token, csrfToken);
     req.userId = userId;
+
     next();
   } catch (error) {
     return res.status(401).json({ error: error.message });

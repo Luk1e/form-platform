@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 import models from "../models/index.js";
 import { CustomError } from "../utils/index.js";
 
-const { User, Template, FilledForm } = models;
+const { Like, Template, FilledForm } = models;
 
 const userService = {
   getUserTemplatesWithFilters: async (userId, filters) => {
@@ -134,37 +134,51 @@ const userService = {
     };
   },
 
-  getAllUsers: async () => {
-    const users = await User.findAll();
-    return users;
-  },
-
-  getUserById: async (id) => {
-    const user = await User.findByPk(id);
-    if (!user) {
-      throw CustomError.notFound("User not found");
-    }
-    return user;
-  },
-
-  updateUser: async (id, username, email) => {
-    const user = await User.findByPk(id);
-    if (!user) {
-      throw CustomError.notFound("User not found");
+  toggleLike: async (templateId, userId) => {
+    const template = await Template.findByPk(templateId);
+    if (!template) {
+      throw CustomError.notFound("Template not found", 11);
     }
 
-    await user.update({ username, email });
-    return user;
-  },
-
-  deleteUser: async (id) => {
-    const result = await User.destroy({
-      where: { id },
+    const existingLike = await Like.findOne({
+      where: {
+        template_id: templateId,
+        user_id: userId,
+      },
     });
 
-    if (result === 0) {
-      throw CustomError.notFound("User not found");
+    if (existingLike) {
+      await existingLike.destroy();
+      return { liked: false };
+    } else {
+      await Like.create({
+        template_id: templateId,
+        user_id: userId,
+      });
     }
+  },
+
+  addComment: async (templateId, userId, content) => {
+    if (
+      !content ||
+      typeof content !== "string" ||
+      content.trim().length === 0
+    ) {
+      throw CustomError.badRequest("Comment content cannot be empty", 37);
+    }
+
+    const template = await models.Template.findByPk(templateId);
+    if (!template) {
+      throw CustomError.notFound("Template not found", 11);
+    }
+
+    const comment = await models.Comment.create({
+      content: content.trim(),
+      template_id: templateId,
+      user_id: userId,
+    });
+
+    return comment;
   },
 };
 

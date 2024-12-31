@@ -230,7 +230,7 @@ const templateService = {
     return template;
   },
 
-  getTemplateById: async (templateId, userId) => {
+  getTemplateById: async (templateId) => {
     const template = await models.Template.findOne({
       where: { id: templateId },
       include: [
@@ -296,30 +296,6 @@ const templateService = {
           order: [["position", "ASC"]],
         },
       ],
-      attributes: {
-        include: [
-          [
-            sequelize.literal(
-              "(SELECT COUNT(*) FROM comments WHERE comments.template_id = Template.id)"
-            ),
-            "comment_count",
-          ],
-          [
-            sequelize.literal(
-              "(SELECT COUNT(*) FROM likes WHERE likes.template_id = Template.id)"
-            ),
-            "like_count",
-          ],
-          [
-            sequelize.literal(
-              userId
-                ? `(SELECT COUNT(*) > 0 FROM likes WHERE likes.template_id = Template.id AND likes.user_id = ${userId})`
-                : "FALSE"
-            ),
-            "has_liked",
-          ],
-        ],
-      },
       nest: true,
     });
 
@@ -328,11 +304,9 @@ const templateService = {
     }
 
     const plainTemplate = template.get({ plain: true });
-
     if (plainTemplate.is_public) {
       delete plainTemplate.AccessUsers;
     }
-
     return plainTemplate;
   },
 
@@ -407,27 +381,6 @@ const templateService = {
         totalPages: Math.ceil(count / limit),
       },
     };
-  },
-
-  toggleLike: async (templateId, userId) => {
-    const [existing] = await database.query(
-      "SELECT 1 FROM likes WHERE template_id = ? AND user_id = ?",
-      [templateId, userId]
-    );
-
-    if (existing.length > 0) {
-      await database.query(
-        "DELETE FROM likes WHERE template_id = ? AND user_id = ?",
-        [templateId, userId]
-      );
-      return { liked: false };
-    } else {
-      await database.query(
-        "INSERT INTO likes (template_id, user_id) VALUES (?, ?)",
-        [templateId, userId]
-      );
-      return { liked: true };
-    }
   },
 
   addComment: async (templateId, userId, content) => {

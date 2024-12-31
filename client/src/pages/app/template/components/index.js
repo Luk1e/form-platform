@@ -1,6 +1,6 @@
 import TemplateInfo from "./TemplateInfo";
 import QuestionList from "./QuestionList";
-import TemplateFooter from "./TemplateFooter";
+import TemplateEngagement from "./TemplateEngagement";
 import TemplateHeader from "./TemplateHeader";
 
-export { TemplateInfo, TemplateFooter, TemplateHeader, QuestionList };
+export { TemplateInfo, TemplateEngagement, TemplateHeader, QuestionList };

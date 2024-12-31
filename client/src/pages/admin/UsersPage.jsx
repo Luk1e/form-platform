@@ -3,7 +3,7 @@ import { Card, Spin } from "antd";
 import { useTranslation } from "react-i18next";
 import UsersTable from "./components/UsersTable";
 import UserFilters from "./components/UserFilters";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { fetchUsers } from "../../toolkit/admin/adminSlice";
 

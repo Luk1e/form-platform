@@ -42,7 +42,14 @@
     "displayInSummary": "შეჯამება",
     "required": "სავალდებულო",
     "topic": "თემა",
-    "tags": "თეგები"
+    "tags": "თეგები",
+    "loginToComment": "გაიარეთ ავტორიზაცია",
+    "emptyComment": "კომენტარი ცარიელია",
+    "commentAdded": "კომენტარი დაემატა",
+    "commentError": "კომენტარი ვერ დაემატა",
+    "addComment": "დაამატეთ კომენტარი...",
+    "send": "გაგზავნა",
+    "loginToLike": "გაიარეთ ავტორიზაცია"
   },
   "notifications": {
     "loginSuccess": "კეთილი იყოს თქვენი დაბრუნება!",

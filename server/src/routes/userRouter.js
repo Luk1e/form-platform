@@ -25,4 +25,8 @@ router.get(
   userController.getUserFormsWithFilters
 );
 
+router.post("/templates/:id/comment", userController.addComment);
+
+router.post("/templates/:id/like", userController.toggleLike);
+
 export default router;

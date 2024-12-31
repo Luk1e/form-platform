@@ -53,6 +53,26 @@ const supportController = {
       });
     }
   },
+
+  getTemplateEngagement: async (req, res) => {
+    try {
+      const engagements = await supportService.getTemplateEngagement(
+        req.params.id,
+        req.query.userId
+      );
+      res.json(engagements);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.toJSON());
+      }
+
+      console.error("Error getting template engagements:", error);
+      res.status(500).json({
+        message: "Error template engagements",
+        errorCode: "GET_TEMPLATE_ENGAGEMENTS_ERROR",
+      });
+    }
+  },
 };
 
 export default supportController;

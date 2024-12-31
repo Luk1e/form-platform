@@ -42,7 +42,14 @@
     "displayInSummary": "Summary",
     "required": "Required",
     "topic": "Topic",
-    "tags": "Tags"
+    "tags": "Tags",
+    "loginToComment": "Please login to comment",
+    "emptyComment": "Comment cannot be empty",
+    "commentAdded": "Comment added successfully",
+    "commentError": "Failed to add comment",
+    "addComment": "Add a comment...",
+    "send": "Send",
+    "loginToLike": "Please login to like"
   },
   "notifications": {
     "loginSuccess": "Welcome back!",
