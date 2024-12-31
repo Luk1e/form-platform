@@ -6,7 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
 import {
-  getTemplateById,
+  getUserTemplateById,
   resetGetTemplateState,
 } from "../../../toolkit/templates/getTemplateSlice";
 import { deleteTemplate } from "../../../toolkit/templates/deleteTemplateSlice";
@@ -21,13 +21,24 @@ const UpdateTemplatePage = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(getTemplateById(id));
+      const fetchTemplate = async () => {
+        try {
+          await dispatch(getUserTemplateById(id)).unwrap();
+        } catch (error) {
+          notification.error({
+            message: error.errorCode
+              ? t(`errors.${error.errorCode}`)
+              : "Something went wrong",
+          });
+        }
+      };
+
+      fetchTemplate();
     }
     return () => {
       dispatch(resetGetTemplateState());
     };
-  }, [dispatch, id]);
-
+  }, [dispatch, id, t]);
   const navigateToForms = () => {
     navigate(`/templates/${id}/forms`);
   };

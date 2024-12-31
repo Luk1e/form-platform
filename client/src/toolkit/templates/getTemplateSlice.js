@@ -1,11 +1,23 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { useAuthAxios } from "../../utils/hooks/useAxios";
+import { useAxios, useAuthAxios } from "../../utils/hooks/useAxios";
+
+export const getUserTemplateById = createAsyncThunk(
+  "getTemplate/getUserTemplateById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await useAuthAxios.get(`/api/users/templates/${id}`);
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 
 export const getTemplateById = createAsyncThunk(
   "getTemplate/getTemplateById",
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await useAuthAxios.get(`/api/templates/${id}`);
+      const { data } = await useAxios.get(`/api/templates/${id}`);
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -37,6 +49,17 @@ const getTemplateSlice = createSlice({
         state.template = action.payload;
       })
       .addCase(getTemplateById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getUserTemplateById.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUserTemplateById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.template = action.payload;
+      })
+      .addCase(getUserTemplateById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -82,7 +82,6 @@
     "questionsMax": "Maximum 10 questions allowed"
   },
   "notifications": {
-    "templateCreated": "Template Created",
     "templateCreatedDesc": "Template has been created successfully",
     "templateDeleteSuccess": "Template deleted successfully",
     "templateUpdated": "Template Updated",
@@ -90,6 +89,7 @@
   },
   "errors": {
     "11": "Template not found",
-    "12": "Not authorized to delete this template"
+    "12": "Not authorized to delete this template",
+    "23": "Not authorized to get this template"
   }
 }

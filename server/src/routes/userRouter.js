@@ -11,6 +11,8 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
+router.get("/templates/:id", userController.getUserTemplateByID);
+
 router.get(
   "/my-templates",
   validate(userTemplatesSearchSchema),

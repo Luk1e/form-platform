@@ -51,7 +51,7 @@ const templateController = {
 
       console.error("Error getting template by id:", error);
       res.status(500).json({
-        message: "Error get template by id",
+        message: "Error getting template by id",
         errorCode: "GET_TEMPLATE_BY_ID_ERROR",
       });
     }
@@ -60,15 +60,12 @@ const templateController = {
   updateTemplate: async (req, res) => {
     try {
       const template = await templateService.getTemplateByPk(req.params.id);
-
+      const isAdmin = await adminService.isAdmin(req.userId);
       if (!template) {
         throw CustomError.notFound("Template not found", 11);
       }
 
-      if (
-        !adminService.isAdmin(req.userId) &&
-        template.user_id !== req.userId
-      ) {
+      if (!isAdmin && template.user_id !== req.userId) {
         throw CustomError.forbidden(
           "Not authorized to update this template",
           12
