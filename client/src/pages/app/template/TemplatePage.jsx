@@ -60,6 +60,8 @@ const TemplatePage = () => {
           <div className="space-y-6">
             <TemplateHeader
               title={template.title}
+              user={user}
+              access_users={template.AccessUsers}
               onToggleView={handleToggleView}
             />
             <TemplateInfo template={template} />
