@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import PropTypes from "prop-types";
-import HomePage from "../pages/app/home/HomePage";
+import ErrorPage from "../pages/app/error/ErrorPage";
 import { Spin } from "antd";
 
 function AdminLayout({ user, loading }) {
@@ -12,7 +12,7 @@ function AdminLayout({ user, loading }) {
     );
   }
 
-  return user?.isAdmin ? <Outlet /> : <HomePage />;
+  return user?.isAdmin ? <Outlet /> : <ErrorPage />;
 }
 
 AdminLayout.propTypes = {
