@@ -8,7 +8,7 @@ export const getPopularColumns = (t) => [
     key: "title",
     render: (text, record) => (
       <Link
-        to={`/template/${record.id}`}
+        to={`/templates/${record.id}`}
         className="text-blue-600 hover:text-blue-800"
       >
         {text}

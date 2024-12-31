@@ -6,6 +6,7 @@ const LoginPage = lazy(() => import("../pages/app/login/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/app/register/RegisterPage"));
 const ErrorPage = lazy(() => import("../pages/app/error/ErrorPage"));
 const SearchPage = lazy(() => import("../pages/app/search/SearchPage"));
+const TemplatePage = lazy(() => import("../pages/app/template/TemplatePage"));
 
 export default function PublicRoutes() {
   return {
@@ -20,6 +21,11 @@ export default function PublicRoutes() {
         path: "search",
         element: <SearchPage />,
       },
+      {
+        path: "templates/:id",
+        element: <TemplatePage />,
+      },
+
       {
         path: "login",
         element: <LoginPage />,

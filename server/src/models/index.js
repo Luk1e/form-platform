@@ -89,8 +89,19 @@ Comment.belongsTo(Template, { foreignKey: "template_id" });
 User.hasMany(Comment, { foreignKey: "user_id", onDelete: "CASCADE" });
 Comment.belongsTo(User, { foreignKey: "user_id" });
 
-User.belongsToMany(Template, { through: Like, onDelete: "CASCADE" });
-Template.belongsToMany(User, { through: Like, onDelete: "CASCADE" });
+User.belongsToMany(Template, {
+  through: Like,
+  foreignKey: "user_id",
+  otherKey: "template_id",
+  onDelete: "CASCADE",
+});
+
+Template.belongsToMany(User, {
+  through: Like,
+  foreignKey: "template_id",
+  otherKey: "user_id",
+  onDelete: "CASCADE",
+});
 
 const models = {
   User,

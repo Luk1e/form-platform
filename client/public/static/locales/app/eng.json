@@ -30,6 +30,20 @@
     "templateName": "Template Name",
     "imageNotAvailable": "No Image Available"
   },
+  "templatePage": {
+    "view": "View",
+    "fill": "Fill",
+    "visibility": "Visibility",
+    "public": "Public",
+    "private": "Private",
+    "questions": "Questions",
+    "toggleLike": "Toggle like",
+    "createdBy": "Created by",
+    "displayInSummary": "Summary",
+    "required": "Required",
+    "topic": "Topic",
+    "tags": "Tags"
+  },
   "notifications": {
     "loginSuccess": "Welcome back!",
     "welcomeBack": "Successfully signed in to your account",
@@ -59,6 +73,7 @@
     "1": "Invalid credentials",
     "2": "User is blocked",
     "3": "Email is already registered",
+    "11": "Template not found",
     "4": "Username is already taken"
   }
 }

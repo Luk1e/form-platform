@@ -15,9 +15,12 @@ export const getUserTemplateById = createAsyncThunk(
 
 export const getTemplateById = createAsyncThunk(
   "getTemplate/getTemplateById",
-  async (id, { rejectWithValue }) => {
+  async ({ id, userId }, { rejectWithValue }) => {
     try {
-      const { data } = await useAxios.get(`/api/templates/${id}`);
+      const { data } = await useAxios.get(
+        `/api/templates/${id}?query=${userId}`
+      );
+
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);

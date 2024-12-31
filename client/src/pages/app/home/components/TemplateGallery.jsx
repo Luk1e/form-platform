@@ -21,7 +21,7 @@ const TemplateGallery = ({ templates }) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
       {templates.map((template) => (
         <Link
-          to={`/template/${template.id}`}
+          to={`/templates/${template.id}`}
           key={template.id}
           className="block group"
         >

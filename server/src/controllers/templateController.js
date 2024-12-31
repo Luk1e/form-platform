@@ -42,7 +42,10 @@ const templateController = {
 
   getTemplateById: async (req, res) => {
     try {
-      const template = await templateService.getTemplateById(req.params.id);
+      const template = await templateService.getTemplateById(
+        req.params.id,
+        req.query.userId
+      );
       res.json(template);
     } catch (error) {
       if (error instanceof CustomError) {

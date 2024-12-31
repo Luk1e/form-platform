@@ -9,7 +9,7 @@ const {
   FilledForm,
   QuestionOption,
   TemplateQuestion,
-  Comment,
+  TemplateTopic,
   QuestionType,
   sequelize,
 } = models;
@@ -230,11 +230,12 @@ const templateService = {
     return template;
   },
 
-  getTemplateById: async (templateId) => {
-    const template = await models.Template.findByPk(templateId, {
+  getTemplateById: async (templateId, userId) => {
+    const template = await models.Template.findOne({
+      where: { id: templateId },
       include: [
         {
-          model: models.TemplateTag,
+          model: TemplateTag,
           through: { attributes: [] },
           attributes: [
             ["id", "id"],
@@ -242,14 +243,14 @@ const templateService = {
           ],
         },
         {
-          model: models.TemplateTopic,
+          model: TemplateTopic,
           attributes: [
             ["id", "id"],
             ["name", "name"],
           ],
         },
         {
-          model: models.User,
+          model: User,
           attributes: [
             ["id", "id"],
             ["username", "username"],
@@ -257,7 +258,7 @@ const templateService = {
           ],
         },
         {
-          model: models.User,
+          model: User,
           as: "AccessUsers",
           attributes: [
             ["id", "id"],
@@ -267,7 +268,7 @@ const templateService = {
           through: { attributes: [] },
         },
         {
-          model: models.TemplateQuestion,
+          model: TemplateQuestion,
           attributes: [
             ["id", "id"],
             ["title", "title"],
@@ -278,14 +279,14 @@ const templateService = {
           ],
           include: [
             {
-              model: models.QuestionType,
+              model: QuestionType,
               attributes: [
                 ["id", "id"],
                 ["name", "name"],
               ],
             },
             {
-              model: models.QuestionOption,
+              model: QuestionOption,
               attributes: [
                 ["id", "id"],
                 ["value", "value"],
@@ -295,6 +296,30 @@ const templateService = {
           order: [["position", "ASC"]],
         },
       ],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              "(SELECT COUNT(*) FROM comments WHERE comments.template_id = Template.id)"
+            ),
+            "comment_count",
+          ],
+          [
+            sequelize.literal(
+              "(SELECT COUNT(*) FROM likes WHERE likes.template_id = Template.id)"
+            ),
+            "like_count",
+          ],
+          [
+            sequelize.literal(
+              userId
+                ? `(SELECT COUNT(*) > 0 FROM likes WHERE likes.template_id = Template.id AND likes.user_id = ${userId})`
+                : "FALSE"
+            ),
+            "has_liked",
+          ],
+        ],
+      },
       nest: true,
     });
 
