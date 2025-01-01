@@ -13,6 +13,8 @@ const UserContentPage = lazy(() =>
   import("../pages/auth/userContent/UserContentPage")
 );
 
+const FillFormPage = lazy(() => import("../pages/auth/fillForm/FillFormPage"));
+
 export default function AuthorizedRoutes({ user, loading }) {
   return {
     path: "/",
@@ -25,6 +27,10 @@ export default function AuthorizedRoutes({ user, loading }) {
       {
         path: "/templates/:id/update",
         element: <UpdateTemplatePage />,
+      },
+      {
+        path: "/templates/:id/fill",
+        element: <FillFormPage />,
       },
       {
         path: "/my-content",

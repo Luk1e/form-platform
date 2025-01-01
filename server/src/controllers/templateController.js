@@ -83,8 +83,6 @@ const templateController = {
         } catch (error) {
           throw new CustomError("Image upload failed", 400);
         }
-      } else {
-        templateData.image_url = "";
       }
 
       const templateId = await templateService.updateTemplate(
@@ -191,27 +189,6 @@ const templateController = {
     }
   },
 
-  addComment: async (req, res, next) => {
-    try {
-      const comment = await templateService.addComment(
-        req.params.id,
-        req.user.id,
-        req.body.content
-      );
-      res.status(201).json(comment);
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  getComments: async (req, res, next) => {
-    try {
-      const comments = await templateService.getComments(req.params.id);
-      res.json(comments);
-    } catch (error) {
-      next(error);
-    }
-  },
 };
 
 export default templateController;

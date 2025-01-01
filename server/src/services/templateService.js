@@ -1,4 +1,3 @@
-import database from "../../config/database.js";
 import { CustomError } from "../utils/index.js";
 import models from "../models/index.js";
 import { Op } from "sequelize";
@@ -381,39 +380,6 @@ const templateService = {
         totalPages: Math.ceil(count / limit),
       },
     };
-  },
-
-  addComment: async (templateId, userId, content) => {
-    const [result] = await database.query(
-      "INSERT INTO comments (template_id, user_id, content) VALUES (?, ?, ?)",
-      [templateId, userId, content]
-    );
-
-    const [comment] = await database.query(
-      `
-      SELECT c.*, u.username
-      FROM comments c
-      JOIN users u ON c.user_id = u.id
-      WHERE c.id = ?
-    `,
-      [result.insertId]
-    );
-
-    return comment[0];
-  },
-
-  getComments: async (templateId) => {
-    const [rows] = await database.query(
-      `
-      SELECT c.*, u.username
-      FROM comments c
-      JOIN users u ON c.user_id = u.id
-      WHERE c.template_id = ?
-      ORDER BY c.created_at ASC
-    `,
-      [templateId]
-    );
-    return rows;
   },
 
   searchTemplates: async (query, page, limit, tagId) => {

@@ -23,7 +23,5 @@ router.put(
   templateController.updateTemplate
 );
 
-router.post("/:id/comment", templateController.addComment);
-router.get("/:id/comments", templateController.getComments);
 
 export default router;

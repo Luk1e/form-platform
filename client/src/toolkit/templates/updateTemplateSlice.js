@@ -11,7 +11,7 @@ export const updateTemplate = createAsyncThunk(
         formData.append("image", templateData.image_file);
       }
 
-      const { image_file, image_url, ...restData } = templateData;
+      const { image_file, ...restData } = templateData;
       formData.append("data", JSON.stringify(restData));
 
       const { data } = await useAuthAxios.put(

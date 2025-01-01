@@ -99,7 +99,7 @@ export const updateTemplateSchema = Joi.object({
     "any.required": '"Topic ID" is a required field',
   }),
 
-  image_file: Joi.any().optional(),
+  image_url: Joi.any(),
 
   is_public: Joi.boolean().required().messages({
     "any.required": '"Is Public" is a required field',

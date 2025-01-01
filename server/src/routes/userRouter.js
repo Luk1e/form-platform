@@ -29,4 +29,7 @@ router.post("/templates/:id/comment", userController.addComment);
 
 router.post("/templates/:id/like", userController.toggleLike);
 
+router.post("/templates/:id/fill", userController.createFilledForm);
+router.get("/templates/:id/form", userController.getUserFilledForm);
+
 export default router;

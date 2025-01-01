@@ -10,6 +10,7 @@ import FilledForm from "./FilledForm.js";
 import FormAnswer from "./FormAnswer.js";
 import Comment from "./Comment.js";
 import Like from "./Like.js";
+import ChosenOption from "./ChosenOption.js";
 
 User.hasMany(Template, { foreignKey: "user_id", onDelete: "CASCADE" });
 Template.belongsTo(User, { foreignKey: "user_id" });
@@ -103,6 +104,18 @@ Template.belongsToMany(User, {
   onDelete: "CASCADE",
 });
 
+FormAnswer.hasMany(ChosenOption, {
+  foreignKey: "form_answer_id",
+  onDelete: "CASCADE",
+});
+ChosenOption.belongsTo(FormAnswer, { foreignKey: "form_answer_id" });
+
+QuestionOption.hasMany(ChosenOption, {
+  foreignKey: "question_option_id",
+  onDelete: "CASCADE",
+});
+ChosenOption.belongsTo(QuestionOption, { foreignKey: "question_option_id" });
+
 const models = {
   User,
   TemplateTopic,
@@ -115,6 +128,7 @@ const models = {
   FormAnswer,
   Comment,
   Like,
+  ChosenOption,
   sequelize,
 };
 

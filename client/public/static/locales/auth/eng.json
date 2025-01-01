@@ -1,5 +1,13 @@
 {
   "global": {},
+  "form": {
+    "submit": "Submit",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  },
+  "placeholder": {
+    "enterText": "Enter text"
+  },
   "createTemplatePage": {
     "singleLine": "Single Line Text",
     "multiLine": "Multiple Line Text",
@@ -18,6 +26,7 @@
       "publicTemplate": "Public Template",
       "selectUsers": "Select users who can access this template"
     },
+
     "questions": {
       "title": "Questions",
       "add": "Add {{type}}",
@@ -79,10 +88,23 @@
     "optionsMinOne": "At least one option required",
     "optionsRequired": "Option is required",
     "questionsMin": "At least one question is required",
-    "questionsMax": "Maximum 10 questions allowed"
+    "questionsMax": "Maximum 10 questions allowed",
+    "required": "This field is required",
+    "minLength": "Must be at least {{min}} characters",
+    "maxLength": "Must be less than {{max}} characters",
+    "mustBeNumber": "Must be a valid number",
+    "mustBeInteger": "Must be a whole number",
+    "selectAtLeastOne": "Please select at least one option",
+    "positiveNumber": "Must be a positive number",
+    "maxNumber": "Must be less than {{max}}",
+    "minNumber": "Must be at least {{min}}",
+    "invalidInput": "Invalid input"
   },
   "notifications": {
+    "templateCreated": "Template created",
     "templateCreatedDesc": "Template has been created successfully",
+    "formSubmitted": "Form submitted",
+    "formSubmittedDesc": "Form has been submitted successfully",
     "templateDeleteSuccess": "Template deleted successfully",
     "templateUpdated": "Template Updated",
     "templateUpdatedDesc": "Template has been updated successfully"

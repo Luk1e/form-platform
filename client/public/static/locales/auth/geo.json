@@ -1,5 +1,13 @@
 {
   "global": {},
+  "form": {
+    "submit": "გაგზავნა",
+    "loading": "იტვირთება...",
+    "error": "დაფიქსირდა შეცდომა"
+  },
+  "placeholder": {
+    "enterText": "ჩაწერეთ ტექსტი"
+  },
   "createTemplatePage": {
     "singleLine": "ერთხაზოვანი ტექსტი",
     "multiLine": "მრავალხაზოვანი ტექსტი",
@@ -79,11 +87,23 @@
     "optionsMinOne": "მინიმუმ ერთი ვარიანტი სავალდებულოა",
     "optionsRequired": "კითხვის ვარიანტი სავალდებულოა",
     "questionsMin": "მინიმუმ ერთი კითხვა სავალდებულოა",
-    "questionsMax": "მაქსიმუმ 10 კითხვაა დაშვებული"
+    "questionsMax": "მაქსიმუმ 10 კითხვაა დაშვებული",
+    "required": "ველის შევსება სავალდებულოა",
+    "minLength": "უნდა შეიცავდეს მინიმუმ {{min}} სიმბოლოს",
+    "maxLength": "უნდა შეიცავდეს მაქსიმუმ {{max}} სიმბოლოს",
+    "mustBeNumber": "უნდა იყოს რიცხვი",
+    "mustBeInteger": "უნდა იყოს მთელი რიცხვი",
+    "selectAtLeastOne": "გთხოვთ აირჩიოთ მინიმუმ ერთი",
+    "positiveNumber": "უნდა იყოს დადებითი რიცხვი",
+    "maxNumber": "უნდა იყოს {{max}}-ზე ნაკლები",
+    "minNumber": "უნდა იყოს მინიმუმ {{min}}",
+    "invalidInput": "არასწორი მონაცემები"
   },
   "notifications": {
     "templateCreated": "შაბლონი შეიქმნა",
     "templateCreatedDesc": "შაბლონი წარმატებით შეიქმნა",
+    "formSubmitted": "ფორმა გაიგზანა",
+    "formSubmittedDesc": "ფორმა წარმატებით გაიგზავნა",
     "templateDeleteSuccess": "შაბლონი წარმატებით წაიშალა",
     "templateUpdated": "შაბლონია დარედაქტირდა",
     "templateUpdatedDesc": "შაბლონი წარმატებით დარედაქტირდა"
