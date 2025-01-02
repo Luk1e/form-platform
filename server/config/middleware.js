@@ -3,6 +3,11 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://form-platform-client.onrender.com/",
+];
+
 const setupMiddleware = (app) => {
   app.use(
     cors({
