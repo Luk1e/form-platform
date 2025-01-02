@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { CustomError } from "../utils/index.js";
 import models from "../models/index.js";
