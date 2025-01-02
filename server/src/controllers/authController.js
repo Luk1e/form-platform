@@ -16,7 +16,7 @@ const authController = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "development",
         sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        maxAge: 24 * 60 * 60 * 1000,
       });
 
       res.status(201).json({
@@ -46,7 +46,7 @@ const authController = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "development",
         sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        maxAge: 24 * 60 * 60 * 1000,
       });
 
       res.json({
@@ -75,7 +75,7 @@ const authController = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "development",
         sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        maxAge: 24 * 60 * 60 * 1000,
       });
 
       res.json({
