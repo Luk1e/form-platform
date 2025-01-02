@@ -12,10 +12,12 @@ const authController = {
       const user = await authService.register(username, email, password);
       const { accessToken, csrfToken } = jwtService.generateToken(user.id);
 
+      console.log(process.env.NODE_ENV);
+
       res.cookie("token", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "development",
-        sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
+        secure: process.env.NODE_ENV !== "development",
+        sameSite: process.env.NODE_ENV === "development" ? "Lax" : "None",
         maxAge: 24 * 60 * 60 * 1000,
       });
 
@@ -44,8 +46,8 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "development",
-        sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
+        secure: process.env.NODE_ENV !== "development",
+        sameSite: process.env.NODE_ENV === "development" ? "Lax" : "None",
         maxAge: 24 * 60 * 60 * 1000,
       });
 
@@ -73,8 +75,8 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "development",
-        sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
+        secure: process.env.NODE_ENV !== "development",
+        sameSite: process.env.NODE_ENV === "development" ? "Lax" : "None",
         maxAge: 24 * 60 * 60 * 1000,
       });
 
