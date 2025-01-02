@@ -44,7 +44,6 @@ function UpdateFormPage() {
       </div>
     );
   }
-
   if (errorTemplate || error) {
     return (
       <div className="flex justify-center items-center min-h-screen">

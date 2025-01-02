@@ -160,9 +160,7 @@ const templateService = {
         await template.setAccessUsers([], { transaction });
       } else if (access_users?.length > 0) {
         const users = await User.findAll({
-          where: {
-            where: { id: access_users },
-          },
+          where: { id: access_users },
           transaction,
         });
 

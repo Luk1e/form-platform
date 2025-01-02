@@ -5,7 +5,7 @@ import fileUpload from "express-fileupload";
 
 const allowedOrigins = [
   // "http://localhost:5173",
-  "https://form-platform-client.onrender.com",
+  "https://form-platforsm-client.onrender.com",
 ];
 
 const setupMiddleware = (app) => {
