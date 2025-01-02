@@ -30,8 +30,6 @@ export const createTemplateSchema = Joi.object({
     "any.required": '"Topic ID" is a required field',
   }),
 
-  image_file: Joi.any().optional(),
-
   is_public: Joi.boolean().required().messages({
     "any.required": '"Is Public" is a required field',
     "boolean.base": '"Is Public" must be a boolean',
@@ -122,7 +120,7 @@ export const updateTemplateSchema = Joi.object({
   questions: Joi.array()
     .items(
       Joi.object({
-        id: Joi.number().integer().positive().required(),
+        id: Joi.number().integer().positive().optional(),
         type_id: Joi.number().integer().positive().required(),
         title: Joi.string().min(1).max(255).required(),
         description: Joi.string().max(1000).optional().allow(""),

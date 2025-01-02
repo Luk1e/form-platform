@@ -17,7 +17,7 @@ const templateController = {
           );
           templateData.image_url = uploadResult.secure_url;
         } catch (error) {
-          throw new CustomError("Image upload failed", 400);
+          throw CustomError("Image upload failed", 400);
         }
       }
 
@@ -40,27 +40,11 @@ const templateController = {
     }
   },
 
-  getTemplateById: async (req, res) => {
-    try {
-      const template = await templateService.getTemplateById(req.params.id);
-      res.json(template);
-    } catch (error) {
-      if (error instanceof CustomError) {
-        return res.status(error.statusCode).json(error.toJSON());
-      }
-
-      console.error("Error getting template by id:", error);
-      res.status(500).json({
-        message: "Error getting template by id",
-        errorCode: "GET_TEMPLATE_BY_ID_ERROR",
-      });
-    }
-  },
-
   updateTemplate: async (req, res) => {
     try {
       const template = await templateService.getTemplateByPk(req.params.id);
       const isAdmin = await adminService.isAdmin(req.userId);
+
       if (!template) {
         throw CustomError.notFound("Template not found", 11);
       }
@@ -81,7 +65,7 @@ const templateController = {
           );
           templateData.image_url = uploadResult.secure_url;
         } catch (error) {
-          throw new CustomError("Image upload failed", 400);
+          throw CustomError("Image upload failed", 400);
         }
       }
 
@@ -104,6 +88,23 @@ const templateController = {
     }
   },
 
+  getTemplateById: async (req, res) => {
+    try {
+      const template = await templateService.getTemplateById(req.params.id);
+      res.json(template);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.toJSON());
+      }
+
+      console.error("Error getting template by id:", error);
+      res.status(500).json({
+        message: "Error getting template by id",
+        errorCode: "GET_TEMPLATE_BY_ID_ERROR",
+      });
+    }
+  },
+
   deleteTemplate: async (req, res) => {
     try {
       const template = await templateService.getTemplateByPk(req.params.id);
@@ -118,7 +119,7 @@ const templateController = {
       ) {
         throw CustomError.forbidden(
           "Not authorized to delete this template",
-          12
+          19
         );
       }
 
@@ -188,7 +189,6 @@ const templateController = {
       });
     }
   },
-
 };
 
 export default templateController;

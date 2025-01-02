@@ -52,6 +52,7 @@ const templateService = {
             return tag;
           })
         );
+
         await template.setTemplateTags(createdTags, { transaction });
       }
 
@@ -61,12 +62,13 @@ const templateService = {
           where: { id: access_users },
           transaction,
         });
+
         await template.setAccessUsers(users, { transaction });
       }
 
       // Handle questions
       if (questions?.length > 0) {
-        const createdQuestions = await Promise.all(
+        await Promise.all(
           questions.map(async (question, index) => {
             const createdQuestion = await TemplateQuestion.create(
               {
@@ -118,9 +120,12 @@ const templateService = {
       questions,
       access_users,
     } = templateData;
+
     const transaction = await models.sequelize.transaction();
+
     try {
       const template = await Template.findByPk(templateId, { transaction });
+
       // Update basic template info
       await template.update(
         {
@@ -153,19 +158,19 @@ const templateService = {
       // Handle access control
       if (is_public) {
         await template.setAccessUsers([], { transaction });
-      } else if (Array.isArray(access_users)) {
+      } else if (access_users?.length > 0) {
         const users = await User.findAll({
           where: {
-            id: [...new Set(access_users)],
-            is_blocked: false,
+            where: { id: access_users },
           },
           transaction,
         });
+
         await template.setAccessUsers(users, { transaction });
       }
 
       // Handle questions
-      if (Array.isArray(questions)) {
+      if (questions?.length > 0) {
         // Get existing questions for comparison
         const existingQuestions = await TemplateQuestion.findAll({
           where: { template_id: template.id },
@@ -186,9 +191,9 @@ const templateService = {
               question_type_id: question.type_id,
               title: question.title,
               description: question.description,
-              display_in_summary: Boolean(question.display_in_summary),
+              display_in_summary: question.display_in_summary || false,
               position: index + 1,
-              is_required: Boolean(question.is_required),
+              is_required: question.is_required || false,
             };
 
             let updatedQuestion;
@@ -207,10 +212,10 @@ const templateService = {
               });
             }
 
-            // Handle options for single choice (4) and checkbox (5) questions
+            // Handle question options for single choice and checkbox questions
             if (
               (question.type_id === 4 || question.type_id === 5) &&
-              Array.isArray(question.options)
+              question.options?.length > 0
             ) {
               const uniqueOptions = [...new Set(question.options)]
                 .map((opt) => opt.trim())
@@ -341,9 +346,9 @@ const templateService = {
               ],
             },
           ],
-          order: [["position", "ASC"]],
         },
       ],
+      order: [[{ model: TemplateQuestion }, "position", "ASC"]],
       nest: true,
     });
 
@@ -352,9 +357,11 @@ const templateService = {
     }
 
     const plainTemplate = template.get({ plain: true });
+
     if (plainTemplate.is_public) {
       delete plainTemplate.AccessUsers;
     }
+
     return plainTemplate;
   },
 

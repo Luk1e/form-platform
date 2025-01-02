@@ -1,7 +1,5 @@
 import Joi from "joi";
 
-
-
 export const bulkUserOperationSchema = Joi.object({
   userIds: Joi.array()
     .items(Joi.number().integer().positive())

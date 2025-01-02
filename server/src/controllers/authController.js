@@ -1,9 +1,6 @@
 import { authService, jwtService } from "../services/index.js";
 import { CustomError } from "../utils/index.js";
 
-import dotenv from "dotenv";
-dotenv.config();
-
 const authController = {
   register: async (req, res) => {
     try {
@@ -12,12 +9,10 @@ const authController = {
       const user = await authService.register(username, email, password);
       const { accessToken, csrfToken } = jwtService.generateToken(user.id);
 
-      console.log(process.env.NODE_ENV);
-
       res.cookie("token", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== "development",
-        sameSite: process.env.NODE_ENV === "development" ? "Lax" : "None",
+        secure: true,
+        sameSite: "None",
         maxAge: 24 * 60 * 60 * 1000,
       });
 
@@ -27,13 +22,14 @@ const authController = {
       });
     } catch (error) {
       if (error instanceof CustomError) {
-        res.status(error.statusCode).json(error.toJSON());
-      } else {
-        res.status(500).json({
-          message: "Unexpected error occurred",
-          errorCode: "UNEXPECTED_ERROR",
-        });
+        return res.status(error.statusCode).json(error.toJSON());
       }
+
+      console.error("Error registering user:", error);
+      res.status(500).json({
+        message: "Error registering user",
+        errorCode: "AUTH_REGISTER_ERROR",
+      });
     }
   },
 
@@ -46,8 +42,8 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== "development",
-        sameSite: process.env.NODE_ENV === "development" ? "Lax" : "None",
+        secure: true,
+        sameSite: "None",
         maxAge: 24 * 60 * 60 * 1000,
       });
 
@@ -57,15 +53,17 @@ const authController = {
       });
     } catch (error) {
       if (error instanceof CustomError) {
-        res.status(error.statusCode).json(error.toJSON());
-      } else {
-        res.status(500).json({
-          message: "Unexpected error occurred",
-          errorCode: "UNEXPECTED_ERROR",
-        });
+        return res.status(error.statusCode).json(error.toJSON());
       }
+
+      console.error("Error login user:", error);
+      res.status(500).json({
+        message: "Error login user",
+        errorCode: "AUTH_LOGIN_ERROR",
+      });
     }
   },
+
   googleLogin: async (req, res) => {
     try {
       const { accessToken: GoogleAccessToken } = req.body;
@@ -75,8 +73,8 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== "development",
-        sameSite: process.env.NODE_ENV === "development" ? "Lax" : "None",
+        secure: true,
+        sameSite: "None",
         maxAge: 24 * 60 * 60 * 1000,
       });
 
@@ -86,13 +84,14 @@ const authController = {
       });
     } catch (error) {
       if (error instanceof CustomError) {
-        res.status(error.statusCode).json(error.toJSON());
-      } else {
-        res.status(500).json({
-          message: "Unexpected error occurred",
-          errorCode: "UNEXPECTED_ERROR",
-        });
+        return res.status(error.statusCode).json(error.toJSON());
       }
+
+      console.error("Error google authorization:", error);
+      res.status(500).json({
+        message: "Error google authorization",
+        errorCode: "AUTH_GOOGLE_ERROR",
+      });
     }
   },
 

@@ -60,6 +60,7 @@ const supportController = {
         req.params.id,
         req.query.userId
       );
+
       res.json(engagements);
     } catch (error) {
       if (error instanceof CustomError) {

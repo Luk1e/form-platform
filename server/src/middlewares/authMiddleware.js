@@ -1,24 +1,32 @@
 import { jwtService } from "../services/index.js";
+import { CustomError } from "../utils/index.js";
 
 const authMiddleware = (req, res, next) => {
-  const token = req.cookies.token;
-  const csrfToken = req.headers["x-csrf-token"];
-
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized: No token" });
-  }
-
-  if (!csrfToken) {
-    return res.status(401).json({ error: "Unauthorized: CSRF token missing" });
-  }
-
   try {
+    const token = req.cookies.token;
+    const csrfToken = req.headers["x-csrf-token"];
+
+    if (!token) {
+      throw CustomError.unauthorized("Unauthorized: No token");
+    }
+
+    if (!csrfToken) {
+      throw CustomError.unauthorized("Unauthorized: CSRF token missing");
+    }
+
     const userId = jwtService.verifyToken(token, csrfToken);
     req.userId = userId;
 
     next();
   } catch (error) {
-    return res.status(401).json({ error: error.message });
+    if (error instanceof CustomError) {
+      return res.status(error.statusCode).json(error.toJSON());
+    }
+
+    return res.status(403).json({
+      message: "Authentication required",
+      errorCode: "UNAUTHORIZED",
+    });
   }
 };
 

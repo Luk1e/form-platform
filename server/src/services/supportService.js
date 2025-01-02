@@ -78,24 +78,6 @@ const supportService = {
     return tagCloud;
   },
 
-  getTagsByTemplateId: async (templateId) => {
-    const template = await Template.findByPk(templateId, {
-      include: [
-        {
-          model: TemplateTag,
-          attributes: ["name"],
-          through: { attributes: [] },
-        },
-      ],
-    });
-
-    if (!template) {
-      throw CustomError.notFound("Template not found");
-    }
-
-    return template;
-  },
-
   getTopics: async () => {
     const topics = await TemplateTopic.findAll({
       order: [["name", "ASC"]],

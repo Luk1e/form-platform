@@ -59,7 +59,6 @@ const adminController = {
   bulkAddAdminPrivileges: async (req, res) => {
     try {
       const { userIds } = req.body;
-
       const privilegesAddedCount = await adminService.bulkAddAdminPrivileges(
         userIds
       );
@@ -80,7 +79,6 @@ const adminController = {
   bulkRemoveAdminPrivileges: async (req, res) => {
     try {
       const { userIds } = req.body;
-
       const privilegesRemovedCount =
         await adminService.bulkRemoveAdminPrivileges(userIds);
 
@@ -104,7 +102,6 @@ const adminController = {
   bulkDeleteUsers: async (req, res) => {
     try {
       const { userIds } = req.body;
-
       const deletedCount = await adminService.bulkDeleteUsers(userIds);
 
       res.json({

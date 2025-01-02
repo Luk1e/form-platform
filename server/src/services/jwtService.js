@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { CustomError } from "../utils/index.js";
 
 const jwtService = {
   generateToken: (userId) => {
@@ -25,12 +26,16 @@ const jwtService = {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       if (decoded.csrfToken !== csrfToken) {
-        throw new Error("CSRF token mismatch");
+        throw CustomError.unauthorized("CSRF token mismatch");
       }
 
       return decoded.userId;
     } catch (error) {
-      throw new Error("Invalid token");
+      if (error instanceof CustomError) {
+        throw error;
+      } else {
+        throw CustomError.unauthorized("Invalid token");
+      }
     }
   },
 };

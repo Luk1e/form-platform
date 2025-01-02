@@ -8,11 +8,21 @@
   },
   "errors": {
     "0": "User not found",
-    "1": "Invalid credentials",
     "2": "User is blocked",
     "3": "Cannot block the last admin",
     "4": "Cannot remove all admins",
-    "5": "Cannot delete the last admin"
+    "5": "Cannot delete the last admin",
+    "11": "Template not found",
+    "12": "Not authorized to update this template",
+    "13": "Email is already registered",
+    "14": "Username is already taken",
+    "19": "Not authorized to delete this template",
+    "23": "Not authorized to get this template",
+    "74": "You have already submitted form for this template",
+    "75": "Not authorized to access this form",
+    "400": "Image upload failed",
+    "404": "Form not found",
+    "1": "Invalid credentials"
   },
   "users": {
     "usersManagement": "User Management",

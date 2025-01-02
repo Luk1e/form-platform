@@ -1,5 +1,5 @@
 import models from "../models/index.js";
-import CustomError from "../utils/customError.js";
+import { CustomError } from "../utils/index.js";
 import adminService from "./adminService.js";
 const {
   FilledForm,
@@ -14,7 +14,7 @@ const {
 } = models;
 
 const formService = {
-  createFilledForm: async (userId, templateId, answers) => {
+  createForm: async (userId, templateId, answers) => {
     const transaction = await models.sequelize.transaction();
 
     try {
@@ -43,12 +43,12 @@ const formService = {
       // Process each answer
       for (const answer of answers) {
         if (!answer.question_id) {
-          throw new Error("Missing question_id in answer data");
+          throw CustomError.badRequest("Missing question_id in answer data");
         }
 
         const question = questions.find((q) => q.id === answer.question_id);
         if (!question) {
-          throw new Error(
+          throw CustomError.badRequest(
             `Question ${answer.question_id} not found in template ${templateId}`
           );
         }
@@ -110,7 +110,7 @@ const formService = {
             }
             break;
           default:
-            throw new Error(
+            throw CustomError.badRequest(
               `Unsupported question type: ${question["QuestionType.id"]}`
             );
         }
@@ -127,7 +127,6 @@ const formService = {
   updateFilledForm: async (userId, formId, answers) => {
     const transaction = await models.sequelize.transaction();
     try {
-      // Verify filled form exists and check ownership
       const filledForm = await FilledForm.findByPk(formId, {
         include: [
           {
@@ -161,7 +160,7 @@ const formService = {
       const isAdmin = await adminService.isAdmin(userId);
 
       if (!isOwner && !isAdmin) {
-        throw new Error(
+        throw CustomError.forbidden(
           "Unauthorized: User does not have permission to update this form"
         );
       }
@@ -200,19 +199,21 @@ const formService = {
           answer.value === null ||
           answer.value === ""
         ) {
-          throw new Error(`Required question ${required.id} must be answered`);
+          throw CustomError.badRequest(
+            `Required question ${required.id} must be answered`
+          );
         }
       }
 
       // Process each answer
       for (const answer of answers) {
         if (!answer.question_id) {
-          throw new Error("Missing question_id in answer data");
+          throw CustomError.badRequest("Missing question_id in answer data");
         }
 
         const question = questions.find((q) => q.id === answer.question_id);
         if (!question) {
-          throw new Error(
+          throw CustomError.badRequest(
             `Question ${answer.question_id} not found in template ${filledForm.template_id}`
           );
         }
@@ -286,7 +287,7 @@ const formService = {
             }
             break;
           default:
-            throw new Error(
+            throw CustomError.badRequest(
               `Unsupported question type: ${question.QuestionType.id}`
             );
         }
@@ -299,6 +300,7 @@ const formService = {
       throw error;
     }
   },
+
   getFilledForm: async (formId, userId) => {
     const isAdmin = await adminService.isAdmin(userId);
     const filledForm = await FilledForm.findByPk(formId, {
@@ -345,21 +347,16 @@ const formService = {
     });
 
     if (!filledForm) {
-      throw new CustomError("Form not found", 404, "FORM_NOT_FOUND");
+      throw CustomError.notFound("Form not found", 404);
     }
 
     // Check access permissions
     if (
       !isAdmin &&
       filledForm.User.id !== userId &&
-      filledForm.Template.user_id !== userId &&
-      !filledForm.Template.AccessUsers.some((user) => user.id === userId)
+      filledForm.Template.user_id !== userId
     ) {
-      throw CustomError.conflict(
-        "Not authorized to access this form",
-        75,
-        "FORM_ACCESS_DENIED"
-      );
+      throw CustomError.conflict("Not authorized to access this form", 75);
     }
 
     // Format the response

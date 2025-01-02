@@ -114,7 +114,7 @@ const userService = {
           where: template_title
             ? {
                 title: {
-                  [Op.like]: `%${template_title}%`, // Using Op directly
+                  [Op.like]: `%${template_title}%`, 
                 },
               }
             : {},
@@ -138,6 +138,7 @@ const userService = {
 
   toggleLike: async (templateId, userId) => {
     const template = await Template.findByPk(templateId);
+    
     if (!template) {
       throw CustomError.notFound("Template not found", 11);
     }

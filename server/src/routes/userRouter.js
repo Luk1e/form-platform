@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get("/templates/:id", userController.getUserTemplateByID);
+router.get("/templates/:id", userController.getUserTemplateById);
 
 router.get(
   "/my-templates",
@@ -26,10 +26,9 @@ router.get(
 );
 
 router.post("/templates/:id/comment", userController.addComment);
-
 router.post("/templates/:id/like", userController.toggleLike);
 
-router.post("/templates/:id/fill", userController.createFilledForm);
+router.post("/templates/:id/fill", userController.createForm);
 router.get("/templates/:id/isFilled", userController.hasUserFilledForm);
 router.get("/forms/:id", userController.getUserFilledForm);
 router.put("/forms/:id", userController.updateFilledForm);

@@ -8,7 +8,7 @@ import {
 import { CustomError } from "../utils/index.js";
 
 const userController = {
-  getUserTemplateByID: async (req, res) => {
+  getUserTemplateById: async (req, res) => {
     try {
       const template = await templateService.getTemplateById(req.params.id);
       const isAdmin = await adminService.isAdmin(req.userId);
@@ -107,10 +107,11 @@ const userController = {
     }
   },
 
-  createFilledForm: async (req, res) => {
+  createForm: async (req, res) => {
     try {
       const userId = req.userId;
       const templateId = req.params.id;
+
       const hasFilledForm = await formService.hasUserFilledForm(
         userId,
         templateId
@@ -125,7 +126,7 @@ const userController = {
 
       const templateData = JSON.parse(req.body.data);
 
-      const returnedTemplateId = await formService.createFilledForm(
+      const returnedTemplateId = await formService.createForm(
         userId,
         templateId,
         templateData
@@ -164,10 +165,10 @@ const userController = {
         return res.status(error.statusCode).json(error.toJSON());
       }
 
-      console.error("Error creating form:", error);
+      console.error("Error updating form:", error);
       res.status(500).json({
-        message: "Error creating form",
-        errorCode: "CREATING_FORM_ERROR",
+        message: "Error updating form",
+        errorCode: "UPDATE_FORM_ERROR",
       });
     }
   },
