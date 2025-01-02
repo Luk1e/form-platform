@@ -4,14 +4,14 @@ import cors from "cors";
 import fileUpload from "express-fileupload";
 
 const allowedOrigins = [
-  "http://localhost:5173",
+  // "http://localhost:5173",
   "https://form-platform-client.onrender.com/",
 ];
 
 const setupMiddleware = (app) => {
   app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: allowedOrigins,
       credentials: true,
     })
   );
