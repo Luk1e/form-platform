@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { createForm } from "../../../toolkit/user/createFormSlice";
+import { updateForm } from "../../../toolkit/user/updateFormSlice";
 
 export const validationSchema = (questions, t) => {
   const schema = {};
@@ -59,7 +59,8 @@ const transformAnswerValue = (questionType, value, options) => {
 };
 
 export const handleSubmit = async (
-  id,
+  templateId,
+  formId,
   template,
   values,
   dispatch,
@@ -90,12 +91,12 @@ export const handleSubmit = async (
   });
 
   try {
-    await dispatch(createForm({ id, answers: answersArray })).unwrap();
+    await dispatch(updateForm({ formId, answers: answersArray })).unwrap();
     notification.success({
       message: t("notifications.formSubmitted"),
       description: t("notifications.formSubmittedDesc"),
     });
-    navigate(`/templates/${id}`);
+    navigate(`/templates/${templateId}`);
   } catch (error) {
     notification.error({
       message: error.message,

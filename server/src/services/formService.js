@@ -1,4 +1,6 @@
 import models from "../models/index.js";
+import CustomError from "../utils/customError.js";
+import adminService from "./adminService.js";
 const {
   FilledForm,
   TemplateQuestion,
@@ -7,6 +9,8 @@ const {
   FormAnswer,
   QuestionOption,
   sequelize,
+  User,
+  Template,
 } = models;
 
 const formService = {
@@ -120,98 +124,301 @@ const formService = {
     }
   },
 
-  getFilledForm: async (userId, templateId) => {
+  updateFilledForm: async (userId, formId, answers) => {
+    const transaction = await models.sequelize.transaction();
     try {
-      const filledForm = await FilledForm.findOne({
-        where: {
-          user_id: userId,
-          template_id: templateId,
-        },
+      // Verify filled form exists and check ownership
+      const filledForm = await FilledForm.findByPk(formId, {
         include: [
           {
-            model: FormAnswer,
+            model: Template,
             include: [
               {
                 model: TemplateQuestion,
+                attributes: ["id", "question_type_id", "is_required"],
                 include: [
                   {
                     model: QuestionType,
-                  },
-                ],
-              },
-              {
-                model: ChosenOption,
-                include: [
-                  {
-                    model: QuestionOption,
-                    attributes: ["id", "value"],
+                    attributes: ["id", "name"],
                   },
                 ],
               },
             ],
           },
+          {
+            model: User,
+            attributes: ["id", "is_admin"],
+          },
         ],
-        order: [["created_at", "DESC"]],
       });
 
       if (!filledForm) {
-        return null;
+        throw new Error(`Filled form ${formId} not found`);
       }
 
-      const initialValues = {};
+      // Check if user has permission to update
+      const isOwner = filledForm.user_id === userId;
+      const isAdmin = await adminService.isAdmin(userId);
 
-      for (const answer of filledForm.FormAnswers) {
-        const questionType = answer.TemplateQuestion.QuestionType.id;
-        const fieldName = `question_${answer.TemplateQuestion.id}`;
+      if (!isOwner && !isAdmin) {
+        throw new Error(
+          "Unauthorized: User does not have permission to update this form"
+        );
+      }
 
-        switch (questionType) {
-          case 1: // single_line
-            initialValues[fieldName] = answer.string_value || "";
-            break;
-          case 2: // multi_line
-            initialValues[fieldName] = answer.text_value || "";
-            break;
-          case 3: // integer
-            initialValues[fieldName] = answer.integer_value || "";
-            break;
-          case 4: // checkbox
-            initialValues[fieldName] = answer.ChosenOptions.map(
-              (opt) => opt.QuestionOption.value
-            );
-            break;
-          case 5: // single_choice
-            initialValues[fieldName] =
-              answer.ChosenOptions[0]?.QuestionOption.value || "";
-            break;
+      // Get existing answers to clean up
+      const existingAnswers = await FormAnswer.findAll({
+        where: { filled_form_id: formId },
+        include: [
+          {
+            model: ChosenOption,
+          },
+        ],
+      });
+
+      // Delete existing answers and their chosen options
+      for (const existingAnswer of existingAnswers) {
+        if (existingAnswer.ChosenOptions?.length > 0) {
+          await ChosenOption.destroy({
+            where: { form_answer_id: existingAnswer.id },
+            transaction,
+          });
+        }
+        await existingAnswer.destroy({ transaction });
+      }
+
+      // Create new answers
+      const questions = filledForm.Template.TemplateQuestions;
+
+      // Validate that all required questions are answered
+      const requiredQuestions = questions.filter((q) => q.is_required);
+      for (const required of requiredQuestions) {
+        const answer = answers.find((a) => a.question_id === required.id);
+        if (
+          !answer ||
+          answer.value === undefined ||
+          answer.value === null ||
+          answer.value === ""
+        ) {
+          throw new Error(`Required question ${required.id} must be answered`);
         }
       }
 
-      return {
-        id: filledForm.id,
-        created_at: filledForm.created_at,
-        initialValues,
-      };
+      // Process each answer
+      for (const answer of answers) {
+        if (!answer.question_id) {
+          throw new Error("Missing question_id in answer data");
+        }
+
+        const question = questions.find((q) => q.id === answer.question_id);
+        if (!question) {
+          throw new Error(
+            `Question ${answer.question_id} not found in template ${filledForm.template_id}`
+          );
+        }
+
+        // Skip if the question is not required and the value is empty
+        if (
+          !question.is_required &&
+          (answer.value === undefined ||
+            answer.value === null ||
+            answer.value === "")
+        ) {
+          continue;
+        }
+
+        // Create base answer record
+        const formAnswer = await FormAnswer.create(
+          {
+            filled_form_id: filledForm.id,
+            template_question_id: answer.question_id,
+          },
+          { transaction }
+        );
+
+        // Store value based on question type
+        switch (
+          question.QuestionType.id // Fixed association access
+        ) {
+          case 1: // single_line
+            await formAnswer.update(
+              { string_value: answer.value },
+              { transaction }
+            );
+            break;
+          case 2: // multi_line
+            await formAnswer.update(
+              { text_value: answer.value },
+              { transaction }
+            );
+            break;
+          case 3: // integer
+            await formAnswer.update(
+              { integer_value: parseInt(answer.value) },
+              { transaction }
+            );
+            break;
+          case 4: // checkbox
+            // Create chosen options for each selected option
+            if (Array.isArray(answer.value) && answer.value.length > 0) {
+              await Promise.all(
+                answer.value.map((optionId) =>
+                  ChosenOption.create(
+                    {
+                      form_answer_id: formAnswer.id,
+                      question_option_id: optionId,
+                    },
+                    { transaction }
+                  )
+                )
+              );
+            }
+            break;
+          case 5: // single_choice
+            if (answer.value) {
+              await ChosenOption.create(
+                {
+                  form_answer_id: formAnswer.id,
+                  question_option_id: answer.value,
+                },
+                { transaction }
+              );
+            }
+            break;
+          default:
+            throw new Error(
+              `Unsupported question type: ${question.QuestionType.id}`
+            );
+        }
+      }
+
+      await transaction.commit();
+      return formId;
     } catch (error) {
-      console.error("Error retrieving filled form:", error);
+      await transaction.rollback();
       throw error;
     }
   },
+  getFilledForm: async (formId, userId) => {
+    const isAdmin = await adminService.isAdmin(userId);
+    const filledForm = await FilledForm.findByPk(formId, {
+      include: [
+        {
+          model: User,
+          attributes: ["id"],
+        },
+        {
+          model: Template,
+          attributes: ["id", "user_id"],
+          include: [
+            {
+              model: User,
+              as: "AccessUsers",
+              attributes: ["id"],
+              through: { attributes: [] },
+            },
+          ],
+        },
+        {
+          model: FormAnswer,
+          include: [
+            {
+              model: TemplateQuestion,
+              include: [
+                {
+                  model: QuestionType,
+                },
+              ],
+            },
+            {
+              model: ChosenOption,
+              include: [
+                {
+                  model: QuestionOption,
+                  attributes: ["id", "value"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!filledForm) {
+      throw new CustomError("Form not found", 404, "FORM_NOT_FOUND");
+    }
+
+    // Check access permissions
+    if (
+      !isAdmin &&
+      filledForm.User.id !== userId &&
+      filledForm.Template.user_id !== userId &&
+      !filledForm.Template.AccessUsers.some((user) => user.id === userId)
+    ) {
+      throw CustomError.conflict(
+        "Not authorized to access this form",
+        75,
+        "FORM_ACCESS_DENIED"
+      );
+    }
+
+    // Format the response
+    const initialValues = {};
+    for (const answer of filledForm.FormAnswers) {
+      const questionType = answer.TemplateQuestion.QuestionType.id;
+      const fieldName = `question_${answer.TemplateQuestion.id}`;
+
+      switch (questionType) {
+        case 1: // single_line
+          initialValues[fieldName] = answer.string_value || "";
+          break;
+        case 2: // multi_line
+          initialValues[fieldName] = answer.text_value || "";
+          break;
+        case 3: // integer
+          initialValues[fieldName] = answer.integer_value || "";
+          break;
+        case 4: // checkbox
+          initialValues[fieldName] = answer.ChosenOptions.map(
+            (opt) => opt.QuestionOption.value
+          );
+          break;
+        case 5: // single_choice
+          initialValues[fieldName] =
+            answer.ChosenOptions[0]?.QuestionOption.value || "";
+          break;
+      }
+    }
+
+    return {
+      id: filledForm.id,
+      created_at: filledForm.created_at,
+      initialValues,
+    };
+  },
 
   hasUserFilledForm: async (userId, templateId) => {
-    try {
-      const filledForm = await FilledForm.findOne({
-        where: {
-          user_id: userId,
-          template_id: templateId,
-        },
-        attributes: ["id"],
-      });
+    const filledForm = await FilledForm.findOne({
+      where: {
+        user_id: userId,
+        template_id: templateId,
+      },
+      attributes: ["id"],
+    });
 
-      return !!filledForm;
-    } catch (error) {
-      console.error("Error checking filled form:", error);
-      throw error;
-    }
+    return !!filledForm;
+  },
+
+  getUserForm: async (userId, templateId) => {
+    const filledForm = await FilledForm.findOne({
+      where: {
+        user_id: userId,
+        template_id: templateId,
+      },
+      attributes: ["id"],
+    });
+
+    return filledForm;
   },
 };
 

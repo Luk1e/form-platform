@@ -21,13 +21,6 @@ const ErrorPage = () => {
           >
             {t("global.backHome")}
           </Button>,
-          <Button
-            onClick={() => navigate(-1)}
-            className="hover:bg-gray-100"
-            key="back"
-          >
-            {t("global.goBack")}
-          </Button>,
         ]}
       />
     </div>

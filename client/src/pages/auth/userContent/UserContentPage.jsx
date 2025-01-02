@@ -32,6 +32,8 @@ const UserContentPage = () => {
     }
   }, [dispatch, searchParams, activeView]);
 
+
+
   return (
     <div className="p-2 sm:p-4 md:p-6 min-h-screen">
       <Card className="shadow-xl rounded-lg">

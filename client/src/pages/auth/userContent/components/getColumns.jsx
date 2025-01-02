@@ -7,6 +7,11 @@ export const getFormColumns = (t) => [
     title: t("userContentPage.templateTitle"),
     dataIndex: "template_title",
     key: "template_title",
+    render: (text, record) => (
+      <Link to={`/templates/${record.template_id}/forms/${record.id}`}>
+        {text}
+      </Link>
+    ),
   },
   {
     title: t("userContentPage.templateDescription"),

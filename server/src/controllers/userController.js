@@ -145,29 +145,45 @@ const userController = {
     }
   },
 
-  getUserFilledForm: async (req, res) => {
+  updateFilledForm: async (req, res) => {
     try {
-      const templateId = req.params.id;
       const userId = req.userId;
+      const formId = req.params.id;
 
-      const filledForm = await formService.getFilledForm(userId, templateId);
+      const formData = JSON.parse(req.body.data);
 
-      if (!filledForm) {
-        return res.status(404).json({
-          success: false,
-          message: "No filled form found for this user and template",
-        });
-      }
+      const returnedTemplateId = await formService.updateFilledForm(
+        userId,
+        formId,
+        formData
+      );
 
-      res.json({
-        success: true,
-        data: filledForm,
-      });
+      res.status(201).json({ returnedTemplateId });
     } catch (error) {
       if (error instanceof CustomError) {
         return res.status(error.statusCode).json(error.toJSON());
       }
 
+      console.error("Error creating form:", error);
+      res.status(500).json({
+        message: "Error creating form",
+        errorCode: "CREATING_FORM_ERROR",
+      });
+    }
+  },
+
+  getUserFilledForm: async (req, res) => {
+    try {
+      const formId = req.params.id;
+      const userId = req.userId;
+
+      const filledForm = await formService.getFilledForm(formId, userId);
+
+      res.json(filledForm);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.toJSON());
+      }
       console.error("Error getting user form:", error);
       res.status(500).json({
         message: "Error getting user form",
@@ -180,7 +196,15 @@ const userController = {
     try {
       const userId = req.userId;
       const templateId = req.params.id;
-      return formService.hasUserFilledForm(userId, templateId);
+
+      const hasFilled = await formService.hasUserFilledForm(userId, templateId);
+      let form;
+
+      if (hasFilled) {
+        form = await formService.getUserForm(userId, templateId);
+      }
+
+      res.json({ hasFilled, formId: form?.id || -1 });
     } catch (error) {
       console.error("Error checking user filled form:", error);
       res.status(500).json({

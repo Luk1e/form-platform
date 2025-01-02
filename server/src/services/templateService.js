@@ -118,12 +118,9 @@ const templateService = {
       questions,
       access_users,
     } = templateData;
-
     const transaction = await models.sequelize.transaction();
-
     try {
       const template = await Template.findByPk(templateId, { transaction });
-
       // Update basic template info
       await template.update(
         {
@@ -141,7 +138,6 @@ const templateService = {
         const uniqueTags = Array.isArray(tags)
           ? [...new Set(tags.map((tag) => tag.toLowerCase().trim()))]
           : [];
-
         const createdTags = await Promise.all(
           uniqueTags.map(async (tagName) => {
             const [tag] = await TemplateTag.findOrCreate({
@@ -151,7 +147,6 @@ const templateService = {
             return tag;
           })
         );
-
         await template.setTemplateTags(createdTags, { transaction });
       }
 
@@ -171,27 +166,46 @@ const templateService = {
 
       // Handle questions
       if (Array.isArray(questions)) {
-        // Delete all existing questions and their options
-        await TemplateQuestion.destroy({
+        // Get existing questions for comparison
+        const existingQuestions = await TemplateQuestion.findAll({
           where: { template_id: template.id },
+          include: [{ model: QuestionOption }],
           transaction,
         });
 
-        // Create new questions
+        // Create a map of existing questions by ID for easier lookup
+        const existingQuestionsMap = new Map(
+          existingQuestions.map((q) => [q.id, q])
+        );
+
+        // Process each question in the update
         await Promise.all(
           questions.map(async (question, index) => {
-            const createdQuestion = await TemplateQuestion.create(
-              {
-                template_id: template.id,
-                question_type_id: question.type_id,
-                title: question.title,
-                description: question.description,
-                display_in_summary: Boolean(question.display_in_summary),
-                position: index + 1,
-                is_required: Boolean(question.is_required),
-              },
-              { transaction }
-            );
+            const questionData = {
+              template_id: template.id,
+              question_type_id: question.type_id,
+              title: question.title,
+              description: question.description,
+              display_in_summary: Boolean(question.display_in_summary),
+              position: index + 1,
+              is_required: Boolean(question.is_required),
+            };
+
+            let updatedQuestion;
+
+            if (question.id && existingQuestionsMap.has(question.id)) {
+              // Update existing question
+              const existingQuestion = existingQuestionsMap.get(question.id);
+              await existingQuestion.update(questionData, { transaction });
+              updatedQuestion = existingQuestion;
+              // Remove from map to track which questions should be deleted
+              existingQuestionsMap.delete(question.id);
+            } else {
+              // Create new question
+              updatedQuestion = await TemplateQuestion.create(questionData, {
+                transaction,
+              });
+            }
 
             // Handle options for single choice (4) and checkbox (5) questions
             if (
@@ -202,18 +216,53 @@ const templateService = {
                 .map((opt) => opt.trim())
                 .filter(Boolean);
 
-              await QuestionOption.bulkCreate(
-                uniqueOptions.map((option) => ({
-                  template_question_id: createdQuestion.id,
-                  value: option,
-                })),
-                { transaction }
+              // Get existing options
+              const existingOptions = updatedQuestion.QuestionOptions || [];
+              const existingOptionsMap = new Map(
+                existingOptions.map((opt) => [opt.value, opt])
               );
-            }
 
-            return createdQuestion;
+              // Update or create options
+              await Promise.all(
+                uniqueOptions.map(async (optionValue) => {
+                  if (existingOptionsMap.has(optionValue)) {
+                    existingOptionsMap.delete(optionValue);
+                  } else {
+                    await QuestionOption.create(
+                      {
+                        template_question_id: updatedQuestion.id,
+                        value: optionValue,
+                      },
+                      { transaction }
+                    );
+                  }
+                })
+              );
+
+              // Delete remaining unused options
+              if (existingOptionsMap.size > 0) {
+                await QuestionOption.destroy({
+                  where: {
+                    id: Array.from(existingOptionsMap.values()).map(
+                      (opt) => opt.id
+                    ),
+                  },
+                  transaction,
+                });
+              }
+            }
           })
         );
+
+        // Delete questions that were not included in the update
+        if (existingQuestionsMap.size > 0) {
+          await TemplateQuestion.destroy({
+            where: {
+              id: Array.from(existingQuestionsMap.keys()),
+            },
+            transaction,
+          });
+        }
       }
 
       await transaction.commit();

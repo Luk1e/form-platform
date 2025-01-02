@@ -81,7 +81,9 @@ const userService = {
       attributes: [
         "id",
         "created_at",
+        [models.sequelize.col("Template.id"), "template_id"],
         [models.sequelize.col("Template.title"), "template_title"],
+        [models.sequelize.col("Template.description"), "template_description"],
       ],
       include: [
         {
@@ -91,7 +93,7 @@ const userService = {
           where: template_title
             ? {
                 title: {
-                  [models.sequelize.Op.like]: `%${template_title}%`,
+                  [Op.like]: `%${template_title}%`,
                 },
               }
             : {},
@@ -112,7 +114,7 @@ const userService = {
           where: template_title
             ? {
                 title: {
-                  [Op.like]: `%${template_title}%`,
+                  [Op.like]: `%${template_title}%`, // Using Op directly
                 },
               }
             : {},

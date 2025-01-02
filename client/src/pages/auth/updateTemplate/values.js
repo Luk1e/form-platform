@@ -16,6 +16,7 @@ export const mapTemplateToFormValues = (template) => {
       ? []
       : template.AccessUsers.map((user) => user.id),
     questions: template.TemplateQuestions.map((question) => ({
+      id: question.id,
       type_id: question.QuestionType.id,
       title: question.title,
       description: question.description,

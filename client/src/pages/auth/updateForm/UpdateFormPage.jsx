@@ -10,46 +10,34 @@ import {
 } from "../../../toolkit/templates/getTemplateSlice";
 import QuestionField from "./components/QuestionField";
 import { validationSchema, handleSubmit } from "./values";
-import { checkIsFilled } from "../../../toolkit/user/createFormSlice";
+import { getForm, resetGetFormState } from "../../../toolkit/user/getFormSlice";
 const { Title, Text } = Typography;
 
-const FillFormPage = () => {
+function UpdateFormPage() {
   const [t] = useTranslation(["auth"]);
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { id, formId } = useParams();
   const { notification } = App.useApp();
   const navigate = useNavigate();
+
   const {
     template,
     error: errorTemplate,
     loading: loadingTemplate,
   } = useSelector((state) => state.template);
-  const { loading } = useSelector((state) => state.createForm);
+  const { form, error, loading } = useSelector((state) => state.getForm);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (id) {
-        try {
-          const data = await dispatch(checkIsFilled(id)).unwrap();
-          if (data?.hasFilled && data?.formId) {
-            navigate(`/templates/${id}/forms/${data?.formId}`);
-          } else {
-            dispatch(getTemplateById({ id }));
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }
-    };
-
-    fetchData();
+    dispatch(getTemplateById({ id }));
+    dispatch(getForm(formId));
 
     return () => {
       dispatch(resetGetTemplateState());
+      dispatch(resetGetFormState());
     };
-  }, [id, dispatch, navigate]);
+  }, [id, formId, dispatch]);
 
-  if (loadingTemplate) {
+  if (loadingTemplate || loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Spin size="large" />
@@ -57,15 +45,19 @@ const FillFormPage = () => {
     );
   }
 
-  if (errorTemplate) {
+  if (errorTemplate || error) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Alert
           type="error"
           message={
-            errorTemplate.errorCode
-              ? t(`errors.${errorTemplate.errorCode}`)
-              : errorTemplate.message
+            errorTemplate
+              ? errorTemplate.errorCode
+                ? t(`errors.${errorTemplate.errorCode}`)
+                : error.message
+              : error.errorCode
+              ? t(`errors.${error.errorCode}`)
+              : error.message
           }
           className="max-w-md"
         />
@@ -74,11 +66,6 @@ const FillFormPage = () => {
   }
 
   if (!template) return null;
-
-  const initialValues = template.TemplateQuestions.reduce((acc, question) => {
-    acc[`question_${question.id}`] = question.QuestionType.id === 4 ? [] : "";
-    return acc;
-  }, {});
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -96,11 +83,12 @@ const FillFormPage = () => {
           </div>
 
           <Formik
-            initialValues={initialValues}
+            initialValues={form.initialValues}
             validationSchema={validationSchema(template.TemplateQuestions, t)}
             onSubmit={(values) =>
               handleSubmit(
                 id,
+                formId,
                 template,
                 values,
                 dispatch,
@@ -138,6 +126,6 @@ const FillFormPage = () => {
       </Card>
     </div>
   );
-};
+}
 
-export default FillFormPage;
+export default UpdateFormPage;

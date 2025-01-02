@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAuthAxios } from "../../utils/hooks/useAxios";
 
-export const createForm = createAsyncThunk(
-  "createForm/create",
-  async ({ id, answers }, { rejectWithValue }) => {
+export const updateForm = createAsyncThunk(
+  "updateForm/getUserFilledForm",
+  async ({ formId, answers }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
 
       formData.append("data", JSON.stringify(answers));
 
-      await useAuthAxios.post(`/api/users/templates/${id}/fill`, formData, {
+      await useAuthAxios.put(`/api/users/forms/${formId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -20,29 +20,15 @@ export const createForm = createAsyncThunk(
   }
 );
 
-export const checkIsFilled = createAsyncThunk(
-  "createForm/checkIsFilled",
-  async (id, { rejectWithValue }) => {
-    try {
-      const { data } = await useAuthAxios.get(
-        `/api/users/templates/${id}/isFilled`
-      );
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.response.data);
-    }
-  }
-);
-
-const createFormSlice = createSlice({
-  name: "createForm",
+const updateFormSlice = createSlice({
+  name: "updateForm",
   initialState: {
     loading: false,
     error: null,
     success: false,
   },
   reducers: {
-    resetCreateFormState: (state) => {
+    resetUpdateFormState: (state) => {
       state.loading = false;
       state.error = null;
       state.success = false;
@@ -50,16 +36,16 @@ const createFormSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createForm.pending, (state) => {
+      .addCase(updateForm.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.success = false;
       })
-      .addCase(createForm.fulfilled, (state, action) => {
+      .addCase(updateForm.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
       })
-      .addCase(createForm.rejected, (state, action) => {
+      .addCase(updateForm.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.success = false;
@@ -67,5 +53,5 @@ const createFormSlice = createSlice({
   },
 });
 
-export const { resetCreateFormState } = createFormSlice.actions;
-export default createFormSlice.reducer;
+export const { resetUpdateFormState } = updateFormSlice.actions;
+export default updateFormSlice.reducer;
