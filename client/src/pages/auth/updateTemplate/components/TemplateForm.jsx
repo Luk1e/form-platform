@@ -54,7 +54,6 @@ const TemplateForm = ({ templateId }) => {
 
   const initialValues = mapTemplateToFormValues(template);
 
-  console.log(template);
   return (
     <Formik
       initialValues={initialValues}

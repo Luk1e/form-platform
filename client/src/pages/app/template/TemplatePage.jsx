@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert, Card } from "antd";
+import { Alert, Card, Spin } from "antd";
 import { useTranslation } from "react-i18next";
 import {
   getTemplateById,
@@ -36,6 +36,14 @@ const TemplatePage = () => {
       navigate(`/templates/${id}/fill`);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   if (error) {
     return (
