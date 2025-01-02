@@ -1,6 +1,9 @@
 import { authService, jwtService } from "../services/index.js";
 import { CustomError } from "../utils/index.js";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const authController = {
   register: async (req, res) => {
     try {
@@ -11,6 +14,8 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
+        secure: process.env.NODE_ENV === "development",
+        sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       });
 
@@ -39,6 +44,8 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
+        secure: process.env.NODE_ENV === "development",
+        sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       });
 
@@ -66,6 +73,8 @@ const authController = {
 
       res.cookie("token", accessToken, {
         httpOnly: true,
+        secure: process.env.NODE_ENV === "development",
+        sameSite: process.env.NODE_ENV === "development" ? "None" : "Lax",
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       });
 
