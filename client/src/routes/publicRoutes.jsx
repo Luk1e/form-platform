@@ -3,9 +3,9 @@ import { PublicLayout } from "../layouts";
 
 const HomePage = lazy(() => import("../pages/app/home/HomePage"));
 const LoginPage = lazy(() => import("../pages/app/login/LoginPage"));
-const RegisterPage = lazy(() => import("../pages/app/register/RegisterPage"));
 const ErrorPage = lazy(() => import("../pages/app/error/ErrorPage"));
 const SearchPage = lazy(() => import("../pages/app/search/SearchPage"));
+const RegisterPage = lazy(() => import("../pages/app/register/RegisterPage"));
 const TemplatePage = lazy(() => import("../pages/app/template/TemplatePage"));
 
 export default function PublicRoutes() {

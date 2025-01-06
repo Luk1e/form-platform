@@ -1,7 +1,12 @@
-import { Outlet } from "react-router-dom";
-import PropTypes from "prop-types";
-import LoginPage from "../pages/app/login/LoginPage";
 import { Spin } from "antd";
+import PropTypes from "prop-types";
+import { Outlet } from "react-router-dom";
+
+import LoginPage from "../pages/app/login/LoginPage";
+
+AuthorizedLayout.propTypes = {
+  user: PropTypes.any,
+};
 
 function AuthorizedLayout({ user, loading }) {
   if (loading) {
@@ -14,9 +19,5 @@ function AuthorizedLayout({ user, loading }) {
 
   return user ? <Outlet /> : <LoginPage />;
 }
-
-AuthorizedLayout.propTypes = {
-  user: PropTypes.any,
-};
 
 export default AuthorizedLayout;

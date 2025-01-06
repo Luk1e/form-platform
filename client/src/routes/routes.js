@@ -4,10 +4,10 @@ import PublicRoutes from "./publicRoutes";
 import AuthorizedRoutes from "./authorizedRoutes";
 import AdminRoutes from "./adminRoutes";
 
-export default function Router({ user }) {
+export default function Router({ user, loading }) {
   return useRoutes([
     PublicRoutes(),
-    AuthorizedRoutes({ user }),
-    AdminRoutes({ user }),
+    AuthorizedRoutes({ user, loading }),
+    AdminRoutes({ user, loading }),
   ]);
 }

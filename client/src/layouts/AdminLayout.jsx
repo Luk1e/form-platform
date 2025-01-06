@@ -1,7 +1,12 @@
-import { Outlet } from "react-router-dom";
-import PropTypes from "prop-types";
-import ErrorPage from "../pages/app/error/ErrorPage";
 import { Spin } from "antd";
+import PropTypes from "prop-types";
+import { Outlet } from "react-router-dom";
+
+import ErrorPage from "../pages/app/error/ErrorPage";
+
+AdminLayout.propTypes = {
+  user: PropTypes.any,
+};
 
 function AdminLayout({ user, loading }) {
   if (loading) {
@@ -14,9 +19,5 @@ function AdminLayout({ user, loading }) {
 
   return user?.isAdmin ? <Outlet /> : <ErrorPage />;
 }
-
-AdminLayout.propTypes = {
-  user: PropTypes.any,
-};
 
 export default AdminLayout;
