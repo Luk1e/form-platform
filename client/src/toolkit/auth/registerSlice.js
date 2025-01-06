@@ -27,11 +27,7 @@ export const registerSlice = createSlice({
   name: "registerSlice",
   initialState,
   reducers: {
-    reset: (state) => {
-      state.error = null;
-      state.success = false;
-      state.isLoading = false;
-    },
+    reset: () => initialState,
   },
   extraReducers: (builder) => {
     builder.addCase(register.pending, (state) => {

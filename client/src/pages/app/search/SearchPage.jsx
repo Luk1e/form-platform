@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { Card, Spin, Empty, Button } from "antd";
+import { Card, Spin, Button } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
+import { useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   searchTemplates,
   resetSearchState,
 } from "../../../toolkit/templates/searchTemplateSlice";
-import TemplateGallery from "./components/TemplateGallery";
+
+import { TemplateGallery } from "../../../components";
 
 const SearchPage = () => {
   const dispatch = useDispatch();
@@ -19,28 +21,28 @@ const SearchPage = () => {
     (state) => state.searchTemplates
   );
 
-  const query = searchParams.get("query") || "";
   const tag = searchParams.get("tag") || "";
-
-  useEffect(() => {
-    dispatch(searchTemplates({ query, tag, page: 1 }));
-
-    return () => {
-      dispatch(resetSearchState());
-    };
-  }, [dispatch, query, tag]);
+  const query = searchParams.get("query") || "";
 
   const handleLoadMore = () => {
     if (pagination.currentPage < pagination.totalPages) {
       dispatch(
         searchTemplates({
-          query,
-          tag,
+          tag: tag,
+          query: query,
           page: pagination.currentPage + 1,
         })
       );
     }
   };
+
+  useEffect(() => {
+    dispatch(searchTemplates({ tag, query, page: 1 }));
+
+    return () => {
+      dispatch(resetSearchState());
+    };
+  }, [dispatch, query, tag]);
 
   if (loading && templates.length === 0) {
     return (
@@ -63,11 +65,9 @@ const SearchPage = () => {
   if (templates.length === 0) {
     return (
       <div className="p-4 md:p-6">
-        <Card className="text-center">
-          <Empty
-            image={<InboxOutlined style={{ fontSize: 48, color: "#8c8c8c" }} />}
-            description={t("search.noResults")}
-          />
+        <Card className="flex flex-col text-center items-center justify-center p-8">
+          <InboxOutlined className="text-4xl text-gray-400 mb-2" />
+          <p className="text-gray-600">{t("search.noResults")}</p>
         </Card>
       </div>
     );

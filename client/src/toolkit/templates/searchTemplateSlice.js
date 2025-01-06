@@ -1,46 +1,41 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import { useAxios } from "../../utils/hooks/useAxios";
 
 export const searchTemplates = createAsyncThunk(
-  "searchTemplates/search",
-  async ({ query, tag, page = 1, limit = 10 }) => {
-    const response = await useAxios.get(`/api/templates/search`, {
-      params: {
-        query,
-        tag,
-        page,
-        limit,
-      },
-    });
-    return response.data;
+  "searchTemplateSlice/search",
+  async ({ tag, query, page = 1, limit = 10 }, { rejectWithValue }) => {
+    try {
+      const response = await useAxios.get(`/api/templates/search`, {
+        params: {
+          query,
+          tag,
+          page,
+          limit,
+        },
+      });
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
   }
 );
 
-const searchTemplatesSlice = createSlice({
-  name: "searchTemplates",
-  initialState: {
-    templates: [],
-    pagination: {
-      currentPage: 1,
-      pageSize: 10,
-      totalTemplates: 0,
-      totalPages: 0,
-    },
-    loading: false,
-    error: null,
+const initialState = {
+  templates: [],
+  pagination: {
+    currentPage: 1,
+    pageSize: 10,
+    totalTemplates: 0,
+    totalPages: 0,
   },
+};
+
+const searchTemplateSlice = createSlice({
+  name: "searchTemplateSlice",
+  initialState,
   reducers: {
-    resetSearchState: (state) => {
-      state.templates = [];
-      state.pagination = {
-        currentPage: 1,
-        pageSize: 10,
-        totalTemplates: 0,
-        totalPages: 0,
-      };
-      state.loading = false;
-      state.error = null;
-    },
+    resetSearchState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -60,5 +55,5 @@ const searchTemplatesSlice = createSlice({
   },
 });
 
-export const { resetSearchState } = searchTemplatesSlice.actions;
-export default searchTemplatesSlice.reducer;
+export const { resetSearchState } = searchTemplateSlice.actions;
+export default searchTemplateSlice.reducer;

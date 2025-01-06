@@ -1,21 +1,12 @@
-import React from "react";
 import { Card } from "antd";
 import { Link } from "react-router-dom";
-import { UserOutlined, FileTextOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { UserOutlined, FileTextOutlined } from "@ant-design/icons";
+
+import { getRandomAccent } from "../../utils/helpers";
 
 const TemplateGallery = ({ templates }) => {
   const [t] = useTranslation("app");
-  const getRandomAccent = () => {
-    const colors = [
-      "bg-blue-500/10 text-blue-400",
-      "bg-emerald-500/10 text-emerald-400",
-      "bg-purple-500/10 text-purple-400",
-      "bg-amber-500/10 text-amber-400",
-      "bg-rose-500/10 text-rose-400",
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">

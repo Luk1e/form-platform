@@ -45,11 +45,7 @@ export const loginSlice = createSlice({
   name: "loginSlice",
   initialState,
   reducers: {
-    reset: (state) => {
-      state.error = null;
-      state.success = false;
-      state.isLoading = false;
-    },
+    reset: () => initialState,
   },
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state) => {
