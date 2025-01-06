@@ -1,7 +1,7 @@
 import { Input } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { SearchOutlined } from "@ant-design/icons";
 
 const SearchInput = ({ t }) => {
   const navigate = useNavigate();

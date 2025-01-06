@@ -1,61 +1,26 @@
-import { Drawer, Menu, App } from "antd";
+import { Drawer, Menu } from "antd";
 import { useWindowSize } from "react-use";
-import { useState, useEffect, useCallback } from "react";
+import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useSelector, useDispatch } from "react-redux";
 import { FileDoneOutlined, MenuOutlined } from "@ant-design/icons";
 
-import getMenuItems from "./getMenuItems";
-import SearchInput from "../components/SearchInput";
-import DropDownComponent from "../components/DropDownComponent";
-import { toggleTheme } from "../../../toolkit/theme/themeSlice";
-import { logout } from "../../../toolkit/auth/authSlice";
+import { SearchInput, UserDropdown, MenuDropdownList } from "./components";
 
-function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
-  const dispatch = useDispatch();
+function MobileHeader() {
   const navigate = useNavigate();
   const { width } = useWindowSize();
-  const { t, i18n } = useTranslation(["components"]);
-
-  const { notification } = App.useApp();
-  const themeMode = useSelector((state) => state.theme.mode);
+  const { t } = useTranslation(["components"]);
   const { user } = useSelector((state) => state.authentication);
 
   const [isMobileDrawerVisible, setIsMobileDrawerVisible] = useState(false);
-  
+
   const closeDrawer = () => {
     setIsMobileDrawerVisible(false);
   };
 
-  const toggleThemeMethod = () => {
-    dispatch(toggleTheme());
-  };
-
-  const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === "eng" ? "geo" : "eng");
-  };
-
-  const logoutMethod = useCallback(() => {
-    dispatch(logout());
-    navigate("/");
-    notification.success({
-      message: t("notifications.logoutSuccess"),
-      description: t("notifications.goodBye"),
-    });
-    closeDrawer();
-  }, [dispatch, notification, t]);
-
-  const menuItems = getMenuItems({
-    t,
-    user,
-    logoutMethod,
-    closeDrawer,
-    toggleLanguage,
-    theme: themeMode,
-    toggleThemeMethod,
-    language: i18n.language,
-  });
+  const dropdownList = MenuDropdownList(user, closeDrawer);
 
   useEffect(() => {
     if (width > 768 && isMobileDrawerVisible) {
@@ -83,14 +48,7 @@ function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
       </div>
 
       {/* User Dropdown */}
-      {!user ? (
-        <DropDownComponent
-          isMenuVisible={isMenuVisible}
-          setIsMenuVisible={setIsMenuVisible}
-        />
-      ) : (
-        <div></div>
-      )}
+      {!user ? <UserDropdown /> : <div></div>}
 
       {/* Mobile Drawer */}
       <Drawer
@@ -102,7 +60,7 @@ function MobileHeader({ isMenuVisible, setIsMenuVisible }) {
         <div className="mb-5">
           <SearchInput t={t} />
         </div>
-        <Menu items={menuItems} />
+        <Menu items={dropdownList} />
       </Drawer>
     </div>
   );

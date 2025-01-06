@@ -2,10 +2,9 @@ import { FileDoneOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import SearchInput from "../components/SearchInput";
-import DropDownComponent from "../components/DropDownComponent";
+import { SearchInput, UserDropdown } from "./components";
 
-function DesktopHeader({ isMenuVisible, setIsMenuVisible }) {
+function DesktopHeader() {
   const navigate = useNavigate();
   const { t } = useTranslation(["components"]);
 
@@ -32,10 +31,7 @@ function DesktopHeader({ isMenuVisible, setIsMenuVisible }) {
 
       {/* User Dropdown */}
       <div className="ml-auto">
-        <DropDownComponent
-          isMenuVisible={isMenuVisible}
-          setIsMenuVisible={setIsMenuVisible}
-        />
+        <UserDropdown />
       </div>
     </div>
   );

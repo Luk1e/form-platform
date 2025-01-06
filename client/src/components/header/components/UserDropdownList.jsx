@@ -1,18 +1,38 @@
-import { Link } from "react-router-dom";
+import { App } from "antd";
 import {
   LoginOutlined,
   FormOutlined,
   LogoutOutlined,
   SettingOutlined,
-  PlusCircleOutlined,
   LayoutOutlined,
 } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useSelector, useDispatch } from "react-redux";
 
-const getMenuItems = (t, user, logoutMethod) => {
-  const menuItems = [];
+import { logout } from "../../../toolkit/auth/authSlice";
+
+const UserDropdownList = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { t } = useTranslation(["components"]);
+  const { user } = useSelector((state) => state.authentication);
+  const { notification } = App.useApp();
+
+  const logoutMethod = () => {
+    dispatch(logout()).then(() => {
+      navigate("/");
+      notification.success({
+        message: t("notifications.logoutSuccess"),
+        description: t("notifications.goodBye"),
+      });
+    });
+  };
+
+  const dropdownList = [];
 
   if (user?.isAdmin) {
-    menuItems.push({
+    dropdownList.push({
       key: "admin",
       icon: <SettingOutlined />,
       label: <Link to="/admin">{t("global.adminPanel")}</Link>,
@@ -20,7 +40,7 @@ const getMenuItems = (t, user, logoutMethod) => {
   }
 
   if (user) {
-    menuItems.push(
+    dropdownList.push(
       {
         key: "my-content",
         icon: <LayoutOutlined />,
@@ -35,7 +55,7 @@ const getMenuItems = (t, user, logoutMethod) => {
       }
     );
   } else {
-    menuItems.push(
+    dropdownList.push(
       {
         key: "login",
         icon: <LoginOutlined />,
@@ -49,7 +69,7 @@ const getMenuItems = (t, user, logoutMethod) => {
     );
   }
 
-  return menuItems;
+  return dropdownList;
 };
 
-export default getMenuItems;
+export default UserDropdownList;
