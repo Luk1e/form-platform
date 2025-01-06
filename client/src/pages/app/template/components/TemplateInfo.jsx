@@ -15,6 +15,7 @@ const TemplateInfo = ({ template }) => {
   const searchTemplateByTag = (tagId) => {
     navigate(`/search?tag=${tagId}`);
   };
+
   return (
     <div className="space-y-6">
       {template.image_url && (

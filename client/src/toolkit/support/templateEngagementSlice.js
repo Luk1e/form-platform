@@ -2,12 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAxios, useAuthAxios } from "../../utils/hooks/useAxios";
 
 export const getTemplateEngagements = createAsyncThunk(
-  "templateEngagement/getTemplateEngagements",
+  "templateEngagementSlice/getTemplateEngagements",
   async ({ id, userId }, { rejectWithValue }) => {
     try {
       const { data } = await useAxios.get(
         `/api/support/engagements/${id}?userId=${userId}`
       );
+
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -16,13 +17,14 @@ export const getTemplateEngagements = createAsyncThunk(
 );
 
 export const addComment = createAsyncThunk(
-  "templateEngagement/addComment",
+  "templateEngagementSlice/addComment",
   async ({ id, content }, { rejectWithValue }) => {
     try {
       const { data } = await useAuthAxios.post(
         `/api/users/templates/${id}/comment`,
         { content }
       );
+
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -31,12 +33,13 @@ export const addComment = createAsyncThunk(
 );
 
 export const toggleLike = createAsyncThunk(
-  "templateEngagement/toggleLike",
+  "templateEngagementSlice/toggleLike",
   async (id, { rejectWithValue }) => {
     try {
       const { data } = await useAuthAxios.post(
         `/api/users/templates/${id}/like`
       );
+
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -44,19 +47,17 @@ export const toggleLike = createAsyncThunk(
   }
 );
 
+const initialState = {
+  loading: false,
+  error: null,
+  engagements: null,
+};
+
 const templateEngagementSlice = createSlice({
-  name: "templateEngagement",
-  initialState: {
-    loading: false,
-    error: null,
-    engagements: null,
-  },
+  name: "templateEngagementSlice",
+  initialState,
   reducers: {
-    resetTemplateEngagementState: (state) => {
-      state.loading = false;
-      state.error = null;
-      state.engagements = null;
-    },
+    resetTemplateEngagementState: () => initialState,
   },
   extraReducers: (builder) => {
     builder

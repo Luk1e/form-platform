@@ -1,8 +1,20 @@
 import { Switch } from "antd";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 
-const TemplateHeader = ({ user, access_users, title, onToggleView }) => {
+const TemplateHeader = ({ access_users, title }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [t] = useTranslation("app");
+
+  const { user } = useSelector((state) => state.authentication);
+
+  const handleToggleView = (value) => {
+    if (value) {
+      navigate(`/templates/${id}/fill`);
+    }
+  };
 
   return (
     <div className="flex justify-between items-center border-b pb-4">
@@ -10,7 +22,7 @@ const TemplateHeader = ({ user, access_users, title, onToggleView }) => {
       <Switch
         checkedChildren={t("templatePage.fill")}
         unCheckedChildren={t("templatePage.view")}
-        onChange={onToggleView}
+        onChange={handleToggleView}
         disabled={
           !user?.id ||
           (access_users?.length > 0 &&

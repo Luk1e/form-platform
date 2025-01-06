@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Card, Spin } from "antd";
 import { useTranslation } from "react-i18next";
@@ -17,12 +17,11 @@ import {
 
 const TemplatePage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [t] = useTranslation("app");
 
-  const { template, loading, error } = useSelector((state) => state.template);
   const { user } = useSelector((state) => state.authentication);
+  const { template, loading, error } = useSelector((state) => state.template);
 
   useEffect(() => {
     dispatch(getTemplateById({ id, userId: user?.id }));
@@ -30,12 +29,6 @@ const TemplatePage = () => {
       dispatch(resetGetTemplateState());
     };
   }, [dispatch, id, user]);
-
-  const handleToggleView = (value) => {
-    if (value) {
-      navigate(`/templates/${id}/fill`);
-    }
-  };
 
   if (loading) {
     return (
@@ -53,7 +46,7 @@ const TemplatePage = () => {
           message={
             error?.errorCode
               ? t(`errors.${error.errorCode}`)
-              : "somethingWentWrong"
+              : "Something went wrong..."
           }
           showIcon
         />
@@ -68,9 +61,7 @@ const TemplatePage = () => {
           <div className="space-y-6">
             <TemplateHeader
               title={template.title}
-              user={user}
               access_users={template.AccessUsers}
-              onToggleView={handleToggleView}
             />
             <TemplateInfo template={template} />
             <QuestionList questions={template.TemplateQuestions} />

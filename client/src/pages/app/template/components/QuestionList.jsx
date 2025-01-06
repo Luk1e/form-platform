@@ -1,4 +1,3 @@
-import React from "react";
 import { Card } from "antd";
 import {
   FormOutlined,
@@ -7,8 +6,8 @@ import {
   CheckSquareOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-import RenderQuestionOptions from "./RenderQuestionOptions";
 import { useTranslation } from "react-i18next";
+import RenderQuestionOptions from "./RenderQuestionOptions";
 
 const questionTypeConfig = {
   single_line: {
@@ -42,6 +41,7 @@ const questionTypeConfig = {
 
 const QuestionList = ({ questions }) => {
   const { t } = useTranslation(["app"]);
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium dark:text-gray-200">

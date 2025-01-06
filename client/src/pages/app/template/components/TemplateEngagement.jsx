@@ -1,32 +1,35 @@
 import { useEffect, useState } from "react";
-import { Button, Input, Avatar, List, Tooltip, Space, App } from "antd";
-import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  HeartOutlined,
   HeartFilled,
-  MessageOutlined,
   SendOutlined,
+  HeartOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
+import { Button, Input, Avatar, List, Tooltip, Space, App } from "antd";
+
 import {
   toggleLike,
+  addComment,
   getTemplateEngagements,
   resetTemplateEngagementState,
-  addComment,
 } from "../../../../toolkit/support/templateEngagementSlice";
 
 const { TextArea } = Input;
 
 const TemplateEngagement = ({ username }) => {
-  const [t] = useTranslation("app");
   const { id } = useParams();
   const dispatch = useDispatch();
+  const [t] = useTranslation("app");
+  const { notification } = App.useApp();
+
   const { user } = useSelector((state) => state.authentication);
   const { engagements } = useSelector((state) => state.templateEngagement);
-  const { notification } = App.useApp();
-  const [commentContent, setCommentContent] = useState("");
+
   const [showComments, setShowComments] = useState(false);
+  const [commentContent, setCommentContent] = useState("");
 
   useEffect(() => {
     dispatch(getTemplateEngagements({ id, userId: user?.id }));
@@ -36,8 +39,7 @@ const TemplateEngagement = ({ username }) => {
   }, [dispatch, id, user]);
 
   useEffect(() => {
-    let intervalId;
-    intervalId = setInterval(() => {
+    let intervalId = setInterval(() => {
       dispatch(getTemplateEngagements({ id, userId: user?.id }));
     }, 5000);
     return () => {
