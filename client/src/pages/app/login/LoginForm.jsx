@@ -13,7 +13,7 @@ import { GoogleButton } from "../../../components";
 const LoginForm = () => {
   const { t, i18n } = useTranslation(["app"]);
   const dispatch = useDispatch();
-  const { isLoading, error, success } = useSelector((state) => state.login);
+  const { loading, error, success } = useSelector((state) => state.login);
   const { notification } = App.useApp();
 
   const formik = useFormik({
@@ -57,7 +57,7 @@ const LoginForm = () => {
       )}
 
       <Input formik={formik} />
-      <Button isLoading={isLoading} />
+      <Button loading={loading} />
 
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">

@@ -12,7 +12,7 @@ import { Input, Button } from "./components";
 const RegisterForm = () => {
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation(["app"]);
-  const { isLoading, error, success } = useSelector((state) => state.register);
+  const { loading, error, success } = useSelector((state) => state.register);
   const { notification } = App.useApp();
 
   const formik = useFormik({
@@ -62,7 +62,7 @@ const RegisterForm = () => {
         />
       )}
       <Input formik={formik} />
-      <Button isLoading={isLoading} />
+      <Button loading={loading} />
     </Form>
   );
 };

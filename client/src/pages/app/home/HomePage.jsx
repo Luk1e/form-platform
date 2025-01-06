@@ -1,16 +1,21 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Card, Spin, Table, Button } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   getLatestTemplates,
   resetLatestTemplateState,
 } from "../../../toolkit/templates/latestTemplateSlice";
-import { getPopularTemplates } from "../../../toolkit/templates/popularTemplateSlice";
+import {
+  getPopularTemplates,
+  resetPopularTemplateState,
+} from "../../../toolkit/templates/popularTemplateSlice";
 import { getTagCloud, resetTagState } from "../../../toolkit/support/tagSlice";
-import { getPopularColumns } from "./components/getPopularColumns";
-import { TemplateGallery, TagCloud } from "./components";
+
+import { TemplateGallery } from "../../../components";
+import { TagCloud, PopularTemplateColumns } from "./components";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -20,23 +25,26 @@ const HomePage = () => {
   const { tagCloud, loading: loadingTagCloud } = useSelector(
     (state) => state.supportTags
   );
+
+  const { popularTemplates, loading: loadingPopularTemplates } = useSelector(
+    (state) => state.popularTemplates
+  );
+
   const {
     latestTemplates,
     pagination,
     loading: loadingLatestTemplates,
   } = useSelector((state) => state.latestTemplates);
-  const { popularTemplates, loading: loadingPopularTemplates } = useSelector(
-    (state) => state.popularTemplates
-  );
 
   useEffect(() => {
-    dispatch(getLatestTemplates({ page: 1, limit: 10 }));
-    dispatch(getPopularTemplates());
     dispatch(getTagCloud());
+    dispatch(getPopularTemplates());
+    dispatch(getLatestTemplates({ page: 1, limit: 10 }));
 
     return () => {
       dispatch(resetTagState());
       dispatch(resetLatestTemplateState());
+      dispatch(resetPopularTemplateState());
     };
   }, [dispatch]);
 
@@ -52,7 +60,7 @@ const HomePage = () => {
     }
   };
 
-  const popularColumns = getPopularColumns(t);
+  const popularTemplateColumns = PopularTemplateColumns();
 
   if (
     loadingTagCloud ||
@@ -85,7 +93,7 @@ const HomePage = () => {
           className="shadow-md [&_.ant-card-head-title]:sm:text-2xl"
         >
           <Table
-            columns={popularColumns}
+            columns={popularTemplateColumns}
             dataSource={popularTemplates}
             pagination={false}
             rowKey="id"

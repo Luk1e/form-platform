@@ -29,6 +29,8 @@ const initialState = {
     totalTemplates: 0,
     totalPages: 0,
   },
+  loading: false,
+  error: null,
 };
 
 const searchTemplateSlice = createSlice({

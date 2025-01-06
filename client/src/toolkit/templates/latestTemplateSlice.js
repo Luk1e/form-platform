@@ -1,13 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import { useAxios } from "../../utils/hooks/useAxios";
 
 export const getLatestTemplates = createAsyncThunk(
-  "latestTemplates/get",
+  "latestTemplateSlice/getLatestTemplates",
   async ({ page, limit }, { rejectWithValue }) => {
     try {
       const { data } = await useAxios.get(
         `/api/templates/latest?page=${page}&limit=${limit}`
       );
+
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -15,29 +17,26 @@ export const getLatestTemplates = createAsyncThunk(
   }
 );
 
-const latestTemplateSlice = createSlice({
-  name: "latestTemplates",
-  initialState: {
-    loading: false,
-    error: null,
-    latestTemplates: [],
-    pagination: {
-      currentPage: 1,
-      totalPages: 0,
-    },
+const initialState = {
+  latestTemplates: [],
+  pagination: {
+    currentPage: 1,
+    totalPages: 0,
   },
+  loading: false,
+  error: null,
+};
+
+const latestTemplateSlice = createSlice({
+  name: "latestTemplateSlice",
+  initialState,
   reducers: {
-    resetLatestTemplateState: (state) => {
-      state.error = null;
-      state.loading = false;
-      state.latestTemplates = [];
-      state.pagination.totalPages = 0;
-      state.pagination.currentPage = 1;
-    },
+    resetLatestTemplateState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
       .addCase(getLatestTemplates.pending, (state) => {
+        state.error = null;
         state.loading = true;
       })
       .addCase(getLatestTemplates.fulfilled, (state, action) => {

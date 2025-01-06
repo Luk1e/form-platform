@@ -1,2 +1,2 @@
 export { default as TagCloud } from "./TagCloud";
-export { default as TemplateGallery } from "./TemplateGallery";
+export { default as PopularTemplateColumns } from "./PopularTemplateColumns";

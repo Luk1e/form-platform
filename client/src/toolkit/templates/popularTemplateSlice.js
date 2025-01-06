@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import { useAxios } from "../../utils/hooks/useAxios";
 
 export const getPopularTemplates = createAsyncThunk(
-  "popularTemplates/get",
+  "popularTemplateSlice/getPopularTemplates",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await useAxios.get("/api/templates/popular");
@@ -14,16 +15,22 @@ export const getPopularTemplates = createAsyncThunk(
   }
 );
 
+const initialState = {
+  popularTemplates: [],
+  loading: false,
+  error: null,
+};
+
 const popularTemplateSlice = createSlice({
-  name: "popularTemplates",
-  initialState: {
-    loading: false,
-    error: null,
-    popularTemplates: [],
+  name: "popularTemplateSlice",
+  initialState,
+  reducers: {
+    resetPopularTemplateState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
       .addCase(getPopularTemplates.pending, (state) => {
+        state.error = null;
         state.loading = true;
       })
       .addCase(getPopularTemplates.fulfilled, (state, action) => {
@@ -37,4 +44,5 @@ const popularTemplateSlice = createSlice({
   },
 });
 
+export const { resetPopularTemplateState } = popularTemplateSlice.actions;
 export default popularTemplateSlice.reducer;

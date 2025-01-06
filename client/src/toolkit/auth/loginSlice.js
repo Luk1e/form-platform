@@ -36,9 +36,9 @@ export const loginWithGoogle = createAsyncThunk(
 );
 
 const initialState = {
-  error: null,
   success: false,
-  isLoading: false,
+  loading: false,
+  error: null,
 };
 
 export const loginSlice = createSlice({
@@ -50,27 +50,27 @@ export const loginSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state) => {
       state.error = null;
-      state.isLoading = true;
+      state.loading = true;
     });
     builder.addCase(login.fulfilled, (state) => {
       state.success = true;
-      state.isLoading = false;
+      state.loading = false;
     });
     builder.addCase(login.rejected, (state, action) => {
-      state.isLoading = false;
+      state.loading = false;
       state.error = action.payload;
     });
 
     builder.addCase(loginWithGoogle.pending, (state) => {
       state.error = null;
-      state.isLoading = true;
+      state.loading = true;
     });
     builder.addCase(loginWithGoogle.fulfilled, (state) => {
       state.success = true;
-      state.isLoading = false;
+      state.loading = false;
     });
     builder.addCase(loginWithGoogle.rejected, (state, action) => {
-      state.isLoading = false;
+      state.loading = false;
       state.error = action.payload;
     });
   },

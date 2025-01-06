@@ -18,9 +18,9 @@ export const register = createAsyncThunk(
 );
 
 const initialState = {
-  error: null,
   success: false,
-  isLoading: false,
+  loading: false,
+  error: null,
 };
 
 export const registerSlice = createSlice({
@@ -32,14 +32,14 @@ export const registerSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(register.pending, (state) => {
       state.error = null;
-      state.isLoading = true;
+      state.loading = true;
     });
     builder.addCase(register.fulfilled, (state) => {
       state.success = true;
-      state.isLoading = false;
+      state.loading = false;
     });
     builder.addCase(register.rejected, (state, action) => {
-      state.isLoading = false;
+      state.loading = false;
       state.error = action.payload;
     });
   },

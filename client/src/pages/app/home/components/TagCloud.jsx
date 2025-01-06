@@ -2,23 +2,17 @@ import React from "react";
 import { Tag } from "antd";
 import { TagOutlined } from "@ant-design/icons";
 
+import { getTagColor } from "../../../../utils/helpers";
+
+const tagStyle = {
+  cursor: "pointer",
+  transition: "all 0.2s",
+  fontSize: "0.875rem",
+  padding: "2px 8px",
+};
+
 const TagCloud = ({ tags, onTagClick }) => {
   const maxCount = Math.max(...tags.map((tag) => tag.count));
-
-  const getTagColor = (count) => {
-    const ratio = count / maxCount;
-    if (ratio > 0.7) return "blue";
-    if (ratio > 0.4) return "geekblue";
-    if (ratio > 0.2) return "cyan";
-    return "default";
-  };
-
-  const tagStyle = {
-    cursor: "pointer",
-    transition: "all 0.2s",
-    fontSize: "0.875rem",
-    padding: "2px 8px",
-  };
 
   return (
     <div className="flex flex-wrap gap-1 sm:gap-2 justify-center p-2">
@@ -28,7 +22,7 @@ const TagCloud = ({ tags, onTagClick }) => {
           onClick={() => onTagClick(tag.id)}
           style={tagStyle}
           className="inline-flex items-center rounded-full m-0.5 text-xs sm:text-sm"
-          color={getTagColor(tag.count)}
+          color={getTagColor(tag.count, maxCount)}
           onMouseEnter={(e) => {
             e.currentTarget.style.opacity = "0.8";
           }}
