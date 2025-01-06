@@ -1,16 +1,14 @@
 import models from "../models/index.js";
 import { v2 as cloudinary } from "cloudinary";
 import { CustomError } from "../utils/index.js";
-import dotenv from "dotenv";
 import { Op } from "sequelize";
-const { User, Template, TemplateTopic, TemplateTag, sequelize } = models;
-
-dotenv.config();
+import { CLOUDINARY } from "../../config/environment.js";
+const { User, TemplateTopic, TemplateTag, sequelize } = models;
 
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
+  cloud_name: CLOUDINARY.CLOUD_NAME,
+  api_key: CLOUDINARY.API_KEY,
+  api_secret: CLOUDINARY.API_SECRET,
 });
 
 const supportService = {

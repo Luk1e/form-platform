@@ -17,6 +17,7 @@ A full-stack web application that enables users to create, manage, and share for
 ## Tech Stack
 
 ### Frontend
+
 - React
 - Redux
 - Tailwind CSS
@@ -24,12 +25,14 @@ A full-stack web application that enables users to create, manage, and share for
 - i18next (Internationalization)
 
 ### Backend
+
 - Node.js
 - Express
 - MySQL
 - Sequelize ORM
 
 ### Cloud Services
+
 - Frontend Hosting: render.com
 - Backend Hosting: render.com
 - Database Hosting: clever-cloud.com
@@ -44,6 +47,7 @@ A full-stack web application that enables users to create, manage, and share for
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js
 - MySQL
 - Git
@@ -51,12 +55,14 @@ A full-stack web application that enables users to create, manage, and share for
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/Luk1e/form-platform.git
 cd form-platform
 ```
 
 2. Frontend Setup:
+
 ```bash
 cd client
 npm install
@@ -64,6 +70,7 @@ npm run dev
 ```
 
 3. Backend Setup:
+
 ```bash
 cd server
 npm install
@@ -73,6 +80,7 @@ npm run dev
 4. Database Configuration:
    - Create a MySQL database
    - Configure environment variables in `.env`:
+
 ```env
 DB_USER=your_user
 DB_PASSWORD=your_password
@@ -88,18 +96,12 @@ DB_HOST=your_host_name
    // const BACKEND_URL = 'https://form-platform.onrender.com/'
    const BACKEND_URL: 'http://localhost:5000'  // or your custom backend port
    ```
-   - In `server/config/middleware.js`: Add your frontend URL to `allowedOrigins`
-   ```javascript
-   // Example:
-   const allowedOrigins = [
-     'http://localhost:5173',  // or your custom frontend port
-     // ... other origins
-   ];
-   ```
+   - In `server/.env`: Uncomment `NODE_ENV=development`
 
 ## Deployment Notes
 
 The application is currently hosted on render.com with the following considerations:
+
 - The server may experience a cold start delay (up to 5 minutes) after periods of inactivity
 - To mitigate this, a cron job is set up on cron-job.org to send requests every 5 minutes
 - Database connections are limited to a maximum pool of 5 connections

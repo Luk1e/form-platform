@@ -2,8 +2,7 @@ import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
 import AdminJSSequelize from "@adminjs/sequelize";
 import sequelize from "./database.js";
-import dotenv from "dotenv";
-dotenv.config();
+import { SESSION_SECRET } from "./environment.js";
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
@@ -31,7 +30,7 @@ const setupAdmin = async (app) => {
   });
 
   const sessionOptions = {
-    secret: process.env.SESSION_SECRET || "super-secret-key",
+    secret: SESSION_SECRET || "super-secret-key",
     resave: false,
     saveUninitialized: true,
   };

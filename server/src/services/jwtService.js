@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { CustomError } from "../utils/index.js";
+import { JWT_SECRET } from "../../config/environment.js";
 
 const jwtService = {
   generateToken: (userId) => {
@@ -11,7 +12,7 @@ const jwtService = {
       csrfToken,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    const token = jwt.sign(payload, JWT_SECRET, {
       expiresIn: "1d",
     });
 
@@ -23,7 +24,7 @@ const jwtService = {
 
   verifyToken: (token, csrfToken) => {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, JWT_SECRET);
 
       if (decoded.csrfToken !== csrfToken) {
         throw CustomError.unauthorized("CSRF token mismatch");
