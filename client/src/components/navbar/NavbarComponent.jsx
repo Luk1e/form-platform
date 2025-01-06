@@ -1,38 +1,13 @@
 import { useState } from "react";
 import { Button, Tooltip } from "antd";
 
-import { useSelector, useDispatch } from "react-redux";
-import { useTranslation } from "react-i18next";
-import { toggleTheme } from "../../toolkit/theme/themeSlice";
-
-import getMenuItems from "./components/menuItems";
+import MenuItems from "./components/menuItems";
 import ButtonComponent from "./components/ButtonComponent";
-import { useNavigate } from "react-router-dom";
 
-const FloatingActionMenu = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+const NavbarComponent = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { t, i18n } = useTranslation(["components"]);
-  const themeMode = useSelector((state) => state.theme.mode);
-
-  const toggleThemeMethod = () => {
-    dispatch(toggleTheme());
-  };
-
-  const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === "eng" ? "geo" : "eng");
-  };
-
-  const menuItems = getMenuItems({
-    t,
-    navigate,
-    toggleLanguage,
-    theme: themeMode,
-    toggleThemeMethod,
-    language: i18n.language,
-  });
+  const menuItems = MenuItems();
 
   return (
     <div className="fixed bottom-8 right-8 z-50 hidden md:block">
@@ -69,4 +44,4 @@ const FloatingActionMenu = () => {
   );
 };
 
-export default FloatingActionMenu;
+export default NavbarComponent;
