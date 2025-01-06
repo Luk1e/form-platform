@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Form, Alert, App } from "antd";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { reset } from "../../../../toolkit/auth/loginSlice";
-import { initialValues, validationSchema, onSubmit } from "../values";
-import GoogleButton from "../../../../components/google/GoogleButton";
-import InputComponents from "./InputComponents";
-import ButtonComponent from "./ButtonComponent";
+import { reset } from "../../../toolkit/auth/loginSlice";
+import { initialValues, validationSchema, onSubmit } from "./values";
+
+import { Input, Button } from "./components";
+import { GoogleButton } from "../../../components";
 
 const LoginForm = () => {
-  const { t } = useTranslation(["app"]);
+  const { t, i18n } = useTranslation(["app"]);
   const dispatch = useDispatch();
   const { isLoading, error, success } = useSelector((state) => state.login);
   const { notification } = App.useApp();
@@ -18,7 +18,7 @@ const LoginForm = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: validationSchema(t),
-    onSubmit: (values) => onSubmit({ values, dispatch }),
+    onSubmit: (values) => onSubmit(values, dispatch),
   });
 
   useEffect(() => {
@@ -32,7 +32,13 @@ const LoginForm = () => {
     return () => {
       dispatch(reset());
     };
-  }, [success, dispatch, t, notification]);
+  }, [success, dispatch, notification]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (formik.touched.email || formik.touched.password) {
+      formik.validateForm();
+    }
+  }, [i18n.language]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Form onFinish={formik.handleSubmit} className="w-full max-w-md space-y-6">
@@ -49,8 +55,8 @@ const LoginForm = () => {
         />
       )}
 
-      <InputComponents t={t} formik={formik} />
-      <ButtonComponent t={t} isLoading={isLoading} />
+      <Input formik={formik} />
+      <Button isLoading={isLoading} />
 
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
@@ -62,7 +68,7 @@ const LoginForm = () => {
           </span>
         </div>
       </div>
-      <GoogleButton t={t} />
+      <GoogleButton />
     </Form>
   );
 };

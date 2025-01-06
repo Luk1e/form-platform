@@ -1,7 +1,10 @@
 import { Form, Input } from "antd";
+import { useTranslation } from "react-i18next";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
-function InputComponents({ t, formik }) {
+function InputComponent({ formik }) {
+  const { t } = useTranslation(["app"]);
+
   return (
     <>
       <Form.Item
@@ -51,4 +54,4 @@ function InputComponents({ t, formik }) {
   );
 }
 
-export default InputComponents;
+export default InputComponent;

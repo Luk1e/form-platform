@@ -1,20 +1,21 @@
-import { useGoogleLogin } from "@react-oauth/google";
 import { Button } from "antd";
-import { GoogleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { loginWithGoogle } from "../../toolkit/auth/loginSlice";
 import { useTranslation } from "react-i18next";
+import { GoogleOutlined } from "@ant-design/icons";
+import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
-const GoogleButton = () => {
+import { loginWithGoogle } from "../../toolkit/auth/loginSlice";
+
+const GoogleButtonContent = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation(["components"]);
 
   const login = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       dispatch(loginWithGoogle(tokenResponse.access_token));
     },
   });
-
-  const { t } = useTranslation(["components"]);
 
   return (
     <Button
@@ -24,6 +25,14 @@ const GoogleButton = () => {
     >
       {t("global.continueWithGoogle")}
     </Button>
+  );
+};
+
+const GoogleButton = () => {
+  return (
+    <GoogleOAuthProvider clientId="530002033942-0dmk751ql0c82dii5sdffpp3np4muejh.apps.googleusercontent.com">
+      <GoogleButtonContent />
+    </GoogleOAuthProvider>
   );
 };
 

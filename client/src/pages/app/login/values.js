@@ -16,6 +16,6 @@ export const validationSchema = (t) =>
       .required(t("validation.required")),
   });
 
-export const onSubmit = ({ values, dispatch }) => {
+export const onSubmit = (values, dispatch) => {
   dispatch(login(values));
 };

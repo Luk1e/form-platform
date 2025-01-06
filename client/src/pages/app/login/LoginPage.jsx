@@ -1,10 +1,10 @@
 import { Card } from "antd";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import LoginForm from "./components/LoginForm";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import LoginForm from "./LoginForm";
 
 const LoginPage = () => {
   const navigate = useNavigate();

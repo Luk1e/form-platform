@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { useAxios } from "../../utils/hooks/useAxios";
+
 import { authenticate } from "./authSlice";
+import { useAxios } from "../../utils/hooks/useAxios";
 
 export const login = createAsyncThunk(
-  "auth/login",
+  "loginSlice/login",
   async (values, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await useAxios.post(`/api/auth/login`, values);
@@ -17,7 +18,7 @@ export const login = createAsyncThunk(
 );
 
 export const loginWithGoogle = createAsyncThunk(
-  "auth/loginWithGoogle",
+  "loginSlice/loginWithGoogle",
   async (accessToken, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await useAxios.post("/api/auth/google", {
@@ -41,7 +42,7 @@ const initialState = {
 };
 
 export const loginSlice = createSlice({
-  name: "auth/login",
+  name: "loginSlice",
   initialState,
   reducers: {
     reset: (state) => {
@@ -52,10 +53,10 @@ export const loginSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state) => {
+      state.error = null;
       state.isLoading = true;
     });
     builder.addCase(login.fulfilled, (state) => {
-      state.error = null;
       state.success = true;
       state.isLoading = false;
     });
@@ -65,10 +66,10 @@ export const loginSlice = createSlice({
     });
 
     builder.addCase(loginWithGoogle.pending, (state) => {
+      state.error = null;
       state.isLoading = true;
     });
     builder.addCase(loginWithGoogle.fulfilled, (state) => {
-      state.error = null;
       state.success = true;
       state.isLoading = false;
     });

@@ -1,15 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
 import { useAuthAxios } from "../../utils/hooks/useAxios";
 
 export const logout = createAsyncThunk(
-  "auth/logout",
+  "authSlice/logout",
   async (_, { rejectWithValue }) => {
     try {
       await useAuthAxios.delete(`/api/auth/logout`);
       localStorage.removeItem("user");
       localStorage.removeItem("csrfToken");
     } catch (err) {
-      return rejectWithValue(err.response.data.errors[0]);
+      return rejectWithValue(err.response.data);
     }
   }
 );
@@ -19,12 +20,9 @@ const initialState = {
 };
 
 export const authSlice = createSlice({
-  name: "authentication",
+  name: "authSlice",
   initialState,
   reducers: {
-    reset: (state) => {
-      state.error = null;
-    },
     authenticate: (state) => {
       const user = localStorage.getItem("user");
       const csrfToken = localStorage.getItem("csrfToken");
@@ -33,7 +31,6 @@ export const authSlice = createSlice({
         state.user = null;
       } else {
         state.user = JSON.parse(user);
-        state.user.csrfToken = csrfToken;
       }
     },
   },
@@ -45,5 +42,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { reset, authenticate } = authSlice.actions;
+export const { authenticate } = authSlice.actions;
 export default authSlice.reducer;
