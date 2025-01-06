@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { useAxios } from "../../utils/hooks/useAxios";
+
 import { authenticate } from "./authSlice";
+import { useAxios } from "../../utils/hooks/useAxios";
 
 export const register = createAsyncThunk(
-  "auth/register",
+  "registerSlice/register",
   async (values, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await useAxios.post("/api/auth/register", values);
@@ -23,7 +24,7 @@ const initialState = {
 };
 
 export const registerSlice = createSlice({
-  name: "auth/register",
+  name: "registerSlice",
   initialState,
   reducers: {
     reset: (state) => {
@@ -34,10 +35,10 @@ export const registerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(register.pending, (state) => {
+      state.error = null;
       state.isLoading = true;
     });
     builder.addCase(register.fulfilled, (state) => {
-      state.error = null;
       state.success = true;
       state.isLoading = false;
     });

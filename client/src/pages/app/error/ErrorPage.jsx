@@ -4,7 +4,11 @@ import { useTranslation } from "react-i18next";
 
 const ErrorPage = () => {
   const navigate = useNavigate();
-  const [t] = useTranslation("app");
+  const { t } = useTranslation(["app"]);
+
+  const navigateToHome = () => {
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -15,7 +19,7 @@ const ErrorPage = () => {
         extra={[
           <Button
             type="primary"
-            onClick={() => navigate("/")}
+            onClick={navigateToHome}
             className="bg-blue-500 hover:bg-blue-600"
             key="home"
           >

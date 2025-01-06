@@ -3,6 +3,7 @@ import { Form, Alert, App } from "antd";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
+
 import { reset } from "../../../toolkit/auth/loginSlice";
 import { initialValues, validationSchema, onSubmit } from "./values";
 
@@ -50,7 +51,7 @@ const LoginForm = () => {
               ? t("errors." + error.errorCode)
               : t("validation.invalidEmail")
           }
-          className="mb-4 shadow-sm rounded-md"
+          className="mb-4 shadow-sm rounded-md "
           showIcon
         />
       )}

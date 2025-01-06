@@ -1,9 +1,12 @@
 import { Form, Input } from "antd";
+import { useTranslation } from "react-i18next";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 
-function InputComponents({ t, formik }) {
+function InputComponents({ formik }) {
+  const { t } = useTranslation(["app"]);
+
   return (
-    <>
+    <div className="space-y-4">
       <Form.Item
         validateStatus={
           formik.touched.username && formik.errors.username ? "error" : ""
@@ -13,6 +16,7 @@ function InputComponents({ t, formik }) {
             ? t(formik.errors.username)
             : ""
         }
+        className="mb-0"
       >
         <Input
           prefix={<UserOutlined />}
@@ -35,6 +39,7 @@ function InputComponents({ t, formik }) {
             ? t(formik.errors.email)
             : ""
         }
+        className="mb-0"
       >
         <Input
           prefix={<MailOutlined />}
@@ -58,6 +63,7 @@ function InputComponents({ t, formik }) {
             ? t(formik.errors.password)
             : ""
         }
+        className="mb-0"
       >
         <Input.Password
           prefix={<LockOutlined />}
@@ -82,6 +88,7 @@ function InputComponents({ t, formik }) {
             ? t(formik.errors.confirmPassword)
             : ""
         }
+        className="mb-0"
       >
         <Input.Password
           prefix={<LockOutlined />}
@@ -94,7 +101,7 @@ function InputComponents({ t, formik }) {
           autoComplete="new-password"
         />
       </Form.Item>
-    </>
+    </div>
   );
 }
 

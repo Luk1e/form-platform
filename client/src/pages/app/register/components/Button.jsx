@@ -1,6 +1,9 @@
 import { Button } from "antd";
+import { useTranslation } from "react-i18next";
 
-function ButtonComponent({ isLoading, t }) {
+function ButtonComponent({ isLoading }) {
+  const { t } = useTranslation(["app"]);
+
   return (
     <Button
       type="primary"

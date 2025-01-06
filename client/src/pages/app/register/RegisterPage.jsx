@@ -1,9 +1,10 @@
 import { Card } from "antd";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import RegisterForm from "./components/RegisterForm";
+
+import RegisterForm from "./RegisterForm";
 
 const RegisterPage = () => {
   const navigate = useNavigate();

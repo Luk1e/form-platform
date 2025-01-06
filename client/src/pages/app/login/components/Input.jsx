@@ -16,6 +16,7 @@ function InputComponent({ formik }) {
             ? t(formik.errors.email)
             : ""
         }
+        className="mb-0"
       >
         <Input
           prefix={<UserOutlined />}
@@ -29,6 +30,7 @@ function InputComponent({ formik }) {
           autoComplete="on"
         />
       </Form.Item>
+
       <Form.Item
         validateStatus={
           formik.touched.password && formik.errors.password ? "error" : ""
@@ -38,6 +40,7 @@ function InputComponent({ formik }) {
             ? t(formik.errors.password)
             : ""
         }
+        className="mb-0"
       >
         <Input.Password
           prefix={<LockOutlined />}

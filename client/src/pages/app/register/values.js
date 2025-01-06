@@ -29,7 +29,7 @@ export const validationSchema = (t) =>
       .required(t("validation.required")),
   });
 
-export const onSubmit = ({ values, dispatch }) => {
+export const onSubmit = (values, dispatch) => {
   const data = { ...values };
   delete data.confirmPassword;
   dispatch(register(data));
