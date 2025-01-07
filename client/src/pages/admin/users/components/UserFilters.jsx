@@ -6,7 +6,7 @@ import { Input, Select, Space, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
 
-import { setSelectedUserIds } from "../../../toolkit/admin/adminUserSlice";
+import { setSelectedUserIds } from "../../../../toolkit/admin/adminUserSlice";
 
 const UserFilters = () => {
   const debouncedRef = useRef();

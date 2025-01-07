@@ -52,5 +52,25 @@
     "activeBadge": "Active",
     "createdAt": "Created On",
     "clearSelected": "Clear selected"
+  },
+  "adminContentPage": {
+    "management": "Content Management",
+    "managementDesc": "Manage all templates and forms across the platform",
+    "templates": "Templates",
+    "forms": "Forms",
+    "searchTemplatesPlaceholder": "Search templates, users...",
+    "searchFormsPlaceholder": "Search forms, users...",
+    "newest": "Newest first",
+    "oldest": "Oldest first",
+    "reset": "Reset",
+    "id": "ID",
+    "title": "Title",
+    "author": "Author",
+    "authorEmail": "Author Email",
+    "username": "Username",
+    "email": "Email",
+    "templateTitle": "Template",
+    "createdAt": "Created At",
+    "total": "Total"
   }
 }

@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 import { CustomError } from "../utils/index.js";
 import models from "../models/index.js";
 
-const { User } = models;
+const { User, Template, FilledForm } = models;
 
 const adminService = {
   isAdmin: async (userId) => {
@@ -164,6 +164,140 @@ const adminService = {
         pageSize: limit,
         totalUsers,
         totalPages: Math.ceil(totalUsers / limit),
+      },
+    };
+  },
+
+  getTemplatesWithFilters: async (filters) => {
+    const { search, order = "DESC", page = 1, limit = 10 } = filters;
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const searchCondition = search
+      ? {
+          [Op.or]: [
+            { title: { [Op.like]: `%${search}%` } },
+            { "$User.username$": { [Op.like]: `%${search}%` } },
+            { "$User.email$": { [Op.like]: `%${search}%` } },
+          ],
+        }
+      : {};
+
+    const queryOptions = {
+      attributes: ["id", "title", "created_at"],
+      include: [
+        {
+          model: User,
+          attributes: ["username", "email"],
+          required: true,
+        },
+      ],
+      where: searchCondition,
+      order: [["created_at", order.toUpperCase()]],
+      limit: parseInt(limit),
+      offset: offset,
+    };
+
+    const templates = await Template.findAll(queryOptions);
+    const totalCount = await Template.count({
+      include: [
+        {
+          model: User,
+          attributes: [],
+          required: true,
+        },
+      ],
+      where: searchCondition,
+    });
+
+    return {
+      templates: templates.map((template) => ({
+        id: template.id,
+        title: template.title,
+        created_at: template.created_at,
+        author: {
+          username: template.User.username,
+          email: template.User.email,
+        },
+      })),
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalCount / parseInt(limit)),
+        total: totalCount,
+        limit: parseInt(limit),
+      },
+    };
+  },
+
+  getFormsWithFilters: async (filters) => {
+    const { search, order = "DESC", page = 1, limit = 10 } = filters;
+
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+
+    const searchCondition = search
+      ? {
+          [Op.or]: [
+            { "$User.username$": { [Op.like]: `%${search}%` } },
+            { "$User.email$": { [Op.like]: `%${search}%` } },
+            { "$Template.title$": { [Op.like]: `%${search}%` } },
+          ],
+        }
+      : {};
+
+    const queryOptions = {
+      attributes: ["id", "created_at"],
+      include: [
+        {
+          model: User,
+          attributes: ["username", "email"],
+          required: true,
+        },
+        {
+          model: Template,
+          attributes: ["id", "title"],
+          required: true,
+        },
+      ],
+      where: searchCondition,
+      order: [["created_at", order.toUpperCase()]],
+      limit: parseInt(limit),
+      offset: offset,
+    };
+
+    const filledForms = await FilledForm.findAll(queryOptions);
+    const totalCount = await FilledForm.count({
+      include: [
+        {
+          model: User,
+          attributes: [],
+          required: true,
+        },
+        {
+          model: Template,
+          attributes: [],
+          required: true,
+        },
+      ],
+      where: searchCondition,
+    });
+
+    return {
+      forms: filledForms.map((form) => ({
+        id: form.id,
+        created_at: form.created_at,
+        user: {
+          username: form.User.username,
+          email: form.User.email,
+        },
+        template: {
+          id: form.Template.id,
+          title: form.Template.title,
+        },
+      })),
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalCount / parseInt(limit)),
+        total: totalCount,
+        limit: parseInt(limit),
       },
     };
   },

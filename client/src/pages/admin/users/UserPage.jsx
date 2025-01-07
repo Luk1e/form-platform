@@ -4,11 +4,11 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
-import { fetchUsers } from "../../toolkit/admin/adminUserSlice";
+import { fetchUsers } from "../../../toolkit/admin/adminUserSlice";
 
-import { UsersTable, UserFilters } from "./components";
+import { UserTable, UserFilters } from "./components";
 
-const UsersPage = () => {
+const UserPage = () => {
   const { t } = useTranslation(["admin"]);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,10 +39,10 @@ const UsersPage = () => {
           </p>
         </div>
         <UserFilters />
-        <UsersTable />
+        <UserTable />
       </Card>
     </div>
   );
 };
 
-export default UsersPage;
+export default UserPage;

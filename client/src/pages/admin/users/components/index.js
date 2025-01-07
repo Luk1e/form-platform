@@ -1,2 +1,2 @@
-export { default as UsersTable } from "./UsersTable";
+export { default as UserTable } from "./UserTable";
 export { default as UserFilters } from "./UserFilters";

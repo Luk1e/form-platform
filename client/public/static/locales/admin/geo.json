@@ -52,5 +52,25 @@
     "activeBadge": "აქტიური",
     "createdAt": "შექმნის თარიღი",
     "clearSelected": "არჩეულის გასუფთავება"
+  },
+  "adminContentPage": {
+    "management": "კონტენტის მართვა",
+    "managementDesc": "მართეთ ყველა შაბლონი და ფორმა პლატფორმაზე",
+    "templates": "შაბლონები",
+    "forms": "ფორმები",
+    "searchTemplatesPlaceholder": "ძიება შაბლონების, მომხმარებლების...",
+    "searchFormsPlaceholder": "ძიება ფორმების, მომხმარებლების...",
+    "newest": "ახალი პირველად",
+    "oldest": "ძველი პირველად",
+    "reset": "გადატვირთვა",
+    "id": "ID",
+    "title": "სათაური",
+    "author": "ავტორი",
+    "authorEmail": "ავტორის ელ-ფოსტა",
+    "username": "მომხმარებლის სახელი",
+    "email": "ელ-ფოსტა",
+    "templateTitle": "შაბლონი",
+    "createdAt": "შექმნის თარიღი",
+    "total": "სულ"
   }
 }

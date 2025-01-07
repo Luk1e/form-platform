@@ -7,8 +7,10 @@ import {
 } from "../middlewares/index.js";
 
 import {
-  bulkUserOperationSchema,
   userSearchSchema,
+  templateSearchSchema,
+  bulkUserOperationSchema,
+  formSearchSchema,
 } from "../validations/index.js";
 
 const router = express.Router();
@@ -20,6 +22,18 @@ router.get(
   "/users",
   validate(userSearchSchema, true),
   adminController.searchUsers
+);
+
+router.get(
+  "/templates",
+  validate(templateSearchSchema, true),
+  adminController.getTemplates
+);
+
+router.get(
+  "/forms",
+  validate(formSearchSchema, true),
+  adminController.getForms
 );
 
 router.patch(

@@ -39,6 +39,7 @@ const UpdateTemplatePage = () => {
       dispatch(resetGetTemplateState());
     };
   }, [dispatch, id, t]);
+
   const navigateToForms = () => {
     navigate(`/templates/${id}/forms`);
   };
@@ -49,7 +50,7 @@ const UpdateTemplatePage = () => {
       notification.success({
         message: t("notifications.templateDeleteSuccess"),
       });
-      navigate("/my-content");
+      navigate(-1);
     } catch (error) {
       notification.error({
         message: t(`errors.${error.errorCode}`),

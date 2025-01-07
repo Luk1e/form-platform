@@ -16,6 +16,34 @@ const adminController = {
     }
   },
 
+  getTemplates: async (req, res) => {
+    try {
+      const result = await adminService.getTemplatesWithFilters(req.query);
+
+      res.json(result);
+    } catch (error) {
+      console.error("Error getting templates:", error);
+      res.status(500).json({
+        message: "Error getting templates",
+        errorCode: "GET_TEMPLATES_ERROR",
+      });
+    }
+  },
+
+  getForms: async (req, res) => {
+    try {
+      const result = await adminService.getFormsWithFilters(req.query);
+
+      res.json(result);
+    } catch (error) {
+      console.error("Error getting forms:", error);
+      res.status(500).json({
+        message: "Error getting forms",
+        errorCode: "GET_FORMS_ERROR",
+      });
+    }
+  },
+
   bulkBlockUsers: async (req, res) => {
     try {
       const { userIds } = req.body;

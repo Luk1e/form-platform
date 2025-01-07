@@ -18,11 +18,11 @@ import {
   bulkAddAdminPrivileges,
   bulkRemoveAdminPrivileges,
   bulkDeleteUsers,
-} from "../../../toolkit/admin/adminUserSlice";
+} from "../../../../toolkit/admin/adminUserSlice";
 
 import ColumnList from "./ColumnList";
 
-const UsersTable = () => {
+const UserTable = () => {
   const dispatch = useDispatch();
   const { notification } = App.useApp();
   const { t } = useTranslation(["admin"]);
@@ -152,4 +152,4 @@ const UsersTable = () => {
   );
 };
 
-export default UsersTable;
+export default UserTable;

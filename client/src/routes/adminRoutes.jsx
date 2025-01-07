@@ -1,7 +1,8 @@
 import { lazy } from "react";
 import { AdminLayout } from "../layouts";
 
-const UsersPage = lazy(() => import("../pages/admin/UsersPage"));
+const UserPage = lazy(() => import("../pages/admin/users/UserPage"));
+const ContentPage = lazy(() => import("../pages/admin/contents/ContentPage"));
 
 export default function AdminRoutes({ user, loading }) {
   return {
@@ -10,7 +11,11 @@ export default function AdminRoutes({ user, loading }) {
     children: [
       {
         path: "users",
-        element: <UsersPage />,
+        element: <UserPage />,
+      },
+      {
+        path: "contents",
+        element: <ContentPage />,
       },
     ],
   };
