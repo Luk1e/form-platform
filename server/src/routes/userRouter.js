@@ -25,6 +25,9 @@ router.get(
   userController.getUserFormsWithFilters
 );
 
+router.get("/theme", userController.getUserTheme);
+router.patch("/theme", userController.toggleTheme);
+
 router.post("/templates/:id/comment", userController.addComment);
 router.post("/templates/:id/like", userController.toggleLike);
 

@@ -1,4 +1,4 @@
-export const colors = {
+const colors = {
   purple: {
     p1: "#f9f0ff",
     p2: "#efdbff",
@@ -12,3 +12,5 @@ export const colors = {
     p10: "#120338",
   },
 };
+
+export default colors;

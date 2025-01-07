@@ -1,13 +1,12 @@
-import Router from "./routes/routes";
-import { Suspense, useEffect, useMemo } from "react";
 import { BrowserRouter } from "react-router-dom";
-
+import { Suspense, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { authenticate } from "./toolkit/auth/authSlice";
-
 import { ConfigProvider, Spin, App as AntApp } from "antd";
-import { HeaderComponent, NavbarComponent } from "./components";
+
+import Router from "./routes/routes";
 import { lightTheme, darkTheme } from "./themes";
+import { HeaderComponent, NavbarComponent } from "./components";
 
 function App() {
   const dispatch = useDispatch();
@@ -37,21 +36,21 @@ function App() {
 
   return (
     <ConfigProvider theme={currentTheme}>
-        <AntApp>
-          <Suspense
-            fallback={
-              <div className="flex justify-center items-center min-h-screen">
-                <Spin size="large" />
-              </div>
-            }
-          >
-            <BrowserRouter>
-              <HeaderComponent />
-              <NavbarComponent />
-              <Router user={user} loading={loading} />
-            </BrowserRouter>
-          </Suspense>
-        </AntApp>
+      <AntApp>
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center min-h-screen">
+              <Spin size="large" />
+            </div>
+          }
+        >
+          <BrowserRouter>
+            <HeaderComponent />
+            <NavbarComponent />
+            <Router user={user} loading={loading} />
+          </BrowserRouter>
+        </Suspense>
+      </AntApp>
     </ConfigProvider>
   );
 }

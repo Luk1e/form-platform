@@ -1,5 +1,5 @@
-import { colors } from "./tailwindTheme";
 import { theme } from "antd";
+import colors from "./colors";
 
 const darkTheme = {
   algorithm: theme.darkAlgorithm,

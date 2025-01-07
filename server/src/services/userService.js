@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 import models from "../models/index.js";
 import { CustomError } from "../utils/index.js";
 
-const { Like, Template, FilledForm } = models;
+const { User, Like, Template, FilledForm } = models;
 
 const userService = {
   getUserTemplatesWithFilters: async (userId, filters) => {
@@ -114,7 +114,7 @@ const userService = {
           where: template_title
             ? {
                 title: {
-                  [Op.like]: `%${template_title}%`, 
+                  [Op.like]: `%${template_title}%`,
                 },
               }
             : {},
@@ -136,9 +136,21 @@ const userService = {
     };
   },
 
+  getUserTheme: async (userId) => {
+    const user = await User.findByPk(userId);
+    return user.preferred_theme;
+  },
+
+  toggleTheme: async (userId) => {
+    const user = await User.findByPk(userId);
+    const newTheme = user.preferred_theme === "light" ? "dark" : "light";
+    await user.update({ preferred_theme: newTheme });
+    return newTheme;
+  },
+
   toggleLike: async (templateId, userId) => {
     const template = await Template.findByPk(templateId);
-    
+
     if (!template) {
       throw CustomError.notFound("Template not found", 11);
     }

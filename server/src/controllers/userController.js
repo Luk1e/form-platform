@@ -63,6 +63,34 @@ const userController = {
     }
   },
 
+  getUserTheme: async (req, res) => {
+    try {
+      const theme = await userService.getUserTheme(req.userId);
+
+      res.json({ theme });
+    } catch (error) {
+      console.error("Error getting user theme:", error);
+      res.status(500).json({
+        message: "Error getting user theme",
+        errorCode: "GET_USER_THEME_ERROR",
+      });
+    }
+  },
+
+  toggleTheme: async (req, res) => {
+    try {
+      const theme = await userService.toggleTheme(req.userId);
+
+      res.json({ theme });
+    } catch (error) {
+      console.error("Error toggle user theme:", error);
+      res.status(500).json({
+        message: "Error toggle user theme",
+        errorCode: "TOGGLE_USER_THEME_ERROR",
+      });
+    }
+  },
+
   toggleLike: async (req, res) => {
     try {
       await userService.toggleLike(req.params.id, req.userId);
