@@ -3,7 +3,7 @@ import { useAuthAxios } from "../../utils/hooks/useAxios";
 import { logout } from "../auth/authSlice";
 
 export const fetchUsers = createAsyncThunk(
-  "admin/fetchUsers",
+  "adminUserSlice/fetchUsers",
   async (params, { rejectWithValue }) => {
     Object.keys(params).forEach((key) => {
       if (!params[key]) {
@@ -21,14 +21,14 @@ export const fetchUsers = createAsyncThunk(
 );
 
 export const bulkBlockUsers = createAsyncThunk(
-  "admin/bulkBlockUsers",
-  async (userIds, { dispatch, rejectWithValue }) => {
+  "adminUserSlice/bulkBlockUsers",
+  async (userIds, { dispatch, getState, rejectWithValue }) => {
     try {
       await useAuthAxios.patch("/api/admin/users/block", {
         userIds,
       });
 
-      const user = JSON.parse(localStorage.getItem("user"));
+      const { user } = getState().authentication;
       if (user && userIds.includes(user.id)) {
         setTimeout(() => {
           dispatch(logout());
@@ -41,7 +41,7 @@ export const bulkBlockUsers = createAsyncThunk(
 );
 
 export const bulkUnblockUsers = createAsyncThunk(
-  "admin/bulkUnblockUsers",
+  "adminUserSlice/bulkUnblockUsers",
   async (userIds, { rejectWithValue }) => {
     try {
       await useAuthAxios.patch("/api/admin/users/unblock", { userIds });
@@ -53,7 +53,7 @@ export const bulkUnblockUsers = createAsyncThunk(
 );
 
 export const bulkAddAdminPrivileges = createAsyncThunk(
-  "admin/bulkAddAdminPrivileges",
+  "adminUserSlice/bulkAddAdminPrivileges",
   async (userIds, { rejectWithValue }) => {
     try {
       await useAuthAxios.patch("/api/admin/users/add-admin", { userIds });
@@ -65,11 +65,11 @@ export const bulkAddAdminPrivileges = createAsyncThunk(
 );
 
 export const bulkRemoveAdminPrivileges = createAsyncThunk(
-  "admin/bulkRemoveAdminPrivileges",
-  async (userIds, { dispatch, rejectWithValue }) => {
+  "adminUserSlice/bulkRemoveAdminPrivileges",
+  async (userIds, { dispatch, getState, rejectWithValue }) => {
     try {
       await useAuthAxios.patch("/api/admin/users/remove-admin", { userIds });
-      const user = JSON.parse(localStorage.getItem("user"));
+      const { user } = getState().authentication;
 
       if (user && userIds.includes(user.id)) {
         setTimeout(() => {
@@ -83,11 +83,11 @@ export const bulkRemoveAdminPrivileges = createAsyncThunk(
 );
 
 export const bulkDeleteUsers = createAsyncThunk(
-  "admin/bulkDeleteUsers",
-  async (userIds, { dispatch, rejectWithValue }) => {
+  "adminUserSlice/bulkDeleteUsers",
+  async (userIds, { dispatch, getState, rejectWithValue }) => {
     try {
       await useAuthAxios.delete("/api/admin/users", { data: { userIds } });
-      const user = JSON.parse(localStorage.getItem("user"));
+      const { user } = getState().authentication;
       if (user && userIds.includes(user.id)) {
         setTimeout(() => {
           dispatch(logout());
@@ -112,8 +112,8 @@ const initialState = {
   selectedUserIds: [],
 };
 
-const adminSlice = createSlice({
-  name: "admin",
+const adminUserSlice = createSlice({
+  name: "adminUserSlice",
   initialState,
   reducers: {
     setSelectedUserIds: (state, action) => {
@@ -135,9 +135,24 @@ const adminSlice = createSlice({
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(bulkBlockUsers.fulfilled, (state) => {
+        state.selectedUserIds = [];
+      })
+      .addCase(bulkUnblockUsers.fulfilled, (state) => {
+        state.selectedUserIds = [];
+      })
+      .addCase(bulkAddAdminPrivileges.fulfilled, (state) => {
+        state.selectedUserIds = [];
+      })
+      .addCase(bulkRemoveAdminPrivileges.fulfilled, (state) => {
+        state.selectedUserIds = [];
+      })
+      .addCase(bulkDeleteUsers.fulfilled, (state) => {
+        state.selectedUserIds = [];
       });
   },
 });
 
-export const { setSelectedUserIds } = adminSlice.actions;
-export default adminSlice.reducer;
+export const { setSelectedUserIds } = adminUserSlice.actions;
+export default adminUserSlice.reducer;

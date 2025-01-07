@@ -1,7 +1,7 @@
-import adminSlice from "./adminSlice";
+import adminUserSlice from "./adminUserSlice";
 
 const reducer = {
-  adminUsers: adminSlice,
+  adminUsers: adminUserSlice,
 };
 
 export default reducer;

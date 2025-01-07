@@ -10,7 +10,9 @@
     "light": "Light",
     "searchForms": "Search forms...",
     "continueWithGoogle": "Continue with Google",
-    "myContent": "My Content"
+    "myContent": "My Content",
+    "manageUsers": "Manage Users",
+    "manageContents": "Manage Contents"
   },
   "notifications": {
     "logoutSuccess": "Logged out successfully",

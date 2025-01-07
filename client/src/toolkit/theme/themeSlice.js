@@ -26,9 +26,11 @@ export const toggleTheme = createAsyncThunk(
   "themeSlice/toggleTheme",
   async (_, { rejectWithValue, getState }) => {
     const { user } = getState().authentication;
+    const currentTheme = getState().theme.mode;
+
     try {
       if (!user) {
-        const newTheme = storedTheme === "light" ? "dark" : "light";
+        const newTheme = currentTheme === "light" ? "dark" : "light";
         localStorage.setItem("appTheme", newTheme);
         return { theme: newTheme };
       }

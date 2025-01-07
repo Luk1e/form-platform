@@ -50,6 +50,7 @@
     "isBlocked": "Account Status",
     "blockedBadge": "Blocked",
     "activeBadge": "Active",
-    "createdAt": "Created On"
+    "createdAt": "Created On",
+    "clearSelected": "Clear selected"
   }
 }

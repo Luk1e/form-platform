@@ -50,6 +50,7 @@
     "isBlocked": "ანგარიშის სტატუსი",
     "blockedBadge": "დაბლოკილი",
     "activeBadge": "აქტიური",
-    "createdAt": "შექმნის თარიღი"
+    "createdAt": "შექმნის თარიღი",
+    "clearSelected": "არჩეულის გასუფთავება"
   }
 }

@@ -1,21 +1,23 @@
-import { Input, Select, Space, Button } from "antd";
-import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
-import { useSearchParams } from "react-router-dom";
-import { setSelectedUserIds } from "../../../toolkit/admin/adminSlice";
-import { useState, useRef, useEffect } from "react";
 import debounce from "lodash/debounce";
+import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { Input, Select, Space, Button } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
+
+import { setSelectedUserIds } from "../../../toolkit/admin/adminUserSlice";
 
 const UserFilters = () => {
-  const { t } = useTranslation(["admin"]);
+  const debouncedRef = useRef();
   const dispatch = useDispatch();
+  const { t } = useTranslation(["admin"]);
+  const { selectedUserIds } = useSelector((state) => state.adminUsers);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState(
     searchParams.get("search") || ""
   );
-
-  const debouncedRef = useRef();
 
   useEffect(() => {
     debouncedRef.current = debounce((value) => {
@@ -39,15 +41,12 @@ const UserFilters = () => {
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchValue(value);
-    dispatch(setSelectedUserIds([]));
-
     debouncedRef.current(value);
   };
 
   const handleReset = () => {
     setSearchValue("");
     setSearchParams({});
-    dispatch(setSelectedUserIds([]));
   };
 
   const handleFilterChange = (key, value) => {
@@ -61,12 +60,16 @@ const UserFilters = () => {
       newParams.set("page", "1");
       return newParams;
     });
+  };
+
+  const handleRemoveSelected = () => {
     dispatch(setSelectedUserIds([]));
   };
 
   return (
     <div className="overflow-x-auto">
       <Space wrap className="mb-4 gap-2">
+        {/* Search input */}
         <Input
           placeholder={t("users.searchPlaceholder")}
           value={searchValue}
@@ -75,6 +78,7 @@ const UserFilters = () => {
           className="w-40"
         />
 
+        {/* Admin status filter */}
         <Select
           placeholder={t("users.adminFilter")}
           value={searchParams.get("is_admin") || undefined}
@@ -87,6 +91,7 @@ const UserFilters = () => {
           ]}
         />
 
+        {/* Blocked status filter */}
         <Select
           placeholder={t("users.statusFilter")}
           value={searchParams.get("is_blocked") || undefined}
@@ -99,6 +104,14 @@ const UserFilters = () => {
           ]}
         />
 
+        {/* Clear selected */}
+        {selectedUserIds.length > 0 && (
+          <Button onClick={handleRemoveSelected}>
+            {t("users.clearSelected")} ({selectedUserIds.length})
+          </Button>
+        )}
+
+        {/* Reset filters */}
         <Button icon={<ReloadOutlined />} onClick={handleReset}>
           {t("users.reset")}
         </Button>

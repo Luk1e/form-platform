@@ -1,10 +1,11 @@
 import { App } from "antd";
 import {
-  LogoutOutlined,
-  SettingOutlined,
-  LayoutOutlined,
   SunOutlined,
   MoonOutlined,
+  LogoutOutlined,
+  UserAddOutlined,
+  SettingOutlined,
+  LayoutOutlined,
 } from "@ant-design/icons";
 import Flags from "react-world-flags";
 import { Link } from "react-router-dom";
@@ -73,31 +74,38 @@ const MenuDropdownList = (user, closeDrawer) => {
     }
   );
 
-  if (user?.isAdmin) {
+  if (user) {
     dropdownList.push({
-      key: "admin",
-      icon: <SettingOutlined />,
-      label: <Link to="/admin">{t("global.adminPanel")}</Link>,
+      key: "my-content",
+      icon: <LayoutOutlined />,
+      label: <Link to="/my-content">{t("global.myContent")}</Link>,
       onClick: closeDrawer,
     });
-  }
 
-  if (user) {
-    dropdownList.push(
-      {
-        key: "my-content",
-        icon: <LayoutOutlined />,
-        label: <Link to="/my-content">{t("global.myContent")}</Link>,
-        onClick: closeDrawer,
-      },
-      {
-        key: "logout",
-        icon: <LogoutOutlined />,
-        label: <Link to="/">{t("global.logout")}</Link>,
-        onClick: logoutMethod,
-        className: "border-t !rounded-tl-none !rounded-tr-none",
-      }
-    );
+    if (user?.isAdmin) {
+      dropdownList.push(
+        {
+          key: "manage-users",
+          icon: <UserAddOutlined />,
+          label: <Link to="/admin/users">{t("global.manageUsers")}</Link>,
+          onClick: closeDrawer,
+        },
+        {
+          key: "manage-contents",
+          icon: <SettingOutlined />,
+          label: <Link to="/admin/contents">{t("global.manageContents")}</Link>,
+          onClick: closeDrawer,
+        }
+      );
+    }
+
+    dropdownList.push({
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: <Link to="/">{t("global.logout")}</Link>,
+      onClick: logoutMethod,
+      className: "border-t !rounded-tl-none !rounded-tr-none",
+    });
   }
 
   return dropdownList;

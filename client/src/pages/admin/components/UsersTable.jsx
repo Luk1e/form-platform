@@ -1,4 +1,5 @@
-import { Table, Space, Button, Popconfirm, App, Tag } from "antd";
+import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import {
   LockOutlined,
   UnlockOutlined,
@@ -6,9 +7,9 @@ import {
   DeleteOutlined,
   StopOutlined,
 } from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { Table, Space, Button, Popconfirm, App } from "antd";
+
 import {
   fetchUsers,
   setSelectedUserIds,
@@ -17,17 +18,22 @@ import {
   bulkAddAdminPrivileges,
   bulkRemoveAdminPrivileges,
   bulkDeleteUsers,
-} from "../../../toolkit/admin/adminSlice";
-import { getColumns } from "./columns";
+} from "../../../toolkit/admin/adminUserSlice";
+
+import ColumnList from "./ColumnList";
 
 const UsersTable = () => {
-  const { t } = useTranslation(["admin"]);
   const dispatch = useDispatch();
   const { notification } = App.useApp();
+  const { t } = useTranslation(["admin"]);
   const [searchParams, setSearchParams] = useSearchParams();
+
   const { users, pagination, loading, selectedUserIds } = useSelector(
     (state) => state.adminUsers
   );
+
+  const { page, limit, search, is_admin, is_blocked } =
+    Object.fromEntries(searchParams);
 
   const handleTableChange = (pagination) => {
     const newParams = new URLSearchParams(searchParams);
@@ -42,16 +48,7 @@ const UsersTable = () => {
       notification.success({
         message: t(`notifications.${actionName}Success`),
       });
-      dispatch(
-        fetchUsers({
-          page: searchParams.get("page"),
-          limit: searchParams.get("limit"),
-          search: searchParams.get("search"),
-          is_admin: searchParams.get("is_admin"),
-          is_blocked: searchParams.get("is_blocked"),
-        })
-      );
-      dispatch(setSelectedUserIds([]));
+      dispatch(fetchUsers({ page, limit, search, is_admin, is_blocked }));
     } catch (error) {
       notification.error({
         message: t(`errors.${error.errorCode}`),
@@ -66,12 +63,13 @@ const UsersTable = () => {
     },
   };
 
-  const columns = getColumns(t);
+  const columnList = ColumnList();
 
   return (
     <div className="overflow-hidden">
       <div className="overflow-x-auto">
         <Space wrap className="mb-4 flex flex-wrap gap-2">
+          {/* Block users button */}
           <Popconfirm
             title={t("users.blockConfirm")}
             onConfirm={() => handleBulkAction(bulkBlockUsers, "blockUsers")}
@@ -84,6 +82,8 @@ const UsersTable = () => {
               {t("users.blockUsers")}
             </Button>
           </Popconfirm>
+
+          {/* Unblock users button */}
           <Button
             icon={<UnlockOutlined />}
             onClick={() => handleBulkAction(bulkUnblockUsers, "unblockUsers")}
@@ -100,6 +100,8 @@ const UsersTable = () => {
           >
             {t("users.makeAdmin")}
           </Button>
+
+          {/* Remove admin button */}
           <Button
             icon={<StopOutlined />}
             onClick={() =>
@@ -112,6 +114,8 @@ const UsersTable = () => {
           >
             {t("users.removeAdmin")}
           </Button>
+
+          {/* Delete user button */}
           <Popconfirm
             title={t("users.deleteConfirm")}
             onConfirm={() => handleBulkAction(bulkDeleteUsers, "deleteUsers")}
@@ -129,13 +133,13 @@ const UsersTable = () => {
 
         <Table
           rowSelection={rowSelection}
-          columns={columns}
+          columns={columnList}
           dataSource={users}
           loading={loading}
           rowKey="id"
           pagination={{
-            current: parseInt(searchParams.get("page") || "1"),
-            pageSize: parseInt(searchParams.get("limit") || "10"),
+            current: parseInt(page || "1"),
+            pageSize: parseInt(limit || "10"),
             total: pagination.totalUsers,
             showSizeChanger: true,
             showTotal: (total) => t("users.totalUsers") + ": " + total,

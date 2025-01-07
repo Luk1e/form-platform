@@ -1,10 +1,11 @@
 import { App } from "antd";
 import {
-  LoginOutlined,
   FormOutlined,
+  LoginOutlined,
   LogoutOutlined,
-  SettingOutlined,
   LayoutOutlined,
+  UserAddOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -15,9 +16,9 @@ import { logout } from "../../../toolkit/auth/authSlice";
 const UserDropdownList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { notification } = App.useApp();
   const { t } = useTranslation(["components"]);
   const { user } = useSelector((state) => state.authentication);
-  const { notification } = App.useApp();
 
   const logoutMethod = () => {
     dispatch(logout()).then(() => {
@@ -31,29 +32,35 @@ const UserDropdownList = () => {
 
   const dropdownList = [];
 
-  if (user?.isAdmin) {
-    dropdownList.push({
-      key: "admin",
-      icon: <SettingOutlined />,
-      label: <Link to="/admin">{t("global.adminPanel")}</Link>,
-    });
-  }
-
   if (user) {
-    dropdownList.push(
-      {
-        key: "my-content",
-        icon: <LayoutOutlined />,
-        label: <Link to="/my-content">{t("global.myContent")}</Link>,
-      },
-      {
-        key: "logout",
-        icon: <LogoutOutlined />,
-        label: <Link to="/">{t("global.logout")}</Link>,
-        onClick: logoutMethod,
-        className: "border-t !rounded-tl-none !rounded-tr-none mt-2 pt-2",
-      }
-    );
+    dropdownList.push({
+      key: "my-content",
+      icon: <LayoutOutlined />,
+      label: <Link to="/my-content">{t("global.myContent")}</Link>,
+    });
+
+    if (user?.isAdmin) {
+      dropdownList.push(
+        {
+          key: "manage-users",
+          icon: <UserAddOutlined />,
+          label: <Link to="/admin/users">{t("global.manageUsers")}</Link>,
+        },
+        {
+          key: "manage-contents",
+          icon: <SettingOutlined />,
+          label: <Link to="/admin/contents">{t("global.manageContents")}</Link>,
+        }
+      );
+    }
+
+    dropdownList.push({
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: <Link to="/">{t("global.logout")}</Link>,
+      onClick: logoutMethod,
+      className: "border-t !rounded-tl-none !rounded-tr-none mt-2 pt-2",
+    });
   } else {
     dropdownList.push(
       {

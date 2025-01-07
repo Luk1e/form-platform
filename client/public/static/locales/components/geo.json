@@ -10,7 +10,9 @@
     "light": "ნათელი",
     "searchForms": "შაბლონის ძიება...",
     "continueWithGoogle": "Google-ით გაგრძელება",
-    "myContent": "ჩემი კონტენტი"
+    "myContent": "ჩემი კონტენტი",
+    "manageUsers": "მომხმარებლების მართვა",
+    "manageContents": "კონტენტის მართვა"
   },
   "notifications": {
     "logoutSuccess": "წარმატებით გახვედით სისტემიდან",

@@ -9,7 +9,7 @@ export default function AdminRoutes({ user, loading }) {
     element: <AdminLayout user={user} loading={loading} />,
     children: [
       {
-        index: true,
+        path: "users",
         element: <UsersPage />,
       },
     ],
