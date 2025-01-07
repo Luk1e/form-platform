@@ -1,19 +1,19 @@
-import React from "react";
 import { Table, App } from "antd";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import {
-  fetchUserTemplates,
-  deleteTemplate,
-} from "../../../../toolkit/user/userContentSlice";
-import { getFormColumns, getTemplateColumns } from "./getColumns";
+
+import { fetchUserTemplates } from "../../../../toolkit/user/userContentSlice";
+import { deleteTemplate } from "../../../../toolkit/templates/deleteTemplateSlice";
+
+import { FormColumns, TemplateColumns } from "./ColumnList";
 
 const UserContentTable = ({ activeView }) => {
   const { t } = useTranslation(["auth"]);
   const dispatch = useDispatch();
   const { notification } = App.useApp();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { page, limit, order, title } = Object.fromEntries(searchParams);
   const { templates, loading, forms, pagination } = useSelector(
     (state) => state.userContent
   );
@@ -32,10 +32,10 @@ const UserContentTable = ({ activeView }) => {
         message: t("notifications.templateDeleteSuccess"),
       });
       const params = {
-        page: searchParams.get("page") || "1",
-        limit: searchParams.get("limit") || "10",
-        order: searchParams.get("order") || "desc",
-        title: searchParams.get("title") || "",
+        page: page || "1",
+        limit: limit || "10",
+        order: order || "desc",
+        title: title || "",
       };
 
       dispatch(fetchUserTemplates(params));
@@ -46,8 +46,8 @@ const UserContentTable = ({ activeView }) => {
     }
   };
 
-  const formColumns = getFormColumns(t);
-  const templateColumns = getTemplateColumns(t, handleDelete);
+  const formColumns = FormColumns();
+  const templateColumns = TemplateColumns(handleDelete);
 
   const data = activeView === "templates" ? templates : forms;
   const columns = activeView === "templates" ? templateColumns : formColumns;
@@ -59,8 +59,8 @@ const UserContentTable = ({ activeView }) => {
       loading={loading}
       rowKey="id"
       pagination={{
-        current: parseInt(searchParams.get("page") || "1"),
-        pageSize: parseInt(searchParams.get("limit") || "10"),
+        current: parseInt(page || "1"),
+        pageSize: parseInt(limit || "10"),
         total: pagination.total,
         showSizeChanger: true,
         showTotal: (total) => t("userContentPage.total") + ": " + total,

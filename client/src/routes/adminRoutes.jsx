@@ -2,7 +2,7 @@ import { lazy } from "react";
 import { AdminLayout } from "../layouts";
 
 const UserPage = lazy(() => import("../pages/admin/users/UserPage"));
-const ContentPage = lazy(() => import("../pages/admin/contents/ContentPage"));
+const ContentPage = lazy(() => import("../pages/admin/content/ContentPage"));
 
 export default function AdminRoutes({ user, loading }) {
   return {

@@ -2,16 +2,17 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAuthAxios } from "../../utils/hooks/useAxios";
 
 export const fetchUserTemplates = createAsyncThunk(
-  "userContent/fetchUserTemplates",
+  "userContentSlice/fetchUserTemplates",
   async (params, { rejectWithValue }) => {
     try {
+      Object.keys(params).forEach((key) => {
+        if (!params[key]) {
+          delete params[key];
+        }
+      });
+
       const { data } = await useAuthAxios.get("/api/users/my-templates", {
-        params: {
-          title: params.title || "",
-          order: params.order || "desc",
-          page: params.page || 1,
-          limit: params.limit || 10,
-        },
+        params,
       });
       return data;
     } catch (err) {
@@ -21,16 +22,17 @@ export const fetchUserTemplates = createAsyncThunk(
 );
 
 export const fetchUserForms = createAsyncThunk(
-  "userContent/fetchUserForms",
+  "userContentSlice/fetchUserForms",
   async (params, { rejectWithValue }) => {
     try {
+      Object.keys(params).forEach((key) => {
+        if (!params[key]) {
+          delete params[key];
+        }
+      });
+
       const { data } = await useAuthAxios.get("/api/users/my-forms", {
-        params: {
-          template_title: params.template_title || "",
-          order: params.order || "desc",
-          page: params.page || 1,
-          limit: params.limit || 10,
-        },
+        params,
       });
       return data;
     } catch (err) {
@@ -39,22 +41,7 @@ export const fetchUserForms = createAsyncThunk(
   }
 );
 
-export const deleteTemplate = createAsyncThunk(
-  "userContent/deleteTemplate",
-  async (templateId, { rejectWithValue }) => {
-    try {
-      await useAuthAxios.delete(`/api/templates/${templateId}`);
-      return templateId;
-    } catch (err) {
-      return rejectWithValue(err.response.data);
-    }
-  }
-);
-
 const initialState = {
-  error: null,
-  loading: false,
-
   forms: [],
   templates: [],
   pagination: {
@@ -62,17 +49,19 @@ const initialState = {
     totalPages: 0,
     total: 0,
   },
+  error: null,
+  loading: false,
 };
 
 const userContentSlice = createSlice({
-  name: "userContent",
+  name: "userContentSlice",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserTemplates.pending, (state) => {
-        state.loading = true;
         state.error = null;
+        state.loading = true;
       })
       .addCase(fetchUserTemplates.fulfilled, (state, action) => {
         state.loading = false;
@@ -84,8 +73,8 @@ const userContentSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(fetchUserForms.pending, (state) => {
-        state.loading = true;
         state.error = null;
+        state.loading = true;
       })
       .addCase(fetchUserForms.fulfilled, (state, action) => {
         state.loading = false;
@@ -99,5 +88,4 @@ const userContentSlice = createSlice({
   },
 });
 
-export const { setActiveView } = userContentSlice.actions;
 export default userContentSlice.reducer;

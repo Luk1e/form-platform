@@ -1,38 +1,64 @@
-import React, { useEffect, useState } from "react";
 import { Card, Radio } from "antd";
-import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
+
 import {
   fetchUserTemplates,
   fetchUserForms,
 } from "../../../toolkit/user/userContentSlice";
-import UserContentTable from "./components/UserContentTable";
-import UserContentFilters from "./components/UserContentFilters";
 
-const UserContentPage = () => {
-  const { t } = useTranslation(["auth"]);
+import { UserContentTable, UserContentFilters } from "./components";
+
+const ContentPage = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation(["auth"]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeView, setActiveView] = useState("templates");
+  const { page, limit, order, title, view } = Object.fromEntries(searchParams);
+  const [activeView, setActiveView] = useState(view || "templates");
+
+  useEffect(() => {
+    if (!view) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set("view", activeView);
+      setSearchParams(newParams);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const urlView = searchParams.get("view");
+    if (urlView && urlView !== activeView) {
+      setActiveView(urlView);
+    }
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const params = {
-      page: searchParams.get("page") || "1",
-      limit: searchParams.get("limit") || "10",
-      order: searchParams.get("order") || "desc",
+      page: page || "1",
+      title: title || "",
+      limit: limit || "10",
+      order: order || "desc",
     };
 
     if (activeView === "templates") {
-      params.title = searchParams.get("title") || "";
       dispatch(fetchUserTemplates(params));
     } else {
-      params.template_title = searchParams.get("template_title") || "";
       dispatch(fetchUserForms(params));
     }
-  }, [dispatch, searchParams, activeView]);
+  }, [dispatch, activeView, page, title, limit, order]);
 
-
+  const handleViewChange = (e) => {
+    const newView = e.target.value;
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("view", newView);
+    newParams.set("page", "1");
+    newParams.set("title", "");
+    newParams.set("limit", "10");
+    newParams.set("order", "desc");
+    setSearchParams(newParams);
+    setActiveView(newView);
+  };
 
   return (
     <div className="p-2 sm:p-4 md:p-6 min-h-screen">
@@ -50,10 +76,7 @@ const UserContentPage = () => {
         {/* View change button */}
         <Radio.Group
           value={activeView}
-          onChange={(e) => {
-            setActiveView(e.target.value);
-            setSearchParams({ page: "1", limit: "10", order: "desc" });
-          }}
+          onChange={handleViewChange}
           className="mb-4"
         >
           <Radio.Button value="templates">
@@ -74,4 +97,4 @@ const UserContentPage = () => {
   );
 };
 
-export default UserContentPage;
+export default ContentPage;

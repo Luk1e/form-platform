@@ -1,21 +1,20 @@
+import debounce from "lodash/debounce";
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef } from "react";
 import { Input, Button, Space, Select } from "antd";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   SearchOutlined,
   ReloadOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import debounce from "lodash/debounce";
 
 const UserContentFilters = ({ activeView }) => {
   const navigate = useNavigate();
   const { t } = useTranslation(["auth"]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState(
-    searchParams.get(activeView === "templates" ? "title" : "template_title") ||
-      ""
+    searchParams.get("title") || ""
   );
 
   const debouncedRef = useRef();
@@ -25,12 +24,14 @@ const UserContentFilters = ({ activeView }) => {
   }, [activeView]);
 
   useEffect(() => {
+    const urlSearch = searchParams.get("title");
+    setSearchValue(urlSearch || "");
+  }, [searchParams]);
+
+  useEffect(() => {
     debouncedRef.current = debounce((value) => {
       const newParams = new URLSearchParams(searchParams);
-      newParams.set(
-        activeView === "templates" ? "title" : "template_title",
-        value || ""
-      );
+      newParams.set("title", value || "");
       newParams.set("page", "1");
       setSearchParams(newParams);
     }, 300);
@@ -48,11 +49,12 @@ const UserContentFilters = ({ activeView }) => {
 
   const handleReset = () => {
     setSearchValue("");
-    setSearchParams({
-      page: "1",
-      limit: "10",
-      order: "desc",
-    });
+    const newParams = new URLSearchParams();
+    newParams.set("view", searchParams.get("view") || "templates");
+    newParams.set("page", "1");
+    newParams.set("limit", "10");
+    newParams.set("order", "desc");
+    setSearchParams(newParams);
   };
 
   const handleFilterChange = (key, value) => {

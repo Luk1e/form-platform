@@ -19,6 +19,11 @@ const AdminContentFilters = ({ activeView }) => {
   }, [activeView]);
 
   useEffect(() => {
+    const urlSearch = searchParams.get("search");
+    setSearchValue(urlSearch || "");
+  }, [searchParams]);
+
+  useEffect(() => {
     debouncedRef.current = debounce((value) => {
       const newParams = new URLSearchParams(searchParams);
       newParams.set("search", value || "");
@@ -39,11 +44,12 @@ const AdminContentFilters = ({ activeView }) => {
 
   const handleReset = () => {
     setSearchValue("");
-    setSearchParams({
-      page: "1",
-      limit: "10",
-      order: "desc",
-    });
+    const newParams = new URLSearchParams();
+    newParams.set("view", searchParams.get("view") || "templates");
+    newParams.set("page", "1");
+    newParams.set("limit", "10");
+    newParams.set("order", "desc");
+    setSearchParams(newParams);
   };
 
   return (

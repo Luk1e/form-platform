@@ -1,9 +1,7 @@
 import { lazy } from "react";
 import { AuthorizedLayout } from "../layouts";
 
-const UserContentPage = lazy(() =>
-  import("../pages/auth/userContent/UserContentPage")
-);
+const ContentPage = lazy(() => import("../pages/auth/content/ContentPage"));
 
 const CreateTemplatePage = lazy(() =>
   import("../pages/auth/createTemplate/CreateTemplatePage")
@@ -41,7 +39,7 @@ export default function AuthorizedRoutes({ user, loading }) {
       },
       {
         path: "/my-content",
-        element: <UserContentPage />,
+        element: <ContentPage />,
       },
     ],
   };

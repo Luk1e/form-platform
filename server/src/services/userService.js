@@ -72,7 +72,7 @@ const userService = {
   },
 
   getUserFormsWithFilters: async (userId, filters) => {
-    const { template_title, order = "desc", page, limit } = filters;
+    const { title, order = "desc", page, limit } = filters;
     const parsedPage = parseInt(page) || 1;
     const parsedLimit = parseInt(limit) || 10;
     const offset = (parsedPage - 1) * parsedLimit;
@@ -82,7 +82,7 @@ const userService = {
         "id",
         "created_at",
         [models.sequelize.col("Template.id"), "template_id"],
-        [models.sequelize.col("Template.title"), "template_title"],
+        [models.sequelize.col("Template.title"), "title"],
         [models.sequelize.col("Template.description"), "template_description"],
       ],
       include: [
@@ -90,10 +90,10 @@ const userService = {
           model: Template,
           attributes: [],
           required: true,
-          where: template_title
+          where: title
             ? {
                 title: {
-                  [Op.like]: `%${template_title}%`,
+                  [Op.like]: `%${title}%`,
                 },
               }
             : {},
@@ -111,10 +111,10 @@ const userService = {
       include: [
         {
           model: Template,
-          where: template_title
+          where: title
             ? {
                 title: {
-                  [Op.like]: `%${template_title}%`,
+                  [Op.like]: `%${title}%`,
                 },
               }
             : {},

@@ -8,6 +8,7 @@ import { FormColumns, TemplateColumns } from "./ColumnList";
 const AdminContentTable = ({ activeView }) => {
   const { t } = useTranslation(["admin"]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { page, limit } = Object.fromEntries(searchParams);
   const { templates, forms, loading, pagination } = useSelector(
     (state) => state.adminContent
   );
@@ -32,8 +33,8 @@ const AdminContentTable = ({ activeView }) => {
       loading={loading}
       rowKey="id"
       pagination={{
-        current: parseInt(searchParams.get("page") || "1"),
-        pageSize: parseInt(searchParams.get("limit") || "10"),
+        current: parseInt(page || "1"),
+        pageSize: parseInt(limit || "10"),
         total: pagination.total,
         showSizeChanger: true,
         showTotal: (total) => t("adminContentPage.total") + ": " + total,

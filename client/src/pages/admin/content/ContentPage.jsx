@@ -15,9 +15,23 @@ const ContentPage = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation(["admin"]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeView, setActiveView] = useState("templates");
+  const { page, limit, search, order, view } = Object.fromEntries(searchParams);
+  const [activeView, setActiveView] = useState(view || "templates");
 
-  const { page, limit, search, order } = Object.fromEntries(searchParams);
+  useEffect(() => {
+    if (!view) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set("view", activeView);
+      setSearchParams(newParams);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const urlView = searchParams.get("view");
+    if (urlView && urlView !== activeView) {
+      setActiveView(urlView);
+    }
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const params = {
@@ -34,9 +48,22 @@ const ContentPage = () => {
     }
   }, [dispatch, activeView, page, limit, search, order]);
 
+  const handleViewChange = (e) => {
+    const newView = e.target.value;
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("view", newView);
+    newParams.set("page", "1");
+    newParams.set("search", "");
+    newParams.set("limit", "10");
+    newParams.set("order", "desc");
+    setSearchParams(newParams);
+    setActiveView(newView);
+  };
+
   return (
     <div className="p-2 sm:p-4 md:p-6 min-h-screen">
       <Card className="shadow-xl rounded-lg">
+        {/* Title */}
         <div className="mb-6">
           <h1 className="text-xl sm:text-2xl font-bold">
             {t("adminContentPage.management")}
@@ -46,12 +73,10 @@ const ContentPage = () => {
           </p>
         </div>
 
+        {/* View change button */}
         <Radio.Group
           value={activeView}
-          onChange={(e) => {
-            setActiveView(e.target.value);
-            setSearchParams({ page: "1", limit: "10", order: "desc" });
-          }}
+          onChange={handleViewChange}
           className="mb-4"
         >
           <Radio.Button value="templates">
@@ -62,7 +87,10 @@ const ContentPage = () => {
           </Radio.Button>
         </Radio.Group>
 
+        {/* Table filter */}
         <AdminContentFilters activeView={activeView} />
+
+        {/* Table */}
         <AdminContentTable activeView={activeView} />
       </Card>
     </div>

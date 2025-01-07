@@ -40,9 +40,6 @@ export const fetchAdminForms = createAsyncThunk(
 );
 
 const initialState = {
-  error: null,
-  loading: false,
-
   forms: [],
   templates: [],
   pagination: {
@@ -50,6 +47,8 @@ const initialState = {
     totalPages: 0,
     total: 0,
   },
+  error: null,
+  loading: false,
 };
 
 const adminContentSlice = createSlice({
@@ -59,8 +58,8 @@ const adminContentSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAdminTemplates.pending, (state) => {
-        state.loading = true;
         state.error = null;
+        state.loading = true;
       })
       .addCase(fetchAdminTemplates.fulfilled, (state, action) => {
         state.loading = false;
@@ -72,8 +71,8 @@ const adminContentSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(fetchAdminForms.pending, (state) => {
-        state.loading = true;
         state.error = null;
+        state.loading = true;
       })
       .addCase(fetchAdminForms.fulfilled, (state, action) => {
         state.loading = false;
