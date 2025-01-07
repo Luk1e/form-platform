@@ -2,8 +2,8 @@ import { App } from "antd";
 import {
   SunOutlined,
   MoonOutlined,
+  UserOutlined,
   LogoutOutlined,
-  UserAddOutlined,
   SettingOutlined,
   LayoutOutlined,
 } from "@ant-design/icons";
@@ -86,7 +86,7 @@ const MenuDropdownList = (user, closeDrawer) => {
       dropdownList.push(
         {
           key: "manage-users",
-          icon: <UserAddOutlined />,
+          icon: <UserOutlined />,
           label: <Link to="/admin/users">{t("global.manageUsers")}</Link>,
           onClick: closeDrawer,
         },

@@ -1,10 +1,10 @@
 import { App } from "antd";
 import {
   FormOutlined,
+  UserOutlined,
   LoginOutlined,
   LogoutOutlined,
   LayoutOutlined,
-  UserAddOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -43,7 +43,7 @@ const UserDropdownList = () => {
       dropdownList.push(
         {
           key: "manage-users",
-          icon: <UserAddOutlined />,
+          icon: <UserOutlined />,
           label: <Link to="/admin/users">{t("global.manageUsers")}</Link>,
         },
         {
