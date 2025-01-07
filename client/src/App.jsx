@@ -2,6 +2,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Suspense, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { authenticate } from "./toolkit/auth/authSlice";
+import { getUserTheme } from "./toolkit/theme/themeSlice";
 import { ConfigProvider, Spin, App as AntApp } from "antd";
 
 import Router from "./routes/routes";
@@ -20,6 +21,12 @@ function App() {
   useEffect(() => {
     dispatch(authenticate());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(getUserTheme());
+    }
+  }, [user, dispatch]);
 
   useEffect(() => {
     if (themeMode === "dark") {
