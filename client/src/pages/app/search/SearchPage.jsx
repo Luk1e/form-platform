@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import { Card, Spin, Button } from "antd";
+import { useTranslation } from "react-i18next";
 import { InboxOutlined } from "@ant-design/icons";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,8 +14,8 @@ import { TemplateGallery } from "../../../components";
 
 const SearchPage = () => {
   const dispatch = useDispatch();
-  const [searchParams] = useSearchParams();
   const { t } = useTranslation(["app"]);
+  const [searchParams] = useSearchParams();
 
   const { templates, pagination, loading, error } = useSelector(
     (state) => state.searchTemplates

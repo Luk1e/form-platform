@@ -1,25 +1,23 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Card, Button, Spin, Typography, Alert, App } from "antd";
-import { Formik, Form as FormikForm } from "formik";
+import { Card, Spin, Typography, Alert } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getTemplateById,
   resetGetTemplateState,
 } from "../../../toolkit/templates/getTemplateSlice";
-import QuestionField from "./components/QuestionField";
-import { validationSchema, handleSubmit } from "./values";
+
 import { getForm, resetGetFormState } from "../../../toolkit/user/getFormSlice";
+
+import UpdateForm from "./UpdateForm";
+
 const { Title, Text } = Typography;
 
 function UpdateFormPage() {
-  const [t] = useTranslation(["auth"]);
   const dispatch = useDispatch();
   const { id, formId } = useParams();
-  const { notification } = App.useApp();
-  const navigate = useNavigate();
-
+  const { t } = useTranslation(["auth"]);
   const {
     template,
     error: errorTemplate,
@@ -35,7 +33,7 @@ function UpdateFormPage() {
       dispatch(resetGetTemplateState());
       dispatch(resetGetFormState());
     };
-  }, [id, formId, dispatch]);
+  }, [dispatch, id, formId]);
 
   if (loadingTemplate || loading) {
     return (
@@ -44,6 +42,7 @@ function UpdateFormPage() {
       </div>
     );
   }
+
   if (errorTemplate || error) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -68,7 +67,11 @@ function UpdateFormPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-      <Card className="shadow-lg rounded-2xl" bordered={false}>
+      <Card
+        className="shadow-lg rounded-2xl"
+        bordered={false}
+        loading={loading || loadingTemplate}
+      >
         <div className="space-y-6">
           <div className="border-b pb-6">
             <Title level={2} className="!mb-2">
@@ -81,46 +84,7 @@ function UpdateFormPage() {
             )}
           </div>
 
-          <Formik
-            initialValues={form.initialValues}
-            validationSchema={validationSchema(template.TemplateQuestions, t)}
-            onSubmit={(values) =>
-              handleSubmit(
-                id,
-                formId,
-                template,
-                values,
-                dispatch,
-                t,
-                notification,
-                navigate
-              )
-            }
-          >
-            {({ submitForm }) => (
-              <FormikForm className="space-y-8">
-                {template.TemplateQuestions.map((question) => (
-                  <QuestionField
-                    key={question.id}
-                    question={question}
-                    name={`question_${question.id}`}
-                  />
-                ))}
-
-                <div className="pt-6 border-t">
-                  <Button
-                    type="primary"
-                    size="large"
-                    loading={loading}
-                    className="w-full sm:w-auto min-w-[200px]"
-                    onClick={submitForm}
-                  >
-                    {t("form.submit")}
-                  </Button>
-                </div>
-              </FormikForm>
-            )}
-          </Formik>
+          <UpdateForm form={form} template={template} />
         </div>
       </Card>
     </div>

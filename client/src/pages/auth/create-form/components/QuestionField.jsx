@@ -2,9 +2,9 @@ import { useField } from "formik";
 import { Form, Typography } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 
-const { Text, Title } = Typography;
-
 import QuestionInput from "./QuestionInput";
+
+const { Text, Title } = Typography;
 
 const QuestionField = ({ question, name }) => {
   const [meta] = useField(name);

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAuthAxios } from "../../utils/hooks/useAxios";
 
 export const updateForm = createAsyncThunk(
-  "updateForm/getUserFilledForm",
+  "updateFormSlice/updateForm",
   async ({ formId, answers }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
@@ -20,26 +20,23 @@ export const updateForm = createAsyncThunk(
   }
 );
 
+const initialState = {
+  loading: false,
+  error: null,
+  success: false,
+};
+
 const updateFormSlice = createSlice({
-  name: "updateForm",
-  initialState: {
-    loading: false,
-    error: null,
-    success: false,
-  },
+  name: "updateFormSlice",
+  initialState,
   reducers: {
-    resetUpdateFormState: (state) => {
-      state.loading = false;
-      state.error = null;
-      state.success = false;
-    },
+    resetUpdateFormState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
       .addCase(updateForm.pending, (state) => {
-        state.loading = true;
         state.error = null;
-        state.success = false;
+        state.loading = true;
       })
       .addCase(updateForm.fulfilled, (state, action) => {
         state.loading = false;
@@ -48,7 +45,6 @@ const updateFormSlice = createSlice({
       .addCase(updateForm.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.success = false;
       });
   },
 });

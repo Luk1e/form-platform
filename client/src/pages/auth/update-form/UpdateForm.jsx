@@ -1,21 +1,22 @@
 import { useEffect } from "react";
 import { Button, App } from "antd";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Formik, Form as FormikForm } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { QuestionField } from "./components";
+import { useCustomNavigate } from "../../../utils/hooks";
 import { validationSchema, handleSubmit } from "./values";
-import { resetCreateFormState } from "../../../toolkit/user/createFormSlice";
+import { resetUpdateFormState } from "../../../toolkit/user/updateFormSlice";
 
-function CreateForm({ template }) {
-  const { id } = useParams();
+function UpdateForm({ form, template }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { id, formId } = useParams();
   const { notification } = App.useApp();
   const { t } = useTranslation(["auth"]);
-  const { success, loading, error } = useSelector((state) => state.createForm);
+  const goBackOrNavigate = useCustomNavigate(`/templates/${id}`);
+  const { success, loading, error } = useSelector((state) => state.updateForm);
 
   useEffect(() => {
     if (success) {
@@ -23,12 +24,12 @@ function CreateForm({ template }) {
         message: t("notifications.formSubmitted"),
         description: t("notifications.formSubmittedDesc"),
       });
-      navigate(`/templates/${id}`);
+      goBackOrNavigate();
     }
     return () => {
-      dispatch(resetCreateFormState());
+      dispatch(resetUpdateFormState());
     };
-  }, [dispatch, navigate, success, id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, success, id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (error) {
@@ -38,16 +39,11 @@ function CreateForm({ template }) {
     }
   }, [dispatch, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const initialValues = template.TemplateQuestions.reduce((acc, question) => {
-    acc[`question_${question.id}`] = question.QuestionType.id === 4 ? [] : "";
-    return acc;
-  }, {});
-
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={form.initialValues}
       validationSchema={validationSchema(template.TemplateQuestions, t)}
-      onSubmit={(values) => handleSubmit(id, template, values, dispatch)}
+      onSubmit={(values) => handleSubmit(formId, template, values, dispatch)}
     >
       {({ submitForm }) => (
         <FormikForm className="space-y-8">
@@ -76,4 +72,4 @@ function CreateForm({ template }) {
   );
 }
 
-export default CreateForm;
+export default UpdateForm;

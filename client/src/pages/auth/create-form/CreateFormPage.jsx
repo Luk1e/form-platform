@@ -86,7 +86,7 @@ const CreateFormPage = () => {
             )}
           </div>
 
-          <CreateForm />
+          <CreateForm template={template} />
         </div>
       </Card>
     </div>

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAuthAxios } from "../../utils/hooks/useAxios";
 
 export const fetchAdminTemplates = createAsyncThunk(
-  "adminContent/fetchAdminTemplates",
+  "adminContentSlice/fetchAdminTemplates",
   async (params, { rejectWithValue }) => {
     try {
       Object.keys(params).forEach((key) => {
@@ -22,7 +22,7 @@ export const fetchAdminTemplates = createAsyncThunk(
 );
 
 export const fetchAdminForms = createAsyncThunk(
-  "adminContent/fetchAdminForms",
+  "adminContentSlice/fetchAdminForms",
   async (params, { rejectWithValue }) => {
     try {
       Object.keys(params).forEach((key) => {
@@ -52,7 +52,7 @@ const initialState = {
 };
 
 const adminContentSlice = createSlice({
-  name: "adminContent",
+  name: "adminContentSlice",
   initialState,
   reducers: {},
   extraReducers: (builder) => {

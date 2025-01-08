@@ -13,21 +13,18 @@ export const deleteTemplate = createAsyncThunk(
   }
 );
 
+const initialState = {
+  loading: false,
+  error: null,
+  success: false,
+  deletedTemplateId: null,
+};
+
 const deleteTemplateSlice = createSlice({
   name: "deleteTemplate",
-  initialState: {
-    loading: false,
-    error: null,
-    success: false,
-    deletedTemplateId: null,
-  },
+  initialState,
   reducers: {
-    resetDeleteTemplateState: (state) => {
-      state.loading = false;
-      state.error = null;
-      state.success = false;
-      state.deletedTemplateId = null;
-    },
+    resetDeleteTemplateState: () => initialState,
   },
   extraReducers: (builder) => {
     builder

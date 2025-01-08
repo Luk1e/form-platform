@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { transformAnswerValue } from "../../../utils/helpers";
 import { updateForm } from "../../../toolkit/user/updateFormSlice";
 
 export const validationSchema = (questions, t) => {
@@ -45,61 +46,7 @@ export const validationSchema = (questions, t) => {
   return Yup.object().shape(schema);
 };
 
-const transformAnswerValue = (questionType, value, options) => {
-  switch (questionType) {
-    case 4: // checkbox
-      return value
-        .map((val) => options.find((opt) => opt.value === val)?.id)
-        .filter(Boolean);
-    case 5: // single_choice
-      return options.find((opt) => opt.value === value)?.id;
-    default:
-      return value;
-  }
-};
-
-export const handleSubmit = async (
-  templateId,
-  formId,
-  template,
-  values,
-  dispatch,
-  t,
-  notification,
-  navigate
-) => {
-  const answersArray = Object.entries(values).map(([key, value]) => {
-    const questionId = parseInt(key.split("_")[1], 10);
-    const question = template.TemplateQuestions.find(
-      (q) => q.id === questionId
-    );
-
-    if (!question) {
-      throw new Error(`Question ${questionId} not found in template`);
-    }
-
-    const transformedValue = transformAnswerValue(
-      question.QuestionType.id,
-      value,
-      question.QuestionOptions
-    );
-
-    return {
-      question_id: questionId,
-      value: transformedValue,
-    };
-  });
-
-  try {
-    await dispatch(updateForm({ formId, answers: answersArray })).unwrap();
-    notification.success({
-      message: t("notifications.formSubmitted"),
-      description: t("notifications.formSubmittedDesc"),
-    });
-    navigate(`/templates/${templateId}`);
-  } catch (error) {
-    notification.error({
-      message: error.message,
-    });
-  }
+export const handleSubmit = async (formId, template, values, dispatch) => {
+  const answersArray = transformAnswerValue(values, template);
+  dispatch(updateForm({ formId, answers: answersArray }));
 };
