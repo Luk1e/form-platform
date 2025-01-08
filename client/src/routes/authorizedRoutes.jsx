@@ -6,9 +6,11 @@ const ContentPage = lazy(() => import("../pages/auth/content/ContentPage"));
 const CreateTemplatePage = lazy(() =>
   import("../pages/auth/createTemplate/CreateTemplatePage")
 );
-
 const UpdateTemplatePage = lazy(() =>
   import("../pages/auth/updateTemplate/UpdateTemplatePage")
+);
+const TemplateFormsPage = lazy(() =>
+  import("../pages/auth/template-forms/TemplateFormsPage")
 );
 
 const FillFormPage = lazy(() => import("../pages/auth/fillForm/FillFormPage"));
@@ -32,6 +34,10 @@ export default function AuthorizedRoutes({ user, loading }) {
       {
         path: "/templates/:id/fill",
         element: <FillFormPage />,
+      },
+      {
+        path: "/templates/:id/forms",
+        element: <TemplateFormsPage />,
       },
       {
         path: "/templates/:id/forms/:formId",

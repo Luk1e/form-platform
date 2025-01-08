@@ -189,6 +189,41 @@ const templateController = {
       });
     }
   },
+
+  getTemplateForms: async (req, res) => {
+    try {
+      const templateId = req.params.id;
+      const isAdmin = await adminService.isAdmin(req.userId);
+      const template = await templateService.getTemplateByPk(templateId);
+
+      if (!template) {
+        throw CustomError.notFound("Template not found", 11);
+      }
+
+      if (!isAdmin && template.user_id !== req.userId) {
+        throw CustomError.forbidden(
+          "Not authorized to get forms for this template",
+          46
+        );
+      }
+
+      const templates = await templateService.getTemplateForms(
+        templateId,
+        req.query
+      );
+      res.json(templates);
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.toJSON());
+      }
+
+      console.error("Error getting template forms:", error);
+      res.status(500).json({
+        message: "Error getting template formss",
+        errorCode: "GET_TEMPLATE_FORMS_ERROR",
+      });
+    }
+  },
 };
 
 export default templateController;

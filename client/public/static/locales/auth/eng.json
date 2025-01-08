@@ -40,6 +40,25 @@
       "required": "Required"
     }
   },
+  "templateFormPage": {
+    "pageTitle": "Form Submissions",
+    "pageDescription": "View and manage form submissions",
+    "table": {
+      "id": "ID",
+      "author": "Author",
+      "email": "Email",
+      "submitted": "Submitted"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by username or email",
+      "orderOptions": {
+        "newest": "Newest",
+        "oldest": "Oldest"
+      },
+      "resetButton": "Reset",
+      "totalItems": "Total: {{total}}"
+    }
+  },
   "updateTemplatePage": {
     "updateTemplate": "Update Template",
     "viewForms": "View Forms",

@@ -10,7 +10,9 @@ const {
   TemplateQuestion,
   TemplateTopic,
   QuestionType,
+  FormAnswer,
   sequelize,
+  ChosenOption,
 } = models;
 
 const templateService = {
@@ -503,6 +505,169 @@ const templateService = {
         pageSize: limit,
         totalTemplates: searchResults.count,
         totalPages: Math.ceil(searchResults.count / limit),
+      },
+    };
+  },
+
+  getTemplateForms: async (templateId, filters) => {
+    const { search, order = "desc", page, limit } = filters;
+    const parsedPage = parseInt(page) || 1;
+    const parsedLimit = parseInt(limit) || 10;
+    const offset = (parsedPage - 1) * parsedLimit;
+
+    // Get summary questions with their options
+    const summaryQuestions = await TemplateQuestion.findAll({
+      where: {
+        template_id: templateId,
+        display_in_summary: true,
+      },
+      include: [
+        {
+          model: QuestionType,
+          attributes: ["name"],
+        },
+        {
+          model: QuestionOption,
+          attributes: ["id", "value"],
+          required: false,
+        },
+      ],
+      order: [["position", "ASC"]],
+    });
+
+    // Get filled forms with search and pagination
+    const { rows, count } = await FilledForm.findAndCountAll({
+      where: { template_id: templateId },
+      attributes: ["id", "created_at"],
+      include: [
+        {
+          model: User,
+          attributes: ["username", "email"],
+          where: search
+            ? {
+                [Op.or]: [
+                  { username: { [Op.like]: `%${search}%` } },
+                  { email: { [Op.like]: `%${search}%` } },
+                ],
+              }
+            : {},
+        },
+        {
+          model: FormAnswer,
+          separate: true,
+          include: [
+            {
+              model: ChosenOption,
+              separate: true, // Added separate loading for ChosenOptions
+              include: [
+                {
+                  model: QuestionOption,
+                  attributes: ["id", "value"],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Template,
+          attributes: ["id", "title"],
+        },
+      ],
+      order: [["created_at", order.toUpperCase()]],
+      limit: parsedLimit,
+      offset: offset,
+      distinct: true,
+    });
+
+    // Transform the data
+    const forms = rows.map((form) => {
+      const formData = {
+        id: form.id,
+        created_at: form.created_at,
+        user: {
+          username: form.User.username,
+          email: form.User.email,
+        },
+        answers: {},
+      };
+
+      // Initialize answers with default values
+      summaryQuestions.forEach((question) => {
+        formData.answers[question.id] = {
+          question_id: question.id,
+          question_title: question.title,
+          question_type: question.QuestionType.name,
+          value: question.QuestionType.name === "checkbox" ? [] : "-",
+        };
+      });
+
+      // Process each answer
+      form.FormAnswers.forEach((answer) => {
+        const question = summaryQuestions.find(
+          (q) => q.id === answer.template_question_id
+        );
+        if (!question) return;
+
+        const answerData = formData.answers[question.id];
+        const questionType = question.QuestionType.name;
+
+        switch (questionType) {
+          case "checkbox":
+            // Handle multiple checkbox selections
+            if (answer.ChosenOptions && answer.ChosenOptions.length > 0) {
+              // Map all chosen options to their values
+              const selectedValues = answer.ChosenOptions.map(
+                (opt) => opt.QuestionOption.value
+              );
+              // Merge with any existing values (in case of multiple FormAnswers)
+              answerData.value = [
+                ...new Set([...answerData.value, ...selectedValues]),
+              ];
+            }
+            break;
+          case "single_choice":
+            if (answer.ChosenOptions?.length > 0) {
+              answerData.value = answer.ChosenOptions[0].QuestionOption.value;
+            } else {
+              answerData.value = answer.single_choice_value || "-";
+            }
+            break;
+          case "single_line":
+            answerData.value = answer.string_value || "-";
+            break;
+          case "multi_line":
+            answerData.value = answer.text_value || "-";
+            break;
+          case "integer":
+            answerData.value = answer.integer_value?.toString() || "-";
+            break;
+        }
+      });
+
+      return formData;
+    });
+
+    return {
+      template: {
+        id: parseInt(templateId),
+        title: rows[0]?.Template.title || "",
+        summary_questions: summaryQuestions.map((q) => ({
+          id: q.id,
+          title: q.title,
+          type: q.QuestionType.name,
+          options:
+            q.QuestionOptions?.map((opt) => ({
+              id: opt.id,
+              value: opt.value,
+            })) || [],
+        })),
+      },
+      forms,
+      pagination: {
+        total: count,
+        page: parsedPage,
+        limit: parsedLimit,
+        total_pages: Math.ceil(count / parsedLimit),
       },
     };
   },

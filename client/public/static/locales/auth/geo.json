@@ -39,6 +39,25 @@
       "required": "სავალდებულო"
     }
   },
+  "templateFormPage": {
+    "pageTitle": "შევსებული ფორმები",
+    "pageDescription": "შევსებული ფორმების მართვა",
+    "table": {
+      "id": "ID",
+      "author": "ავტორი",
+      "email": "ელ.ფოსტა",
+      "submitted": "შევსებულია"
+    },
+    "filters": {
+      "searchPlaceholder": "ძიება მომხმარებლის სახელით ან ელ.ფოსტით",
+      "orderOptions": {
+        "newest": "ახლიდან ძველისკენ",
+        "oldest": "ძველიდან ახლისკენ"
+      },
+      "resetButton": "ფილტრების გასუფთავებ",
+      "totalItems": "სულ: {{total}}"
+    }
+  },
   "updateTemplatePage": {
     "updateTemplate": "შაბლონის რედაქტირება",
     "viewForms": "ფორმების ნახვა",

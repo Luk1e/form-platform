@@ -149,3 +149,10 @@ export const updateTemplateSchema = Joi.object({
       "array.min": "At least one question is required",
     }),
 });
+
+export const getTemplateFormsSchema = Joi.object({
+  search: Joi.string().max(255).allow("").optional(),
+  order: Joi.string().valid("asc", "desc").default("desc"),
+  page: Joi.number().integer().min(1).default(1),
+  limit: Joi.number().integer().min(1).max(50).default(10),
+});

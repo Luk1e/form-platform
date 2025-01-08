@@ -10,6 +10,7 @@ export { loginSchema, registerSchema } from "./authValidationSchemas.js";
 export {
   createTemplateSchema,
   updateTemplateSchema,
+  getTemplateFormsSchema,
   latestTemplateSearchSchema,
 } from "./templateValidationSchema.js";
 

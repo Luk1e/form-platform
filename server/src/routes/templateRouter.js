@@ -4,6 +4,7 @@ import { authMiddleware, validate } from "../middlewares/index.js";
 import {
   createTemplateSchema,
   updateTemplateSchema,
+  getTemplateFormsSchema,
   latestTemplateSearchSchema,
 } from "../validations/index.js";
 
@@ -35,5 +36,11 @@ router.put(
 );
 
 router.delete("/:id", templateController.deleteTemplate);
+
+router.get(
+  "/:id/forms",
+  validate(getTemplateFormsSchema, true),
+  templateController.getTemplateForms
+);
 
 export default router;
