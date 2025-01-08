@@ -96,7 +96,7 @@ DEV_DB_HOST=your_host_name
    // const BACKEND_URL = 'https://form-platform.onrender.com/'
    const BACKEND_URL: 'http://localhost:5000'  // or your custom backend port
    ```
-   - In `server/.env`: Uncomment `NODE_ENV=development`
+   - In `server/config/environment.js`: change `export const isDevelopment = false` to true
 
 ## Deployment Notes
 
