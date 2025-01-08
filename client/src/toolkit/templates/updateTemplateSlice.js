@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAuthAxios } from "../../utils/hooks/useAxios";
 
 export const updateTemplate = createAsyncThunk(
-  "updateTemplate/update",
+  "updateTemplateSlice/updateTemplate",
   async ({ id, templateData }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
@@ -31,28 +31,24 @@ export const updateTemplate = createAsyncThunk(
   }
 );
 
+const initialState = {
+  loading: false,
+  error: null,
+  success: false,
+  updatedTemplateId: null,
+};
+
 const updateTemplateSlice = createSlice({
-  name: "updateTemplate",
-  initialState: {
-    loading: false,
-    error: null,
-    success: false,
-    updatedTemplateId: null,
-  },
+  name: "updateTemplateSlice",
+  initialState,
   reducers: {
-    resetUpdateTemplateState: (state) => {
-      state.loading = false;
-      state.error = null;
-      state.success = false;
-      state.updatedTemplateId = null;
-    },
+    resetUpdateTemplateState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
       .addCase(updateTemplate.pending, (state) => {
-        state.loading = true;
         state.error = null;
-        state.success = false;
+        state.loading = true;
       })
       .addCase(updateTemplate.fulfilled, (state, action) => {
         state.loading = false;
@@ -62,7 +58,6 @@ const updateTemplateSlice = createSlice({
       .addCase(updateTemplate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.success = false;
       });
   },
 });

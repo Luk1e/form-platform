@@ -1,23 +1,27 @@
-import React, { useEffect } from "react";
-import { Card, Button, App, Popconfirm } from "antd";
-import TemplateForm from "./components/TemplateForm";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams, useNavigate } from "react-router-dom";
+import { Card, Button, App, Popconfirm } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
+import { useCustomNavigate } from "../../../utils/hooks";
+
 import {
   getUserTemplateById,
   resetGetTemplateState,
 } from "../../../toolkit/templates/getTemplateSlice";
 import { deleteTemplate } from "../../../toolkit/templates/deleteTemplateSlice";
 
+import TemplateForm from "./TemplateForm";
+
 const UpdateTemplatePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const goBackOrNavigate = useCustomNavigate("/");
+  const { t } = useTranslation("auth");
   const { notification } = App.useApp();
   const { template, loading } = useSelector((state) => state.template);
-  const [t] = useTranslation("auth");
 
   useEffect(() => {
     if (id) {
@@ -38,7 +42,7 @@ const UpdateTemplatePage = () => {
     return () => {
       dispatch(resetGetTemplateState());
     };
-  }, [dispatch, id, t]);
+  }, [dispatch, id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const navigateToForms = () => {
     navigate(`/templates/${id}/forms`);
@@ -50,7 +54,7 @@ const UpdateTemplatePage = () => {
       notification.success({
         message: t("notifications.templateDeleteSuccess"),
       });
-      navigate(-1);
+      goBackOrNavigate();
     } catch (error) {
       notification.error({
         message: t(`errors.${error.errorCode}`),
@@ -61,9 +65,12 @@ const UpdateTemplatePage = () => {
   return (
     <div className="w-full max-w-4xl mx-auto p-2 sm:p-4 space-y-4">
       <div className="flex justify-end space-x-4">
+        {/* Template forms */}
         <Button icon={<FormOutlined />} onClick={navigateToForms}>
           {t("updateTemplatePage.viewForms")}
         </Button>
+
+        {/* Delete template button */}
         <Popconfirm
           title={t("userContentPage.deleteConfirm")}
           onConfirm={handleDelete}
@@ -74,6 +81,7 @@ const UpdateTemplatePage = () => {
         </Popconfirm>
       </div>
 
+      {/* Template card */}
       <Card
         title={t("updateTemplatePage.updateTemplate")}
         className="shadow-lg [&_.ant-card-head-title]:sm:text-2xl"

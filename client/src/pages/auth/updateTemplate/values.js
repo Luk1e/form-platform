@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { updateTemplate } from "../../../toolkit/templates/updateTemplateSlice";
 
-export const mapTemplateToFormValues = (template) => {
+export const initialValues = (template) => {
   if (!template) return null;
 
   return {
@@ -75,14 +75,6 @@ export const validationSchema = (t) =>
       )
       .min(1, t("validation.questionsMin")),
   });
-
-export const getQuestionTypes = (t) => [
-  { id: 1, name: t("createTemplatePage.singleLine") },
-  { id: 2, name: t("createTemplatePage.multiLine") },
-  { id: 3, name: t("createTemplatePage.integer") },
-  { id: 4, name: t("createTemplatePage.checkbox") },
-  { id: 5, name: t("createTemplatePage.singleChoice") },
-];
 
 export const handleSubmit = (values, templateId, dispatch) => {
   dispatch(updateTemplate({ id: templateId, templateData: values }));

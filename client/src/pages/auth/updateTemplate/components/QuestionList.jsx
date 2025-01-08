@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import { FieldArray } from "formik";
 import { useTranslation } from "react-i18next";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   DndContext,
   closestCenter,
@@ -14,14 +15,14 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
-import { getQuestionTypes } from "../values";
 import SortableQuestion from "./SortableQuestion";
 
+import { getQuestionTypes } from "../../../../utils/helpers";
+
 const QuestionList = ({ formikProps }) => {
+  const { t } = useTranslation("auth");
   const { values, setFieldValue } = formikProps;
-  const [t] = useTranslation("auth");
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -48,9 +49,12 @@ const QuestionList = ({ formikProps }) => {
       {({ push, remove }) => (
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0">
+            {/* Questions title */}
             <h3 className="text-lg sm:text-xl font-medium">
               {t("createTemplatePage.questions.title")}
             </h3>
+
+            {/* Question types */}
             <div className="flex flex-wrap gap-2 justify-start sm:justify-end">
               {questionTypes.map((type) => (
                 <Button
@@ -74,6 +78,7 @@ const QuestionList = ({ formikProps }) => {
             </div>
           </div>
 
+          {/* Question List */}
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}

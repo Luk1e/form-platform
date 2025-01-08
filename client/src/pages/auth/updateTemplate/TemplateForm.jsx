@@ -1,21 +1,20 @@
 import { useEffect } from "react";
+import { App, Alert } from "antd";
+import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Formik, Form } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { getTags } from "../../../../toolkit/support/tagSlice";
-import { getUsers } from "../../../../toolkit/support/userSlice";
-import { getTopics } from "../../../../toolkit/support/topicSlice";
-import { resetUpdateTemplateState } from "../../../../toolkit/templates/updateTemplateSlice";
-import {
-  validationSchema,
-  handleSubmit,
-  mapTemplateToFormValues,
-} from "../values";
 
-import BasicInfo from "./BasicInfo";
-import { Button, App, Alert } from "antd";
-import QuestionList from "./QuestionList";
+import { getTags, resetTagState } from "../../../toolkit/support/tagSlice";
+import { getUsers, resetUserState } from "../../../toolkit/support/userSlice";
+import {
+  getTopics,
+  resetTopicState,
+} from "../../../toolkit/support/topicSlice";
+import { resetUpdateTemplateState } from "../../../toolkit/templates/updateTemplateSlice";
+
+import { Button, BasicInfo, QuestionList } from "./components";
+import { validationSchema, handleSubmit, initialValues } from "./values";
 
 const TemplateForm = ({ templateId }) => {
   const dispatch = useDispatch();
@@ -24,14 +23,9 @@ const TemplateForm = ({ templateId }) => {
   const { t } = useTranslation(["auth"]);
 
   const { template } = useSelector((state) => state.template);
-
   const { updatedTemplateId, loading, error } = useSelector(
     (state) => state.updateTemplate
   );
-
-  const { topics } = useSelector((state) => state.supportTopics);
-  const { tags } = useSelector((state) => state.supportTags);
-  const { users } = useSelector((state) => state.supportUsers);
 
   useEffect(() => {
     if (updatedTemplateId) {
@@ -44,25 +38,29 @@ const TemplateForm = ({ templateId }) => {
     return () => {
       dispatch(resetUpdateTemplateState());
     };
-  }, [updatedTemplateId, navigate, dispatch, t]);
+  }, [updatedTemplateId, navigate, dispatch, t]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     dispatch(getTags());
     dispatch(getUsers());
     dispatch(getTopics());
+    return () => {
+      dispatch(resetTagState());
+      dispatch(resetUserState());
+      dispatch(resetTopicState());
+    };
   }, [dispatch]);
-
-  const initialValues = mapTemplateToFormValues(template);
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={initialValues(template)}
       validationSchema={validationSchema(t)}
       onSubmit={(values) => handleSubmit(values, templateId, dispatch)}
       enableReinitialize
     >
       {(formikProps) => (
         <Form className="space-y-6">
+          {/* Display error */}
           {error && (
             <Alert
               type="error"
@@ -76,15 +74,13 @@ const TemplateForm = ({ templateId }) => {
             />
           )}
 
-          <BasicInfo
-            formikProps={formikProps}
-            topics={topics}
-            tags={tags}
-            users={users}
-          />
+          {/* Basic info component */}
+          <BasicInfo formikProps={formikProps} />
 
+          {/* Question list component */}
           <QuestionList formikProps={formikProps} />
 
+          {/* Error if no question is selected */}
           {formikProps.touched.questions &&
             typeof formikProps.errors.questions === "string" && (
               <div className="text-red-500 text-sm mt-1">
@@ -92,17 +88,8 @@ const TemplateForm = ({ templateId }) => {
               </div>
             )}
 
-          <div className="flex justify-end">
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              className="w-full sm:w-auto"
-              loading={loading}
-            >
-              {t("updateTemplatePage.updateTemplate")}
-            </Button>
-          </div>
+          {/* Submit button component */}
+          <Button loading={loading} />
         </Form>
       )}
     </Formik>

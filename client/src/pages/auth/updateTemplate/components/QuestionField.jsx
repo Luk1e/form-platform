@@ -1,12 +1,12 @@
-import React from "react";
-import { Card, Input, Switch, Button, Form } from "antd";
-import { getQuestionTypes } from "../values";
 import { FieldArray } from "formik";
 import { useTranslation } from "react-i18next";
+import { Card, Input, Switch, Button, Form } from "antd";
+
+import { getQuestionTypes } from "../../../../utils/helpers";
 
 const QuestionField = ({ index, remove, formikProps }) => {
+  const { t } = useTranslation("auth");
   const { values, handleChange, setFieldValue, touched, errors } = formikProps;
-  const [t] = useTranslation("auth");
 
   const question = values.questions[index];
   const questionTypes = getQuestionTypes(t) || [];
@@ -24,14 +24,18 @@ const QuestionField = ({ index, remove, formikProps }) => {
     <Card className="shadow-sm">
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
+          {/* Question header */}
           <h4 className="text-base font-medium">
             {questionType?.name} Question {index + 1}
           </h4>
+
+          {/* Button to remove question */}
           <Button danger onClick={() => remove(index)}>
             {t("createTemplatePage.questions.remove")}
           </Button>
         </div>
 
+        {/* Question title input */}
         <Form.Item
           validateStatus={getFieldError("title") ? "error" : ""}
           help={getFieldError("title")}
@@ -45,6 +49,7 @@ const QuestionField = ({ index, remove, formikProps }) => {
           />
         </Form.Item>
 
+        {/* Question description input */}
         <Form.Item
           validateStatus={getFieldError("description") ? "error" : ""}
           help={getFieldError("description")}
@@ -59,6 +64,7 @@ const QuestionField = ({ index, remove, formikProps }) => {
           />
         </Form.Item>
 
+        {/* Question option list */}
         {(question.type_id === 4 || question.type_id === 5) && (
           <FieldArray name={`questions.${index}.options`}>
             {({ push, remove }) => (
@@ -68,6 +74,7 @@ const QuestionField = ({ index, remove, formikProps }) => {
                     key={optionIndex}
                     className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2"
                   >
+                    {/* Option text input */}
                     <Form.Item
                       className="flex-1 mb-0"
                       validateStatus={
@@ -91,11 +98,15 @@ const QuestionField = ({ index, remove, formikProps }) => {
                         className="flex-1"
                       />
                     </Form.Item>
+
+                    {/* Button to remove option */}
                     <Button danger onClick={() => remove(optionIndex)}>
                       {t("createTemplatePage.questions.removeOption")}
                     </Button>
                   </div>
                 ))}
+
+                {/* Button to add option */}
                 <Button type="dashed" onClick={() => push("")}>
                   {t("createTemplatePage.questions.addOption")}
                 </Button>
@@ -110,7 +121,9 @@ const QuestionField = ({ index, remove, formikProps }) => {
           </FieldArray>
         )}
 
+        {/* Buttons  */}
         <div className="flex flex-wrap gap-4">
+          {/* Switch summary */}
           <Form.Item className="mb-0">
             <div className="flex items-center space-x-2">
               <Switch
@@ -125,6 +138,7 @@ const QuestionField = ({ index, remove, formikProps }) => {
             </div>
           </Form.Item>
 
+          {/* Switch required type */}
           <Form.Item className="mb-0">
             <div className="flex items-center space-x-2">
               <Switch
