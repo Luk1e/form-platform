@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-export const isDevelopment = process.env.NODE_ENV || false;
+export const isDevelopment = false;
 
 export const allowedOrigins = isDevelopment
   ? ["http://localhost:5173"]
