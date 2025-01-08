@@ -33,7 +33,8 @@ router.post("/templates/:id/like", userController.toggleLike);
 
 router.post("/templates/:id/fill", userController.createForm);
 router.get("/templates/:id/isFilled", userController.hasUserFilledForm);
+
 router.get("/forms/:id", userController.getUserFilledForm);
 router.put("/forms/:id", userController.updateFilledForm);
-
+router.delete("/forms/:id", userController.deleteForm);
 export default router;

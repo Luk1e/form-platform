@@ -59,7 +59,12 @@
     }
   },
   "formPage": {
-    "noAnswerProvided": "პასუხი არ არის"
+    "noAnswerProvided": "პასუხი არ არის",
+    "delete": "ფორმის წაშლა",
+    "deleteConfirmTitle": "ფორმის წაშლა",
+    "deleteConfirmDesc": "დარწმუნებული ხართ, რომ გსურთ ამ ფორმის წაშლა? ეს მოქმედება ვერ იქნება გაუქმებული.",
+    "yes": "დიახ",
+    "no": "არა"
   },
   "updateTemplatePage": {
     "updateTemplate": "შაბლონის რედაქტირება",
@@ -128,7 +133,11 @@
     "formSubmittedDesc": "ფორმა წარმატებით გაიგზავნა",
     "templateDeleteSuccess": "შაბლონი წარმატებით წაიშალა",
     "templateUpdated": "შაბლონია დარედაქტირდა",
-    "templateUpdatedDesc": "შაბლონი წარმატებით დარედაქტირდა"
+    "templateUpdatedDesc": "შაბლონი წარმატებით დარედაქტირდა",
+    "formDeleted": "ფორმა წაშლილია",
+    "formDeletedDesc": "ფორმა წარმატებით წაიშალა",
+    "error": "შეცდომა",
+    "deleteError": "ფორმის წაშლა ვერ მოხერხდა"
   },
   "errors": {
     "0": "მომხმარებელი ვერ მოიძებნა",

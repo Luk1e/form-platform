@@ -26,7 +26,7 @@ const CreateFormPage = () => {
       if (id) {
         const data = await dispatch(checkIsFilled(id)).unwrap();
         if (data?.hasFilled && data?.formId) {
-          navigate(`/templates/${id}/forms/${data?.formId}`, {
+          navigate(`/templates/${id}/forms/${data?.formId}/update`, {
             replace: true,
           });
         } else {

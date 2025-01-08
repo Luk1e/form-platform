@@ -417,6 +417,34 @@ const formService = {
 
     return filledForm;
   },
+
+  deleteForm: async (formId, userId, isAdmin = false) => {
+    const form = await FilledForm.findByPk(formId);
+
+    if (!form) {
+      throw CustomError.notFound("Form not found", 79);
+    }
+
+    if (!isAdmin && form.user_id !== userId) {
+      throw CustomError.forbidden("Not authorized to delete this form", 80);
+    }
+
+    const transaction = await sequelize.transaction();
+
+    try {
+      await FormAnswer.destroy({
+        where: { filled_form_id: formId },
+        transaction,
+      });
+
+      await form.destroy({ transaction });
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
+  },
 };
 
 export default formService;

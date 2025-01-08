@@ -242,6 +242,28 @@ const userController = {
       });
     }
   },
+
+  deleteForm: async (req, res) => {
+    try {
+      const formId = req.params.id;
+      const userId = req.userId;
+      const isAdmin = await adminService.isAdmin(userId);
+
+      await formService.deleteForm(formId, userId, isAdmin);
+
+      res.status(204).send();
+    } catch (error) {
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.toJSON());
+      }
+
+      console.error("Error deleting form:", error);
+      res.status(500).json({
+        message: "Error deleting form",
+        errorCode: "DELETE_FORM_ERROR",
+      });
+    }
+  },
 };
 
 export default userController;

@@ -1,13 +1,15 @@
-import userContentSlice from "./userContentSlice";
-import createFormSlice from "./createFormSlice";
 import getFormSlice from "./getFormSlice";
+import createFormSlice from "./createFormSlice";
 import updateFormSlice from "./updateFormSlice";
+import deleteFormSlice from "./deleteFormSlice";
+import userContentSlice from "./userContentSlice";
 
 const reducer = {
-  userContent: userContentSlice,
+  getForm: getFormSlice,
   createForm: createFormSlice,
   updateForm: updateFormSlice,
-  getForm: getFormSlice,
+  deleteForm: deleteFormSlice,
+  userContent: userContentSlice,
 };
 
 export default reducer;
