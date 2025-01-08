@@ -1,8 +1,7 @@
-import React from "react";
-import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { HolderOutlined } from "@ant-design/icons";
 import QuestionField from "./QuestionField";
+import { useSortable } from "@dnd-kit/sortable";
+import { HolderOutlined } from "@ant-design/icons";
 
 const SortableQuestion = ({ id, ...props }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =

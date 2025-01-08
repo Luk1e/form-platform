@@ -1,7 +1,6 @@
-import React from "react";
 import { Card } from "antd";
-import TemplateForm from "./components/TemplateForm";
 import { useTranslation } from "react-i18next";
+import TemplateForm from "./TemplateForm";
 
 const CreateTemplatePage = () => {
   const [t] = useTranslation("auth");

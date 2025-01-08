@@ -36,7 +36,7 @@ const LoginForm = () => {
   }, [success, dispatch, notification]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (formik.touched.email || formik.touched.password) {
+    if (Object.keys(formik.touched).length > 0) {
       formik.validateForm();
     }
   }, [i18n.language]); // eslint-disable-line react-hooks/exhaustive-deps

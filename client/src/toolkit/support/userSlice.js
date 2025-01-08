@@ -2,10 +2,11 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAuthAxios } from "../../utils/hooks/useAxios";
 
 export const getUsers = createAsyncThunk(
-  "support/getUsers",
+  "userSlice/getUsers",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await useAuthAxios.get("/api/support/users");
+
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -13,10 +14,12 @@ export const getUsers = createAsyncThunk(
   }
 );
 
-const topicSlice = createSlice({
-  name: "support/users",
-  initialState: { users: [], loading: false, error: null },
-  reducers: {},
+const initialState = { users: [], loading: false, error: null };
+
+const userSlice = createSlice({
+  name: "userSlice",
+  initialState,
+  reducers: { resetUserState: () => initialState },
   extraReducers: (builder) => {
     builder
       .addCase(getUsers.pending, (state) => {
@@ -33,4 +36,5 @@ const topicSlice = createSlice({
   },
 });
 
-export default topicSlice.reducer;
+export const { resetUserState } = userSlice.actions;
+export default userSlice.reducer;

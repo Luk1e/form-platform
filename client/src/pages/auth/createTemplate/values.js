@@ -6,7 +6,6 @@ export const initialValues = {
   description: "",
   topic_id: undefined,
   is_public: true,
-  image_url: "",
   image_file: null,
   tags: [],
   access_users: [],
@@ -35,7 +34,6 @@ export const validationSchema = (t) =>
           .required(t("validation.accessUsersRequired")),
       otherwise: () => Yup.array().nullable(),
     }),
-    image_url: Yup.string().url(t("validation.urlInvalid")).nullable(),
     image_file: Yup.mixed().nullable(),
     tags: Yup.array().of(Yup.string().max(50)).min(1, t("validation.tagsMin")),
     questions: Yup.array()
@@ -62,14 +60,6 @@ export const validationSchema = (t) =>
       )
       .min(1, t("validation.questionsMin")),
   });
-
-export const getQuestionTypes = (t) => [
-  { id: 1, name: t("createTemplatePage.singleLine") },
-  { id: 2, name: t("createTemplatePage.multiLine") },
-  { id: 3, name: t("createTemplatePage.integer") },
-  { id: 4, name: t("createTemplatePage.checkbox") },
-  { id: 5, name: t("createTemplatePage.singleChoice") },
-];
 
 export const handleSubmit = (values, dispatch) => {
   dispatch(createTemplate(values));

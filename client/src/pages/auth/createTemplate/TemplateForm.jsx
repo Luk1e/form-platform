@@ -1,18 +1,20 @@
 import { useEffect } from "react";
+import { App, Alert } from "antd";
+import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
-import { Formik, Form } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { getTags } from "../../../../toolkit/support/tagSlice";
-import { getUsers } from "../../../../toolkit/support/userSlice";
-import { getTopics } from "../../../../toolkit/support/topicSlice";
-import { resetCreateTemplateState } from "../../../../toolkit/templates/createTemplateSlice";
-import { initialValues, validationSchema, handleSubmit } from "../values";
 
-import BasicInfo from "./BasicInfo";
-import { Button, App, Alert } from "antd";
-import QuestionList from "./QuestionList";
+import { getTags, resetTagState } from "../../../toolkit/support/tagSlice";
+import { getUsers, resetUserState } from "../../../toolkit/support/userSlice";
+import {
+  getTopics,
+  resetTopicState,
+} from "../../../toolkit/support/topicSlice";
+import { resetCreateTemplateState } from "../../../toolkit/templates/createTemplateSlice";
+
+import { Button, BasicInfo, QuestionList } from "./components";
+import { initialValues, validationSchema, handleSubmit } from "./values";
 
 const TemplateForm = () => {
   const dispatch = useDispatch();
@@ -23,9 +25,6 @@ const TemplateForm = () => {
   const { loading, error, createdTemplateId } = useSelector(
     (state) => state.createTemplate
   );
-  const { topics } = useSelector((state) => state.supportTopics);
-  const { tags } = useSelector((state) => state.supportTags);
-  const { users } = useSelector((state) => state.supportUsers);
 
   useEffect(() => {
     if (createdTemplateId) {
@@ -38,12 +37,17 @@ const TemplateForm = () => {
     return () => {
       dispatch(resetCreateTemplateState());
     };
-  }, [createdTemplateId, navigate, dispatch, t]);
+  }, [createdTemplateId, navigate, dispatch, t]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     dispatch(getTags());
     dispatch(getUsers());
     dispatch(getTopics());
+    return () => {
+      dispatch(resetTagState());
+      dispatch(resetUserState());
+      dispatch(resetTopicState());
+    };
   }, [dispatch]);
 
   return (
@@ -54,24 +58,24 @@ const TemplateForm = () => {
     >
       {(formikProps) => (
         <Form className="space-y-6">
+          {/* Display error */}
           {error && (
             <Alert
               type="error"
               message={
                 error?.errorCode !== undefined
                   ? t("errors." + error.errorCode)
-                  : t("validation.invalidEmail")
+                  : "Something went wrong..."
               }
               className="mb-4 shadow-sm rounded-md"
               showIcon
             />
           )}
-          <BasicInfo
-            formikProps={formikProps}
-            topics={topics}
-            tags={tags}
-            users={users}
-          />
+
+          {/* Basic info component */}
+          <BasicInfo formikProps={formikProps} />
+
+          {/* Question list component */}
           <QuestionList formikProps={formikProps} />
 
           {/* Error if no question is selected */}
@@ -82,17 +86,8 @@ const TemplateForm = () => {
               </div>
             )}
 
-          <div className="flex justify-end">
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              className="w-full sm:w-auto"
-              loading={loading}
-            >
-              {t("createTemplatePage.createTemplate")}
-            </Button>
-          </div>
+          {/* Submit button component */}
+          <Button loading={loading} />
         </Form>
       )}
     </Formik>

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAuthAxios } from "../../utils/hooks/useAxios";
 
 export const createTemplate = createAsyncThunk(
-  "createTemplate/create",
+  "createTemplateSlice/createTemplate",
   async (templateData, { rejectWithValue }) => {
     try {
       const formData = new FormData();
@@ -11,7 +11,7 @@ export const createTemplate = createAsyncThunk(
         formData.append("image", templateData.image_file);
       }
 
-      const { image_file, image_url, ...restData } = templateData;
+      const { image_file, ...restData } = templateData;
       formData.append("data", JSON.stringify(restData));
 
       const { data } = await useAuthAxios.post("/api/templates", formData, {
@@ -27,21 +27,18 @@ export const createTemplate = createAsyncThunk(
   }
 );
 
+const initialState = {
+  loading: false,
+  error: null,
+  success: false,
+  createdTemplateId: null,
+};
+
 const createTemplateSlice = createSlice({
-  name: "createTemplate",
-  initialState: {
-    loading: false,
-    error: null,
-    success: false,
-    createdTemplateId: null,
-  },
+  name: "createTemplateSlice",
+  initialState,
   reducers: {
-    resetCreateTemplateState: (state) => {
-      state.loading = false;
-      state.error = null;
-      state.success = false;
-      state.createdTemplateId = null;
-    },
+    resetCreateTemplateState: () => initialState,
   },
   extraReducers: (builder) => {
     builder

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAxios } from "../../utils/hooks/useAxios";
 
 export const getTopics = createAsyncThunk(
-  "support/getTopics",
+  "topicSlice/getTopics",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await useAxios.get("/api/support/topics");
@@ -13,13 +13,16 @@ export const getTopics = createAsyncThunk(
   }
 );
 
+const initialState = { topics: [], loading: false, error: null };
+
 const topicSlice = createSlice({
-  name: "support/topics",
-  initialState: { topics: [], loading: false, error: null },
-  reducers: {},
+  name: "topicSlice",
+  initialState,
+  reducers: { resetTopicState: () => initialState },
   extraReducers: (builder) => {
     builder
       .addCase(getTopics.pending, (state) => {
+        state.error = null;
         state.loading = true;
       })
       .addCase(getTopics.fulfilled, (state, action) => {
@@ -33,4 +36,5 @@ const topicSlice = createSlice({
   },
 });
 
+export const { resetTopicState } = topicSlice.actions;
 export default topicSlice.reducer;

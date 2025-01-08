@@ -1,20 +1,33 @@
-import { Input, Select, Switch, Form, Upload } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { UploadOutlined } from "@ant-design/icons";
+import { Input, Select, Switch, Form, Upload } from "antd";
 
-const BasicInfo = ({ formikProps, topics, tags, users }) => {
+const BasicInfo = ({ formikProps }) => {
+  const { tags } = useSelector((state) => state.supportTags);
+  const { topics } = useSelector((state) => state.supportTopics);
+  const { users } = useSelector((state) => state.supportUsers);
+
   const { values, touched, errors, handleChange, setFieldValue, handleBlur } =
     formikProps;
 
-  const [t] = useTranslation("auth");
+  const { t, i18n } = useTranslation("auth");
 
   const handleFileSelect = (file) => {
     setFieldValue("image_file", file);
     return false;
   };
 
+  useEffect(() => {
+    if (Object.keys(formikProps.touched).length > 0) {
+      formikProps.validateForm();
+    }
+  }, [i18n.language]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className="space-y-4">
+      {/* Template title input */}
       <Form.Item
         validateStatus={touched.title && errors.title ? "error" : ""}
         help={touched.title && errors.title}
@@ -28,6 +41,7 @@ const BasicInfo = ({ formikProps, topics, tags, users }) => {
         />
       </Form.Item>
 
+      {/* Template description input */}
       <Form.Item
         validateStatus={
           touched.description && errors.description ? "error" : ""
@@ -44,6 +58,7 @@ const BasicInfo = ({ formikProps, topics, tags, users }) => {
         />
       </Form.Item>
 
+      {/* Template topic select */}
       <Form.Item
         validateStatus={touched.topic_id && errors.topic_id ? "error" : ""}
         help={touched.topic_id && errors.topic_id}
@@ -61,6 +76,7 @@ const BasicInfo = ({ formikProps, topics, tags, users }) => {
         />
       </Form.Item>
 
+      {/* Template tags select */}
       <Form.Item
         validateStatus={touched.tags && errors.tags ? "error" : ""}
         help={touched.tags && errors.tags}
@@ -79,6 +95,7 @@ const BasicInfo = ({ formikProps, topics, tags, users }) => {
         />
       </Form.Item>
 
+      {/* Upload template image file */}
       <Form.Item
         validateStatus={touched.image_file && errors.image_file ? "error" : ""}
         help={touched.image_file && errors.image_file}
@@ -100,6 +117,7 @@ const BasicInfo = ({ formikProps, topics, tags, users }) => {
         </Upload>
       </Form.Item>
 
+      {/* Switch visibility */}
       <Form.Item>
         <div className="flex items-center space-x-2">
           <Switch
@@ -112,6 +130,7 @@ const BasicInfo = ({ formikProps, topics, tags, users }) => {
         </div>
       </Form.Item>
 
+      {/* Select users */}
       {!values.is_public && (
         <Form.Item
           validateStatus={
