@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useAuthAxios } from "../../utils/hooks/useAxios";
 
 export const createForm = createAsyncThunk(
-  "createForm/create",
+  "createFormSlice/createForm",
   async ({ id, answers }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
@@ -21,7 +21,7 @@ export const createForm = createAsyncThunk(
 );
 
 export const checkIsFilled = createAsyncThunk(
-  "createForm/checkIsFilled",
+  "createFormSlice/checkIsFilled",
   async (id, { rejectWithValue }) => {
     try {
       const { data } = await useAuthAxios.get(
@@ -34,35 +34,31 @@ export const checkIsFilled = createAsyncThunk(
   }
 );
 
+const initialState = {
+  loading: false,
+  error: null,
+  success: false,
+};
+
 const createFormSlice = createSlice({
-  name: "createForm",
-  initialState: {
-    loading: false,
-    error: null,
-    success: false,
-  },
+  name: "createFormSlice",
+  initialState,
   reducers: {
-    resetCreateFormState: (state) => {
-      state.loading = false;
-      state.error = null;
-      state.success = false;
-    },
+    resetCreateFormState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
       .addCase(createForm.pending, (state) => {
-        state.loading = true;
         state.error = null;
-        state.success = false;
+        state.loading = true;
       })
       .addCase(createForm.fulfilled, (state, action) => {
-        state.loading = false;
         state.success = true;
+        state.loading = false;
       })
       .addCase(createForm.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.success = false;
       });
   },
 });
