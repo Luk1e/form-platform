@@ -13,6 +13,7 @@ const TemplateFormsPage = lazy(() =>
   import("../pages/auth/template-forms/TemplateFormsPage")
 );
 
+const FormPage = lazy(() => import("../pages/auth/form/FormPage"));
 const CreateFormPage = lazy(() =>
   import("../pages/auth/create-form/CreateFormPage")
 );
@@ -43,6 +44,10 @@ export default function AuthorizedRoutes({ user, loading }) {
       },
       {
         path: "/templates/:id/forms/:formId",
+        element: <FormPage />,
+      },
+      {
+        path: "/templates/:id/forms/:formId/update",
         element: <UpdateFormPage />,
       },
       {

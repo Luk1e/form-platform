@@ -1,5 +1,5 @@
-import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function ColumnList(template) {
   const { t } = useTranslation(["auth"]);
@@ -16,7 +16,9 @@ function ColumnList(template) {
       dataIndex: ["user", "username"],
       key: "username",
       width: 150,
-      render: (text, record) => <Link to={`/forms/${record.id}`}>{text}</Link>,
+      render: (text, record) => (
+        <Link to={`/templates/${template?.id}/forms/${record.id}`}>{text}</Link>
+      ),
     },
     {
       title: t("templateFormPage.table.email"),

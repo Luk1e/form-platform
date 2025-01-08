@@ -12,7 +12,7 @@ export const FormColumns = () => {
       dataIndex: "title",
       key: "title",
       render: (text, record) => (
-        <Link to={`/templates/${record.template_id}/forms/${record.id}`}>
+        <Link to={`/templates/${record.template_id}/forms/${record.id}/update`}>
           {text}
         </Link>
       ),

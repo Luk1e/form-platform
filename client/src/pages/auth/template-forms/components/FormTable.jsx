@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import { useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
 import ColumnList from "./ColumnList";
 

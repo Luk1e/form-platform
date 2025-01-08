@@ -59,6 +59,9 @@
       "totalItems": "Total: {{total}}"
     }
   },
+  "formPage": {
+    "noAnswerProvided": "No answer provided"
+  },
   "updateTemplatePage": {
     "updateTemplate": "Update Template",
     "viewForms": "View Forms",

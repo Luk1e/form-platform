@@ -58,6 +58,9 @@
       "totalItems": "სულ: {{total}}"
     }
   },
+  "formPage": {
+    "noAnswerProvided": "პასუხი არ არის"
+  },
   "updateTemplatePage": {
     "updateTemplate": "შაბლონის რედაქტირება",
     "viewForms": "ფორმების ნახვა",
