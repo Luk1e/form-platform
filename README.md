@@ -82,10 +82,10 @@ npm run dev
    - Configure environment variables in `.env`:
 
 ```env
-DB_USER=your_user
-DB_PASSWORD=your_password
-DB_NAME=your_db_name
-DB_HOST=your_host_name
+DEV_DB_USER=your_user
+DEV_DB_PASSWORD=your_password
+DEV_DB_NAME=your_db_name
+DEV_DB_HOST=your_host_name
 ```
 
 5. Configure URLs for Development:
