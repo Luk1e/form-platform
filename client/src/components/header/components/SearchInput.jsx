@@ -3,12 +3,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
 
-const SearchInput = ({ t }) => {
+const SearchInput = ({ t, isMobile, onClose }) => {
   const navigate = useNavigate();
   const [value, setValue] = useState("");
 
   const handleSearch = () => {
     navigate(`/search?query=${value}`);
+    if (isMobile) {
+      onClose();
+    }
   };
 
   return (

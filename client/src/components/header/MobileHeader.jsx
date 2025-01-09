@@ -58,7 +58,11 @@ function MobileHeader() {
         open={isMobileDrawerVisible}
       >
         <div className="mb-5">
-          <SearchInput t={t} />
+          <SearchInput
+            t={t}
+            isMobile={true}
+            onClose={() => setIsMobileDrawerVisible(false)}
+          />
         </div>
         <Menu items={dropdownList} />
       </Drawer>
