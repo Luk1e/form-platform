@@ -8,7 +8,7 @@ import {
   fetchUserTemplates,
   fetchUserForms,
 } from "../../../toolkit/user/userContentSlice";
-import SalesforceForm from "../../../components/sales-force/SalesForceForm";
+import { SalesforceForm } from "../../../components";
 import { UserContentTable, UserContentFilters } from "./components";
 import { getSalesforceAccount } from "../../../toolkit/salesforce/accountSlice";
 

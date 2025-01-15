@@ -62,9 +62,9 @@ const SalesforceForm = ({ isOpen, onClose }) => {
       width={800}
     >
       <Form layout="vertical" className="space-y-4">
-        <AccountTypeSelect formik={formik} t={t} />
-        <PersonalInfo formik={formik} t={t} />
-        <BusinessInfo formik={formik} t={t} />
+        <AccountTypeSelect formik={formik} />
+        <PersonalInfo formik={formik} />
+        <BusinessInfo formik={formik} />
       </Form>
     </Modal>
   );
