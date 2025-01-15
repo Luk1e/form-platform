@@ -1,22 +1,25 @@
-import { Card, Radio } from "antd";
-import { useDispatch } from "react-redux";
+import { Card, Radio, Button } from "antd";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { CloudOutlined } from "@ant-design/icons";
 import { useSearchParams } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchUserTemplates,
   fetchUserForms,
 } from "../../../toolkit/user/userContentSlice";
-
+import SalesforceForm from "../../../components/sales-force/SalesForceForm";
 import { UserContentTable, UserContentFilters } from "./components";
+import { getSalesforceAccount } from "../../../toolkit/salesforce/accountSlice";
 
 const ContentPage = () => {
   const dispatch = useDispatch();
+  const { accountDetails } = useSelector((state) => state.salesforceAccount);
   const { t } = useTranslation(["auth"]);
   const [searchParams, setSearchParams] = useSearchParams();
   const { page, limit, order, title, view } = Object.fromEntries(searchParams);
   const [activeView, setActiveView] = useState(view || "templates");
+  const [isSalesforceModalOpen, setIsSalesforceModalOpen] = useState(false);
 
   useEffect(() => {
     if (!view) {
@@ -24,6 +27,7 @@ const ContentPage = () => {
       newParams.set("view", activeView);
       setSearchParams(newParams);
     }
+    dispatch(getSalesforceAccount());
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -73,25 +77,40 @@ const ContentPage = () => {
           </p>
         </div>
 
-        {/* View change button */}
-        <Radio.Group
-          value={activeView}
-          onChange={handleViewChange}
-          className="mb-4"
-        >
-          <Radio.Button value="templates">
-            {t("userContentPage.templates")}
-          </Radio.Button>
-          <Radio.Button value="forms">
-            {t("userContentPage.forms")}
-          </Radio.Button>
-        </Radio.Group>
+        <div className="flex justify-between items-center flex-wrap gap-4 mb-4">
+          {/* View change button */}
+          <Radio.Group value={activeView} onChange={handleViewChange}>
+            <Radio.Button value="templates">
+              {t("userContentPage.templates")}
+            </Radio.Button>
+            <Radio.Button value="forms">
+              {t("userContentPage.forms")}
+            </Radio.Button>
+          </Radio.Group>
+
+          {/* Salesforce modal button */}
+          {!accountDetails?.salesforce_account_id && (
+            <Button
+              type="primary"
+              onClick={() => setIsSalesforceModalOpen(true)}
+              icon={<CloudOutlined />}
+            >
+              {t("userContentPage.syncWithSalesforce")}
+            </Button>
+          )}
+        </div>
 
         {/* Table filter */}
         <UserContentFilters activeView={activeView} />
 
         {/* Table */}
         <UserContentTable activeView={activeView} />
+
+        {/* Salesforce modal */}
+        <SalesforceForm
+          isOpen={isSalesforceModalOpen}
+          onClose={() => setIsSalesforceModalOpen(false)}
+        />
       </Card>
     </div>
   );

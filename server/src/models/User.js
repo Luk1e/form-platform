@@ -35,6 +35,14 @@ const User = sequelize.define(
       type: DataTypes.ENUM("light", "dark"),
       defaultValue: "light",
     },
+    salesforce_account_id: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    salesforce_contact_id: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
   },
   {
     tableName: "users",

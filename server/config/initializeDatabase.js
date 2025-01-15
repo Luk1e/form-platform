@@ -2,7 +2,7 @@ import models from "../src/models/index.js";
 
 const initializeDatabase = async () => {
   try {
-    await models.sequelize.sync({ force: false });
+    await models.sequelize.sync({ alter: true });
 
     await models.TemplateTopic.bulkCreate(
       [{ name: "Education" }, { name: "Quiz" }, { name: "Other" }],

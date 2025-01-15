@@ -18,3 +18,5 @@ export {
   userFormsSearchSchema,
   userTemplatesSearchSchema,
 } from "./userValidationSchemas.js";
+
+export { salesforceAccountSchema } from "./salesforceValidationSchema.js";
