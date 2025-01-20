@@ -6,7 +6,7 @@ export const injectStore = (_store) => {
   store = _store;
 };
 
-const BACKEND_URL = "https://form-platform.onrender.com/";
+const BACKEND_URL = "https://form-platform-server.onrender.com";
 // const BACKEND_URL = "http://localhost:5000";
 
 export const useAxios = axios.create({
