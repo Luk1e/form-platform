@@ -41,8 +41,8 @@ A full-stack web application that enables users to create, manage, and share for
 
 ## Live Demo
 
-- Frontend: [https://form-platform-client.onrender.com/](https://form-platform-client.onrender.com/)
-- Backend: [https://form-platform.onrender.com/](https://form-platform.onrender.com/)
+- Frontend: [https://form-platform-client.onrender.com](https://form-platform-client.onrender.com/)
+- Backend: [https://form-platform-server.onrender.com](https://form-platform-server.onrender.com/)
 
 ## Getting Started
 
