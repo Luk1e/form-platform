@@ -1,6 +1,6 @@
 # Form Platform
 
-A full-stack web application that enables users to create, manage, and share forms. Built with React, Express, and MySQL.
+A full-stack web application that enables users to create, manage, and share forms. Built with React, Express and MySQL.
 
 ## Features
 
@@ -61,25 +61,9 @@ git clone https://github.com/Luk1e/form-platform.git
 cd form-platform
 ```
 
-2. Frontend Setup:
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-3. Backend Setup:
-
-```bash
-cd server
-npm install
-npm run dev
-```
-
-4. Database Configuration:
+2. Database Configuration:
    - Create a MySQL database
-   - Configure environment variables in `.env`:
+   - Configure environment variables in `server/.env`
 
 ```env
 DEV_DB_USER=your_user
@@ -88,15 +72,35 @@ DEV_DB_NAME=your_db_name
 DEV_DB_HOST=your_host_name
 ```
 
-5. Configure URLs for Development:
-   - In `client/src/utils/hooks/useAxios.js`: Change the backend URL to your local backend URL
+3. Configure URLs for Development:
+
+   - In `client/src/utils/hooks/useAxios.js` Change the backend URL to your local backend URL
+
    ```javascript
-   // Example:
-   // Change from production URL to local URL
-   // const BACKEND_URL = 'https://form-platform.onrender.com/'
-   const BACKEND_URL: 'http://localhost:5000'  // or your custom backend port
+   const BACKEND_URL = "http://localhost:5000";
    ```
-   - In `server/config/environment.js`: change `export const isDevelopment = false` to true
+
+   - In `server/.env` change the environment variable
+
+   ```env
+   NODE_ENV = development
+   ```
+
+4. Frontend Setup:
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+5. Backend Setup:
+
+```bash
+cd server
+npm install
+npm run dev
+```
 
 ## Deployment Notes
 
